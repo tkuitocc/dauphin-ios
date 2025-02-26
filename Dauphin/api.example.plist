@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AES</key>
+	<dict>
+		<key>IV</key>
+		<string>AES256IV</string>
+		<key>KEY</key>
+		<string>AES265KEY</string>
+	</dict>
+	<key>services</key>
+	<dict>
+		<key>ServiceA</key>
+		<dict>
+			<key>url</key>
+			<string>https://api.servicea.com</string>
+			<key>key</key>
+			<string>YourServiceAKey</string>
+		</dict>
+		<key>ServiceB</key>
+		<dict>
+			<key>url</key>
+			<string>https://api.serviceb.com</string>
+			<key>key</key>
+			<string>YourServiceBKey</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

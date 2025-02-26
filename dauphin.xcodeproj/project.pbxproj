@@ -88,8 +88,8 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Models/Course.swift,
-				Models/CourseData.swift,
 				Utilities/Constants.swift,
+				Utilities/CourseData.swift,
 				Utilities/Encrypto.swift,
 				Utilities/KeychainManager.swift,
 				ViewModels/CourseViewModel.swift,
