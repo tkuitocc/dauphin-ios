@@ -9,22 +9,5 @@
 		<key>KEY</key>
 		<string>AES265KEY</string>
 	</dict>
-	<key>services</key>
-	<dict>
-		<key>ServiceA</key>
-		<dict>
-			<key>url</key>
-			<string>https://api.servicea.com</string>
-			<key>key</key>
-			<string>YourServiceAKey</string>
-		</dict>
-		<key>ServiceB</key>
-		<dict>
-			<key>url</key>
-			<string>https://api.serviceb.com</string>
-			<key>key</key>
-			<string>YourServiceBKey</string>
-		</dict>
-	</dict>
 </dict>
 </plist>
