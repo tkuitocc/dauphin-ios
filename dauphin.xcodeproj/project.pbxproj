@@ -69,9 +69,6 @@
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		182948842CEA34D200D0F31C /* Exceptions for "dauphin" folder in "dauphin" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			assetTagsByRelativePath = {
-				APIKEYS.json = (APIKeys, );
-			};
 			membershipExceptions = (
 				Info.plist,
 			);
@@ -114,16 +111,6 @@
 				185C496E2CF6E97D00589C39 /* Exceptions for "dauphin" folder in "CoursesWidgetExtension" target */,
 			);
 			path = dauphin;
-			sourceTree = "<group>";
-		};
-		18B3682D2CE5FA130027FEBE /* campuspass_iosTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = campuspass_iosTests;
-			sourceTree = "<group>";
-		};
-		18B368372CE5FA130027FEBE /* campuspass_iosUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = campuspass_iosUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -182,8 +169,6 @@
 			children = (
 				185C496C2CF6DDD900589C39 /* CoursesWidgetExtension.entitlements */,
 				18B3681B2CE5FA110027FEBE /* dauphin */,
-				18B3682D2CE5FA130027FEBE /* campuspass_iosTests */,
-				18B368372CE5FA130027FEBE /* campuspass_iosUITests */,
 				185C495A2CF6DD8400589C39 /* CoursesWidget */,
 				185C49552CF6DD8400589C39 /* Frameworks */,
 				18B3681A2CE5FA110027FEBE /* Products */,
@@ -269,9 +254,6 @@
 			dependencies = (
 				18B3682C2CE5FA130027FEBE /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				18B3682D2CE5FA130027FEBE /* campuspass_iosTests */,
-			);
 			name = dauphinTests;
 			packageProductDependencies = (
 			);
@@ -291,9 +273,6 @@
 			);
 			dependencies = (
 				18B368362CE5FA130027FEBE /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				18B368372CE5FA130027FEBE /* campuspass_iosUITests */,
 			);
 			name = dauphinUITests;
 			packageProductDependencies = (

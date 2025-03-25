@@ -4,7 +4,7 @@ enum KeyConstants {
     static func loadAPIKeys() async throws {
         guard let url = Bundle.main.url(forResource: "api", withExtension: "plist") else {
             print("Error: Unable to find 'api.plist' in the main bundle.")
-            throw NSError(domain: "KeyConstants", code: 404, userInfo: [NSLocalizedDescriptionKey: "APIKEYS.plist file not found in main bundle."])
+            throw NSError(domain: "KeyConstants", code: 404, userInfo: [NSLocalizedDescriptionKey: "api.plist file not found in main bundle."])
         }
         
         do {
