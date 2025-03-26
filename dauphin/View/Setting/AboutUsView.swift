@@ -36,7 +36,7 @@ struct AboutUsView: View {
                             .foregroundColor(.secondary)
                     }
                 }
-                
+
                 // Packages Section
                 Section(header: Text("Third-Party Packages")) {
                     ForEach(packages, id: \.0) { package in
@@ -45,7 +45,7 @@ struct AboutUsView: View {
                         }
                     }
                 }
-                
+
                 // Useful Links Section
                 Section(header: Text("Data Sources and Resources")) {
                     ForEach(usefulLinks, id: \.0) { link in

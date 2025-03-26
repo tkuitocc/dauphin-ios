@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SettingView: View {
     @ObservedObject var viewModel: AuthViewModel
-    
+
     var body: some View {
         NavigationView {
             List {
@@ -19,7 +19,7 @@ struct SettingView: View {
                         icon: { Image(systemName: "person.crop.circle")}
                     )
                 }
-                
+
                 NavigationLink(destination: AboutUsView()) {
                     Label(
                         title: { Text("About Us") },

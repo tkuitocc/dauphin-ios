@@ -10,7 +10,7 @@ import SwiftUI
 
 struct Provider: TimelineProvider {
     let viewModel = CourseViewModel()
-    
+
     func placeholder(in context: Context) -> SimpleEntry {
         SimpleEntry(date: Date(), ssoStuNo: "尚未登入", courses: [], today: 0)
     }
@@ -44,7 +44,7 @@ struct Provider: TimelineProvider {
             completion(timeline)
         }
     }
-    
+
     private func getSsoStuNo() -> String? {
         let defaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
         defaults?.synchronize()
@@ -61,7 +61,7 @@ struct Provider: TimelineProvider {
 
 struct CoursesNextUpWidgetEntryView: View {
     @Environment(\.colorScheme) var colorScheme
-    
+
     var entry: Provider.Entry
     @Environment(\.widgetFamily) var widgetFamily
 
@@ -88,7 +88,7 @@ struct CoursesNextUpWidget: Widget {
     let kind: String = "CoursesWidget"
 
     var body: some WidgetConfiguration {
-        
+
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             CoursesNextUpWidgetEntryView(entry: entry)
         }
