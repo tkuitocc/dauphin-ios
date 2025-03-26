@@ -9,7 +9,7 @@ import EventKit
 
 class EventManager {
     let eventStore = EKEventStore()
-    
+
     /// Request access and add an event in one step
     func requestAccessAndAddEvent(event: CalendarEvent) {
         if #available(iOS 17.0, *) {
@@ -38,19 +38,19 @@ class EventManager {
             }
         }
     }
-    
+
     /// Add an event to the calendar
     private func addEvent(event: CalendarEvent) {
         let calendars = eventStore.calendars(for: .event)
         print("Available Calendars: \(calendars.map { $0.title })")
-        
+
         let calendar = selectModifiableCalendar(from: calendars) ?? createLocalCalendar()
-        
+
         guard let calendar = calendar else {
             print("No modifiable calendar found.")
             return
         }
-        
+
         let calendarEvent = EKEvent(eventStore: eventStore)
         calendarEvent.title = event.event
         calendarEvent.startDate = event.startDate
@@ -59,7 +59,7 @@ class EventManager {
         if event.startDate == event.endDate {
             calendarEvent.isAllDay = true
         }
-        
+
         do {
             try eventStore.save(calendarEvent, span: .thisEvent)
             print("Event added successfully!")
@@ -67,7 +67,7 @@ class EventManager {
             print("Failed to save event: \(error)")
         }
     }
-    
+
     /// Helper function to select a modifiable calendar
     private func selectModifiableCalendar(from calendars: [EKCalendar]) -> EKCalendar? {
         // Prioritize the default calendar
@@ -77,12 +77,12 @@ class EventManager {
         // Fallback to a local or CalDAV calendar
         return calendars.first(where: { $0.allowsContentModifications && ($0.type == .local || $0.type == .calDAV) })
     }
-    
+
     /// Create a new local calendar if no modifiable calendar is found
     private func createLocalCalendar() -> EKCalendar? {
         let newCalendar = EKCalendar(for: .event, eventStore: eventStore)
         newCalendar.title = "My Custom Calendar"
-        
+
         // Use a local source if available
         if let localSource = eventStore.sources.first(where: { $0.sourceType == .local }) {
             newCalendar.source = localSource
@@ -90,7 +90,7 @@ class EventManager {
             print("No local source available")
             return nil
         }
-        
+
         do {
             try eventStore.saveCalendar(newCalendar, commit: true)
             print("Custom calendar created successfully!")

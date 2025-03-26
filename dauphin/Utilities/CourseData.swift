@@ -121,5 +121,5 @@ let mockData: [Course] = [
                stdNo: "69",
                weekday: 6
               )
-    
+
 ]

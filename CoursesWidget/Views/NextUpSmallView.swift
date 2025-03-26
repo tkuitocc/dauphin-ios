@@ -15,11 +15,11 @@ struct CoursesNextUpSmallView: View {
     @Environment(\.colorScheme) var colorScheme
     var entry: Provider.Entry
     let currentWeekday = Calendar.current.component(.weekday, from: Date())
-    
+
     var todayNotDoneCount: Int {
         entry.courses.filter { $0.weekday == currentWeekday }.count
     }
-    
+
     // Helper function to convert weekday index to name
     func weekdayName(for weekday: Int) -> String {
         let formatter = DateFormatter()
@@ -28,7 +28,7 @@ struct CoursesNextUpSmallView: View {
         let date = Calendar.current.date(bySetting: .weekday, value: weekday+1, of: Date())!
         return formatter.string(from: date)
     }
-    
+
     var body: some View {
         if entry.ssoStuNo.isEmpty {
             Text("尚未登入")
@@ -56,7 +56,7 @@ struct CoursesNextUpSmallView: View {
                         }
                         Text("\(formatTime(entry.courses[0].startTime)) - \(formatTime(entry.courses[0].endTime))")
                             .font(.footnote)
-                        
+
                         HStack {
                             HStack(spacing: 0) {
                                 Image(systemName: "location.circle.fill")
@@ -69,7 +69,7 @@ struct CoursesNextUpSmallView: View {
                             .padding(.horizontal, 5)
                             .background(Color.blue.opacity(0.8))
                             .cornerRadius(4)
-                            
+
                             HStack(spacing: 0) {
                                 Image(systemName: "graduationcap")
                                     .font(.system(size: 8))
@@ -91,15 +91,15 @@ struct CoursesNextUpSmallView: View {
                             .padding(.leading, -8),
                         alignment: .leading
                     )
-                    
+
                     // Second Event
                     if entry.courses.count > 1 {
                         let isSameDay = entry.courses[0].weekday == entry.courses[1].weekday
                         let secondCourseWeekday = weekdayName(for: entry.courses[1].weekday)
-                        
-                        if(isSameDay){
+
+                        if (isSameDay) {
                             Text("")
-                        }else{
+                        } else {
                             Text(secondCourseWeekday)
                                 .font(.footnote)
                                 .padding(.leading, -8)
@@ -139,6 +139,6 @@ struct CoursesNextUpSmallView: View {
     CoursesNextUpWidget()
 } timeline: {
     SimpleEntry(date: Date(), ssoStuNo: "111111111", courses: mockData, today: mockData.count)
-    
+
     SimpleEntry(date: Date(), ssoStuNo: "111111111", courses: [mockData[0]], today: mockData.count)
 }

@@ -26,7 +26,7 @@ struct CourseScheduleByWeekView: View {
                         let filteredCourses = (1...6).map { day in
                             courseViewModel.weekCourses.filter { $0.weekday == day }
                         }
-                        
+
                         WeekdaysView(
                             days: days,
                             width: dayWidth,
@@ -49,7 +49,7 @@ struct CourseScheduleByWeekView: View {
                                 }
                                 .frame(width: 45) // Reduced width for tighter layout
                                 .background(Color(UIColor.systemBackground))
-                            
+
                                 ForEach(filteredCourses.indices, id: \.self) { index in
                                     SingleTimeline(courses: .constant(filteredCourses[index]))
                                         .frame(width: dayWidth)
@@ -63,7 +63,7 @@ struct CourseScheduleByWeekView: View {
                         let filteredCourses = (1...5).map { day in
                             courseViewModel.weekCourses.filter { $0.weekday == day }
                         }
-                        
+
                         WeekdaysView(
                             days: days,
                             width: dayWidth,
@@ -86,7 +86,7 @@ struct CourseScheduleByWeekView: View {
                                 }
                                 .frame(width: 45) // Reduced width for tighter layout
                                 .background(Color(UIColor.systemBackground))
-                                
+
                                 ForEach(filteredCourses.indices, id: \.self) { index in
                                     SingleTimeline(courses: .constant(filteredCourses[index]))
                                         .frame(width: dayWidth)
@@ -112,8 +112,8 @@ struct WeekdaysView: View {
             ForEach(0..<days.count, id: \.self) { index in
                 let dayIndex = index + 1
                 let date = dateForDay(weekday: dayIndex)
-                
-                HStack (alignment: .bottom){
+
+                HStack(alignment: .bottom) {
                     Text(days[index])
                         .font(.title3)
                         .foregroundColor(.gray)
@@ -124,7 +124,7 @@ struct WeekdaysView: View {
                                 .fill(Color.red)
                                 .frame(width: 28, height: 28)
                         }
-                        
+
                         Text("\(date)")
                             .font(.title3)
                             .foregroundColor(dayIndex == currentDay-1 ? .white : .gray)
@@ -134,7 +134,7 @@ struct WeekdaysView: View {
             }
         }
     }
-    
+
     // Helper to get the date for a specific weekday
     private func dateForDay(weekday: Int) -> Int {
         let calendar = Calendar.current

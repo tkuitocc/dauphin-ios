@@ -11,16 +11,16 @@ struct EventView: View {
     @StateObject private var viewModel = EventViewModel()
     private let eventManager = EventManager()
     @State private var toggleState = true // Track the toggle state
-    
+
     var body: some View {
-        
+
         List(viewModel.events) { event in
             HStack {
                 VStack(alignment: .leading) {
                     Text(event.event)
                         .font(.headline)
-                    HStack() {
-                        if(event.startDate == event.endDate){
+                    HStack {
+                        if (event.startDate == event.endDate) {
                             Text("\(event.startDate, formatter: dateFormatter)")
                                 .font(.footnote)
                         } else {
@@ -73,7 +73,6 @@ struct EventView: View {
                             .stroke(Color.blue, lineWidth: 1)
                     )
                 }
-        
             }
         }
         .onAppear {
