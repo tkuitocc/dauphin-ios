@@ -18,7 +18,7 @@
                BlueprintIdentifier = "18B368182CE5FA110027FEBE"
                BuildableName = "dauphin.app"
                BlueprintName = "dauphin"
-               ReferencedContainer = "container:Dauphin.xcodeproj">
+               ReferencedContainer = "container:dauphin.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,7 +47,7 @@
             BlueprintIdentifier = "18B368182CE5FA110027FEBE"
             BuildableName = "dauphin.app"
             BlueprintName = "dauphin"
-            ReferencedContainer = "container:Dauphin.xcodeproj">
+            ReferencedContainer = "container:dauphin.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -64,7 +64,7 @@
             BlueprintIdentifier = "18B368182CE5FA110027FEBE"
             BuildableName = "dauphin.app"
             BlueprintName = "dauphin"
-            ReferencedContainer = "container:Dauphin.xcodeproj">
+            ReferencedContainer = "container:dauphin.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

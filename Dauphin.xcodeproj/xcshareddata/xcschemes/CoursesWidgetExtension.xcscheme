@@ -19,7 +19,7 @@
                BlueprintIdentifier = "185C49532CF6DD8400589C39"
                BuildableName = "CoursesWidgetExtension.appex"
                BlueprintName = "CoursesWidgetExtension"
-               ReferencedContainer = "container:Dauphin.xcodeproj">
+               ReferencedContainer = "container:dauphin.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -33,7 +33,7 @@
                BlueprintIdentifier = "18B368182CE5FA110027FEBE"
                BuildableName = "dauphin.app"
                BlueprintName = "dauphin"
-               ReferencedContainer = "container:Dauphin.xcodeproj">
+               ReferencedContainer = "container:dauphin.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -65,7 +65,7 @@
             BlueprintIdentifier = "185C49532CF6DD8400589C39"
             BuildableName = "CoursesWidgetExtension.appex"
             BlueprintName = "CoursesWidgetExtension"
-            ReferencedContainer = "container:Dauphin.xcodeproj">
+            ReferencedContainer = "container:dauphin.xcodeproj">
          </BuildableReference>
       </RemoteRunnable>
       <MacroExpansion>
@@ -74,7 +74,7 @@
             BlueprintIdentifier = "18B368182CE5FA110027FEBE"
             BuildableName = "dauphin.app"
             BlueprintName = "dauphin"
-            ReferencedContainer = "container:Dauphin.xcodeproj">
+            ReferencedContainer = "container:dauphin.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <EnvironmentVariables>
@@ -110,7 +110,7 @@
             BlueprintIdentifier = "18B368182CE5FA110027FEBE"
             BuildableName = "dauphin.app"
             BlueprintName = "dauphin"
-            ReferencedContainer = "container:Dauphin.xcodeproj">
+            ReferencedContainer = "container:dauphin.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
