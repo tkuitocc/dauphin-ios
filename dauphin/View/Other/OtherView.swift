@@ -18,21 +18,21 @@ struct OtherView: View {
                         icon: { Image(systemName: "calendar")}
                     )
                 }
-                
+
                 NavigationLink(destination: LibraryView(authViewModel: authViewModel)) {
                     Label(
                         title: { Text("Library") },
                         icon: { Image(systemName: "books.vertical.fill") }
                     )
                 }
-                
+
 //                NavigationLink(destination: WifiView()) {
 //                    Label(
 //                        title: { Text("無線網路") },
 //                        icon: { Image(systemName: "wifi")}
 //                    )
 //                }
-                
+
                 NavigationLink(destination: WifiView()) {
                     Label(
                         title: { Text("Campus Map") },

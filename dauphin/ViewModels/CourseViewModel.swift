@@ -9,12 +9,12 @@ class CourseViewModel: ObservableObject {
     @Published var weekCourses: [Course] = []
     @Published var isLoading = false
     @Published var errorMessage: String? = nil
-    
+
     private var reachability: Reachability
     private var helper: CustomAES256Helper?
     private var timeoutWorkItem: DispatchWorkItem?
     private var cancellables = Set<AnyCancellable>()
-        
+
     init() {
         reachability = try! Reachability()
 
@@ -28,12 +28,12 @@ class CourseViewModel: ObservableObject {
             await initializeHelper()
         }
     }
-    
+
     init(mockData: [Course]) {
         self.weekCourses = mockData
         self.reachability = try! Reachability()
     }
-    
+
     // MARK: - Helper Initialization
     private func initializeHelper() async {
         if let key = KeychainManager.shared.get(forKey: "AES256KEY"),
@@ -47,7 +47,7 @@ class CourseViewModel: ObservableObject {
             print("❌ Error: \(errorMessage ?? "Unknown error")")
         }
     }
-    
+
     // MARK: - Cache Management
     func loadCoursesFromCache() -> [Course]? {
         print("Load courses from cache")
@@ -82,7 +82,7 @@ class CourseViewModel: ObservableObject {
             print("❌ Failed to encode and save courses: \(error)")
         }
     }
-    
+
     // MARK: - Fetch Courses
     func fetchCourses(with stdNo: String) async {
         print("Fetch courses")
@@ -108,7 +108,7 @@ class CourseViewModel: ObservableObject {
             let encryptedQuery = try await createEncryptedQuery(for: stdNo, helper: helper)
             let url = URL(string: "https://ilifeapi.az.tku.edu.tw/api/ilifeStuClassApi?q=\(encryptedQuery)")!
 
-            //isLoading = true
+            // isLoading = true
             let (data, response) = try await URLSession.shared.data(from: url)
             guard let httpResponse = response as? HTTPURLResponse, 200...299 ~= httpResponse.statusCode else {
                 throw URLError(.badServerResponse)
@@ -137,11 +137,11 @@ class CourseViewModel: ObservableObject {
         }
         return encoded
     }
-    
+
     // MARK: - Parse Course Data
     private func parseCourseData(apiData: [String: Any]) -> [Course] {
         var weekCourses = [Course]()
-        
+
         guard let stuelelist = apiData["stuelelist"] as? [[String: Any]] else {
             print("❌ Failed to parse 'stuelelist' from API data.")
             return weekCourses
@@ -155,10 +155,10 @@ class CourseViewModel: ObservableObject {
                 continue
             }
 
-            //let name = (courseData["ch_cos_name"] as? String ?? "Unknown")
+            // let name = (courseData["ch_cos_name"] as? String ?? "Unknown")
             //    .replacingOccurrences(of: "\\s*\\(.*\\)", with: "", options: .regularExpression)
             let name = (courseData["ch_cos_name"] as? String ?? "Unknown")
-                
+
             let room = courseData["room"] as? String ?? (courseData["note"] as? String ?? "Unknown Room")
             let teacher = courseData["teach_name"] as? String ?? "Unknown Teacher"
             let seatNo = courseData["seat_no"] as? String ?? "Unknown Seat"
@@ -176,7 +176,7 @@ class CourseViewModel: ObservableObject {
             }
 
             let time = sesses.joined(separator: ", ")
-            
+
             weekCourses.append(
                 Course(
                     name: name,
@@ -190,7 +190,7 @@ class CourseViewModel: ObservableObject {
                 )
             )
         }
-        
+
         print("✅ Successfully parsed \(weekCourses.count) courses.")
         return weekCourses
     }

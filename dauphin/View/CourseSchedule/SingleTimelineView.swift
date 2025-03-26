@@ -9,34 +9,32 @@ import SwiftUI
 
 struct SingleTimeline: View {
     @Binding var courses: [Course]
-        
+
         let start = Calendar.current.date(bySettingHour: 8, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date()))!
         let end = Calendar.current.date(bySettingHour: 22, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date()))!
-        
+
         var body: some View {
             GeometryReader { geometry in
                 let totalHeight = CGFloat(1400)
                 let numberOfSlots = 14
-                //let currentTime = Date()
-                //let currentYOffset = yPosition(for: currentTime, in: totalHeight) // Calculate Y position of current time
-                
+                // let currentTime = Date()
+                // let currentYOffset = yPosition(for: currentTime, in: totalHeight) // Calculate Y position of current time
+
                 ZStack(alignment: .top) {
                     // Grid
                     TimeSlotGrid(numberOfSlots: numberOfSlots, totalHeight: totalHeight)
-                    
+
                     // Courses
                     ForEach(courses) { course in
                         let adjustedStartTime = adjustedTime(for: course.startTime)
                         let adjustedEndTime = adjustedTime(for: course.endTime)
-                        
+
                         CourseView(
                             course: course,
                             height: heightForEvent(adjustedStartTime, adjustedEndTime, in: totalHeight),
                             yOffset: yPosition(for: adjustedStartTime, in: totalHeight)
                         )
                     }
-                    
-                    
                 }
             }
         }
@@ -67,7 +65,7 @@ struct SingleTimeline: View {
 struct TimeSlotGrid: View {
     let numberOfSlots: Int
     let totalHeight: CGFloat
-    
+
     var body: some View {
         VStack(spacing: 0) {
             ForEach(0..<numberOfSlots, id: \.self) { index in
@@ -84,7 +82,7 @@ struct CourseView: View {
     let course: Course
     let height: CGFloat
     let yOffset: CGFloat
-    
+
     var body: some View {
         RoundedRectangle(cornerRadius: 2)
             .fill(Color.indigo)
@@ -98,15 +96,15 @@ struct CourseView: View {
                             .foregroundColor(.primary)
                         Spacer()
                     }
-                    HStack (spacing: 2){
+                    HStack(spacing: 2) {
                         Image(systemName: "location.circle")
                             .font(.system(size: 10))
                         Text(": \(course.room)")
                             .font(.caption2)
                             .foregroundColor(.primary)
                     }
-                    
-                    HStack (spacing: 2){
+
+                    HStack(spacing: 2) {
                         Image(systemName: "graduationcap")
                             .font(.system(size: 10))
                         Text(": \(course.stdNo)")

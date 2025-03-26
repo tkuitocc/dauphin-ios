@@ -12,7 +12,7 @@ struct CourseScheduleView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @ObservedObject var authViewModel: AuthViewModel
     @StateObject var viewModel = CourseViewModel()
-    
+
     var body: some View {
         Group {
             if authViewModel.isLoggedIn {
@@ -50,7 +50,7 @@ struct CourseScheduleView: View {
                             }
                         }
                 }
-                
+
             } else {
                 AnyView(LibSSOLoginView(viewModel: authViewModel))
             }

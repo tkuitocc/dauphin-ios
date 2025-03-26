@@ -17,8 +17,8 @@ struct InrtoScreen: View {
                 .multilineTextAlignment(.center)
                 .padding(.top, 65)
                 .padding(.bottom, 35)
-            
-            //Points View
+
+            // Points View
             VStack(alignment: .leading, spacing: 25,content: {
                 HStack(spacing: 20) {
                     Image(systemName: "laptopcomputer.trianglebadge.exclamationmark")
@@ -29,7 +29,7 @@ struct InrtoScreen: View {
                         Text("Open Source")
                             .font(.title3)
                             .fontWeight(.semibold)
-                        
+
                         Text("We're open-sourcing our code. If you're not satisfied with the current version, feel free to fork it on GitHub.")
                             .font(.caption)
                             .foregroundStyle(.gray)
@@ -44,7 +44,7 @@ struct InrtoScreen: View {
                         Text("Local First")
                             .font(.title3)
                             .fontWeight(.semibold)
-                        
+
                         Text("We securely cache some redundant data locally, so you can still access your schedule without connecting to the school's server.")
                             .font(.caption)
                             .foregroundStyle(.gray)
@@ -59,7 +59,7 @@ struct InrtoScreen: View {
                         Text("iOS Feature Support")
                             .font(.title3)
                             .fontWeight(.semibold)
-                        
+
                         Text("We support many iOS features like Widgets, and we'll update further as inspiration strikes.")
                             .font(.caption)
                             .foregroundStyle(.gray)
@@ -68,11 +68,11 @@ struct InrtoScreen: View {
             })
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 15)
-            
+
             Spacer(minLength: 10)
             Text("⚠️This app isn’t developed by Tamkang University’s IT Office. Use at your own risk.")
                 .font(.system(size: 8))
-            
+
             Button(action: {
                 isFirstTime = false
             }, label: {

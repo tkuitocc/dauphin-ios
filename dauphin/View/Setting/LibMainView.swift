@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LibMainView: View {
     @ObservedObject var viewModel: AuthViewModel
-    
+
     var body: some View {
         Group {
             if viewModel.isLoggedIn {
@@ -18,7 +18,7 @@ struct LibMainView: View {
                         Text("\(viewModel.ssoStuNo)")
                             .padding()
                     }
-                    
+
                     Button(action: {
                         viewModel.logout()
                     }) {
