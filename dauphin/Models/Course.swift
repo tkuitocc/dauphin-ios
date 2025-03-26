@@ -22,9 +22,9 @@ struct Course: Identifiable, Hashable, Codable {
 func getNextUpCourses(from weeklySchedule: [Course]) -> [Course] {
     let calendar = Calendar.current
     let now = Date()
-    
+
     let todayWeekday = calendar.component(.weekday, from: now) - 1
-    //log
+    // log
     print(todayWeekday)
     let sortedCourses = weeklySchedule.sorted { course1, course2 in
         if course1.weekday != course2.weekday {
@@ -32,18 +32,18 @@ func getNextUpCourses(from weeklySchedule: [Course]) -> [Course] {
         } else {
             let (endHour1, endMinute1) = getCourseEndHourMinute(course1)
             let (endHour2, endMinute2) = getCourseEndHourMinute(course2)
-            
+
             let endDate1 = calendar.date(bySettingHour: endHour1, minute: endMinute1, second: 0, of: now)!
             let endDate2 = calendar.date(bySettingHour: endHour2, minute: endMinute2, second: 0, of: now)!
-            
+
             return endDate1 < endDate2
         }
     }
-    
+
     if todayWeekday == 7 {
         return sortedCourses
     }
-    
+
     let upcomingCourses = sortedCourses.filter { course in
         if course.weekday < todayWeekday {
             return false
@@ -77,7 +77,7 @@ func stringToTime(_ timeString: String) -> Date? {
     let formatter = DateFormatter()
     formatter.dateFormat = "HH:mm"
     formatter.timeZone = TimeZone.current
-    
+
     return formatter.date(from: timeString)
 }
 

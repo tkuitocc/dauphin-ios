@@ -14,7 +14,7 @@ struct LibraryView: View {
         if authViewModel.isLoggedIn {
             ScrollView{
                 VStack {
-                    VStack(){
+                    VStack {
                         Code39View("\(authViewModel.ssoStuNo)")
                             .frame(width: 296, height: 96)
                     }

@@ -21,12 +21,11 @@ struct CourseCardView: View {
                 Text("\(formatTime(StartTime)) ~ \(formatTime(EndTime))")
                     .font(.subheadline)
                     .foregroundColor(.gray)
-                        
+
                 Text("\(courseName)")
                     .font(.headline)
                     .foregroundColor(.primary)
-                    
-                        
+
                 HStack {
                     VStack {
                         HStack(spacing: 8) {
@@ -35,14 +34,14 @@ struct CourseCardView: View {
                                 .font(.caption)
                                 .bold()
                                 .foregroundColor(.primary)
-                            
+
                         }
                         .padding(.vertical, 4)
                         .padding(.horizontal, 10)
                         .background(Color.blue)
                         .cornerRadius(8)
                     }
-                    
+
                     VStack {
                         HStack(spacing: 8) {
                             Image(systemName: "graduationcap")
@@ -50,16 +49,16 @@ struct CourseCardView: View {
                                 .font(.caption)
                                 .bold()
                                 .foregroundColor(.primary)
-                            
+
                         }
                         .padding(.vertical, 4)
                         .padding(.horizontal, 10)
                         .background(Color.blue.opacity(0.8))
                         .cornerRadius(8)
                     }
-                    
+
                     Spacer()
-                    
+
                     VStack(alignment: .center, spacing: 5) {
                         HStack {
                             Image(systemName: "inset.filled.rectangle.and.person.filled")
