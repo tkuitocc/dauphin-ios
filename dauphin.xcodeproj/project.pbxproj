@@ -8,14 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		1826CDA82CF4477F00471CA4 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1826CDA72CF4477F00471CA4 /* KeychainSwift */; };
-		183E76AF2DB60D26002AD81D /* Code39 in Frameworks */ = {isa = PBXBuildFile; productRef = 183E76AE2DB60D26002AD81D /* Code39 */; };
 		184BADB32CFAB273001811DB /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 184BADB22CFAB273001811DB /* Reachability */; };
 		184BADB52CFAB403001811DB /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 184BADB42CFAB403001811DB /* Reachability */; };
+		1857F76A2DB7643F00950818 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1857F7692DB7643F00950818 /* SwiftUI.framework */; };
 		185C49572CF6DD8400589C39 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 185C49562CF6DD8400589C39 /* WidgetKit.framework */; };
 		185C49592CF6DD8400589C39 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 185C49582CF6DD8400589C39 /* SwiftUI.framework */; };
 		185C49662CF6DD8600589C39 /* CoursesWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 185C49542CF6DD8400589C39 /* CoursesWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		188D2E7F2CF81E4F005E1B52 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 188D2E7E2CF81E4F005E1B52 /* KeychainSwift */; };
 		189DD2CF2D5C516F009AF8E7 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 189DD2CE2D5C516F009AF8E7 /* Lottie */; };
+		18AF3CB32DB76630004D3E06 /* Code39 in Frameworks */ = {isa = PBXBuildFile; productRef = 18AF3CB22DB76630004D3E06 /* Code39 */; };
 		18E8F2142DB5CC3E00B2FB57 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 185C49562CF6DD8400589C39 /* WidgetKit.framework */; };
 		18E8F2152DB5CC3E00B2FB57 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 185C49582CF6DD8400589C39 /* SwiftUI.framework */; };
 		18E8F2202DB5CC4000B2FB57 /* StdIDExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 18E8F2132DB5CC3E00B2FB57 /* StdIDExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -69,6 +70,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1857F7692DB7643F00950818 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.2.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
 		185C49542CF6DD8400589C39 /* CoursesWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CoursesWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		185C49562CF6DD8400589C39 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		185C49582CF6DD8400589C39 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -179,6 +181,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1857F76A2DB7643F00950818 /* SwiftUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -193,7 +196,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				183E76AF2DB60D26002AD81D /* Code39 in Frameworks */,
+				18AF3CB32DB76630004D3E06 /* Code39 in Frameworks */,
 				18E8F2152DB5CC3E00B2FB57 /* SwiftUI.framework in Frameworks */,
 				18E8F2142DB5CC3E00B2FB57 /* WidgetKit.framework in Frameworks */,
 			);
@@ -205,6 +208,7 @@
 		185C49552CF6DD8400589C39 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1857F7692DB7643F00950818 /* SwiftUI.framework */,
 				185C49562CF6DD8400589C39 /* WidgetKit.framework */,
 				185C49582CF6DD8400589C39 /* SwiftUI.framework */,
 			);
@@ -349,7 +353,7 @@
 			);
 			name = StdIDExtension;
 			packageProductDependencies = (
-				183E76AE2DB60D26002AD81D /* Code39 */,
+				18AF3CB22DB76630004D3E06 /* Code39 */,
 			);
 			productName = StdIDExtension;
 			productReference = 18E8F2132DB5CC3E00B2FB57 /* StdIDExtension.appex */;
@@ -1055,11 +1059,6 @@
 			package = 1826CDA42CF446E100471CA4 /* XCRemoteSwiftPackageReference "keychain-swift" */;
 			productName = KeychainSwift;
 		};
-		183E76AE2DB60D26002AD81D /* Code39 */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 18F5FBF62D2E6FD900D3212C /* XCRemoteSwiftPackageReference "swiftui-code39" */;
-			productName = Code39;
-		};
 		184BADB22CFAB273001811DB /* Reachability */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 18DF0BEB2CFAB056008E2674 /* XCRemoteSwiftPackageReference "Reachability" */;
@@ -1079,6 +1078,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1869F7D52D4AF0A70033F539 /* XCRemoteSwiftPackageReference "lottie-spm" */;
 			productName = Lottie;
+		};
+		18AF3CB22DB76630004D3E06 /* Code39 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18F5FBF62D2E6FD900D3212C /* XCRemoteSwiftPackageReference "swiftui-code39" */;
+			productName = Code39;
 		};
 		18F5FBF72D2E706100D3212C /* Code39 */ = {
 			isa = XCSwiftPackageProductDependency;

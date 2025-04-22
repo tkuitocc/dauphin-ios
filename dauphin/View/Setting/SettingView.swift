@@ -28,6 +28,8 @@ struct SettingView: View {
                 }
             }
             .navigationTitle("Setting")
+            
+            LibMainView(viewModel: viewModel)
         }
     }
 }

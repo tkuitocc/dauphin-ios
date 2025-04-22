@@ -25,7 +25,7 @@ struct AboutUsView: View {
         ("Discord", "https://discord.gg/ruDpjr3ZHk")
     ]
     var body: some View {
-        NavigationView {
+        VStack {
             Form {
                 // App Version Section
                 Section(header: Text("App Information")) {
@@ -55,7 +55,6 @@ struct AboutUsView: View {
                     }
                 }
             }
-            .navigationBarTitle("About Us", displayMode: .inline)
         }
     }
 }
