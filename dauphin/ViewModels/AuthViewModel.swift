@@ -24,12 +24,15 @@ class AuthViewModel: ObservableObject {
     }
 
     func login(with token: String) {
-        print("正在登入，token: \(token)")
+        print("Logging in with token: \(token)")
         DispatchQueue.main.async {
             self.ssoStuNo = token
             self.isLoggedIn = true
-            print("已更新登入狀態")
-
+            print("Updated login state")
+            
+            self.appGroupDefaults?.set(token, forKey: Constants.ssoTokenKey)
+            self.appGroupDefaults?.synchronize()
+            print("Saved ssoStuNo to App Group")
             // Update Widget timelines
             WidgetCenter.shared.reloadAllTimelines()
             print("Widget timelines reloaded.")
@@ -37,12 +40,6 @@ class AuthViewModel: ObservableObject {
             // Fetch courses
             self.fetchCourses(token: token)
 
-            // Verify saved token
-            if let savedValue = self.appGroupDefaults?.string(forKey: Constants.ssoTokenKey) {
-                print("儲存的 ssoStuNo: \(savedValue) \(Constants.ssoTokenKey)")
-            } else {
-                print("未能儲存 ssoStuNo。檢查 App Group 配置或鍵名。")
-            }
         }
     }
 
