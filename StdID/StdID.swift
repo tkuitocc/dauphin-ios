@@ -52,7 +52,7 @@ struct StdIDEntryView: View {
             if entry.ssoStuNo.count > 3 {
                 Code39View(entry.ssoStuNo)
                     .frame(width: 296, height: 96)
-                    .padding(.init(top:5, leading: 10, bottom: 5, trailing: 10))
+                    .padding(.init(top:5, leading: 20, bottom: 5, trailing: 20))
                     .background(Color.white)
                 Text("\(entry.ssoStuNo)")
             } else {
