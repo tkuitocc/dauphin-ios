@@ -44,6 +44,30 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
+      <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "18B368292CE5FA130027FEBE"
+               BuildableName = "dauphinTests.xctest"
+               BlueprintName = "dauphinTests"
+               ReferencedContainer = "container:dauphin.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "18B368332CE5FA130027FEBE"
+               BuildableName = "dauphinUITests.xctest"
+               BlueprintName = "dauphinUITests"
+               ReferencedContainer = "container:dauphin.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
