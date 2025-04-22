@@ -41,6 +41,8 @@ struct OtherView: View {
                 }
             }
             .navigationTitle("Browse")
+            
+            EventView()
         }
     }
 }
