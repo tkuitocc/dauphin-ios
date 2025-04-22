@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1826CDA82CF4477F00471CA4 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1826CDA72CF4477F00471CA4 /* KeychainSwift */; };
+		183E76AF2DB60D26002AD81D /* Code39 in Frameworks */ = {isa = PBXBuildFile; productRef = 183E76AE2DB60D26002AD81D /* Code39 */; };
 		184BADB32CFAB273001811DB /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 184BADB22CFAB273001811DB /* Reachability */; };
 		184BADB52CFAB403001811DB /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 184BADB42CFAB403001811DB /* Reachability */; };
 		185C49572CF6DD8400589C39 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 185C49562CF6DD8400589C39 /* WidgetKit.framework */; };
@@ -15,6 +16,9 @@
 		185C49662CF6DD8600589C39 /* CoursesWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 185C49542CF6DD8400589C39 /* CoursesWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		188D2E7F2CF81E4F005E1B52 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 188D2E7E2CF81E4F005E1B52 /* KeychainSwift */; };
 		189DD2CF2D5C516F009AF8E7 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 189DD2CE2D5C516F009AF8E7 /* Lottie */; };
+		18E8F2142DB5CC3E00B2FB57 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 185C49562CF6DD8400589C39 /* WidgetKit.framework */; };
+		18E8F2152DB5CC3E00B2FB57 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 185C49582CF6DD8400589C39 /* SwiftUI.framework */; };
+		18E8F2202DB5CC4000B2FB57 /* StdIDExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 18E8F2132DB5CC3E00B2FB57 /* StdIDExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		18F5FBF82D2E706100D3212C /* Code39 in Frameworks */ = {isa = PBXBuildFile; productRef = 18F5FBF72D2E706100D3212C /* Code39 */; };
 /* End PBXBuildFile section */
 
@@ -40,6 +44,13 @@
 			remoteGlobalIDString = 18B368182CE5FA110027FEBE;
 			remoteInfo = campuspass_ios;
 		};
+		18E8F21E2DB5CC4000B2FB57 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 18B368112CE5FA110027FEBE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 18E8F2122DB5CC3E00B2FB57;
+			remoteInfo = StdIDExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -50,6 +61,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				185C49662CF6DD8600589C39 /* CoursesWidgetExtension.appex in Embed Foundation Extensions */,
+				18E8F2202DB5CC4000B2FB57 /* StdIDExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -64,6 +76,8 @@
 		18B368192CE5FA110027FEBE /* dauphin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dauphin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18B3682A2CE5FA130027FEBE /* dauphinTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = dauphinTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		18B368342CE5FA130027FEBE /* dauphinUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = dauphinUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		18E561052DB75E4A001DF39A /* StdIDExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StdIDExtension.entitlements; sourceTree = "<group>"; };
+		18E8F2132DB5CC3E00B2FB57 /* StdIDExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = StdIDExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -93,6 +107,20 @@
 			);
 			target = 185C49532CF6DD8400589C39 /* CoursesWidgetExtension */;
 		};
+		18E8F2242DB5CC4000B2FB57 /* Exceptions for "StdID" folder in "StdIDExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 18E8F2122DB5CC3E00B2FB57 /* StdIDExtension */;
+		};
+		18E8F2262DB6069800B2FB57 /* Exceptions for "dauphin" folder in "StdIDExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Utilities/Constants.swift,
+			);
+			target = 18E8F2122DB5CC3E00B2FB57 /* StdIDExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -109,8 +137,17 @@
 			exceptions = (
 				182948842CEA34D200D0F31C /* Exceptions for "dauphin" folder in "dauphin" target */,
 				185C496E2CF6E97D00589C39 /* Exceptions for "dauphin" folder in "CoursesWidgetExtension" target */,
+				18E8F2262DB6069800B2FB57 /* Exceptions for "dauphin" folder in "StdIDExtension" target */,
 			);
 			path = dauphin;
+			sourceTree = "<group>";
+		};
+		18E8F2162DB5CC3E00B2FB57 /* StdID */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				18E8F2242DB5CC4000B2FB57 /* Exceptions for "StdID" folder in "StdIDExtension" target */,
+			);
+			path = StdID;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -152,6 +189,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		18E8F2102DB5CC3E00B2FB57 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				183E76AF2DB60D26002AD81D /* Code39 in Frameworks */,
+				18E8F2152DB5CC3E00B2FB57 /* SwiftUI.framework in Frameworks */,
+				18E8F2142DB5CC3E00B2FB57 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -167,9 +214,11 @@
 		18B368102CE5FA110027FEBE = {
 			isa = PBXGroup;
 			children = (
+				18E561052DB75E4A001DF39A /* StdIDExtension.entitlements */,
 				185C496C2CF6DDD900589C39 /* CoursesWidgetExtension.entitlements */,
 				18B3681B2CE5FA110027FEBE /* dauphin */,
 				185C495A2CF6DD8400589C39 /* CoursesWidget */,
+				18E8F2162DB5CC3E00B2FB57 /* StdID */,
 				185C49552CF6DD8400589C39 /* Frameworks */,
 				18B3681A2CE5FA110027FEBE /* Products */,
 			);
@@ -182,6 +231,7 @@
 				18B3682A2CE5FA130027FEBE /* dauphinTests.xctest */,
 				18B368342CE5FA130027FEBE /* dauphinUITests.xctest */,
 				185C49542CF6DD8400589C39 /* CoursesWidgetExtension.appex */,
+				18E8F2132DB5CC3E00B2FB57 /* StdIDExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -226,6 +276,7 @@
 			);
 			dependencies = (
 				185C49652CF6DD8600589C39 /* PBXTargetDependency */,
+				18E8F21F2DB5CC4000B2FB57 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				18B3681B2CE5FA110027FEBE /* dauphin */,
@@ -281,6 +332,29 @@
 			productReference = 18B368342CE5FA130027FEBE /* dauphinUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		18E8F2122DB5CC3E00B2FB57 /* StdIDExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 18E8F2232DB5CC4000B2FB57 /* Build configuration list for PBXNativeTarget "StdIDExtension" */;
+			buildPhases = (
+				18E8F20F2DB5CC3E00B2FB57 /* Sources */,
+				18E8F2102DB5CC3E00B2FB57 /* Frameworks */,
+				18E8F2112DB5CC3E00B2FB57 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				18E8F2162DB5CC3E00B2FB57 /* StdID */,
+			);
+			name = StdIDExtension;
+			packageProductDependencies = (
+				183E76AE2DB60D26002AD81D /* Code39 */,
+			);
+			productName = StdIDExtension;
+			productReference = 18E8F2132DB5CC3E00B2FB57 /* StdIDExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -291,7 +365,7 @@
 				KnownAssetTags = (
 					APIKeys,
 				);
-				LastSwiftUpdateCheck = 1610;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					185C49532CF6DD8400589C39 = {
@@ -308,9 +382,12 @@
 						CreatedOnToolsVersion = 16.1;
 						TestTargetID = 18B368182CE5FA110027FEBE;
 					};
+					18E8F2122DB5CC3E00B2FB57 = {
+						CreatedOnToolsVersion = 16.2;
+					};
 				};
 			};
-			buildConfigurationList = 18B368142CE5FA110027FEBE /* Build configuration list for PBXProject "Dauphin" */;
+			buildConfigurationList = 18B368142CE5FA110027FEBE /* Build configuration list for PBXProject "dauphin" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -335,6 +412,7 @@
 				18B368292CE5FA130027FEBE /* dauphinTests */,
 				18B368332CE5FA130027FEBE /* dauphinUITests */,
 				185C49532CF6DD8400589C39 /* CoursesWidgetExtension */,
+				18E8F2122DB5CC3E00B2FB57 /* StdIDExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -362,6 +440,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		18B368322CE5FA130027FEBE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		18E8F2112DB5CC3E00B2FB57 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -399,6 +484,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		18E8F20F2DB5CC3E00B2FB57 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -416,6 +508,11 @@
 			isa = PBXTargetDependency;
 			target = 18B368182CE5FA110027FEBE /* dauphin */;
 			targetProxy = 18B368352CE5FA130027FEBE /* PBXContainerItemProxy */;
+		};
+		18E8F21F2DB5CC4000B2FB57 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 18E8F2122DB5CC3E00B2FB57 /* StdIDExtension */;
+			targetProxy = 18E8F21E2DB5CC4000B2FB57 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -439,7 +536,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -473,7 +570,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -797,6 +894,67 @@
 			};
 			name = Release;
 		};
+		18E8F2212DB5CC4000B2FB57 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = StdIDExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J7DG8X424B;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StdID/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = StdID;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.3;
+				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.StdID;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		18E8F2222DB5CC4000B2FB57 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = StdIDExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J7DG8X424B;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StdID/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = StdID;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.3;
+				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.StdID;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -809,7 +967,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		18B368142CE5FA110027FEBE /* Build configuration list for PBXProject "Dauphin" */ = {
+		18B368142CE5FA110027FEBE /* Build configuration list for PBXProject "dauphin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				18B3683C2CE5FA130027FEBE /* Debug */,
@@ -841,6 +999,15 @@
 			buildConfigurations = (
 				18B368452CE5FA130027FEBE /* Debug */,
 				18B368462CE5FA130027FEBE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		18E8F2232DB5CC4000B2FB57 /* Build configuration list for PBXNativeTarget "StdIDExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18E8F2212DB5CC4000B2FB57 /* Debug */,
+				18E8F2222DB5CC4000B2FB57 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -887,6 +1054,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1826CDA42CF446E100471CA4 /* XCRemoteSwiftPackageReference "keychain-swift" */;
 			productName = KeychainSwift;
+		};
+		183E76AE2DB60D26002AD81D /* Code39 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18F5FBF62D2E6FD900D3212C /* XCRemoteSwiftPackageReference "swiftui-code39" */;
+			productName = Code39;
 		};
 		184BADB22CFAB273001811DB /* Reachability */ = {
 			isa = XCSwiftPackageProductDependency;
