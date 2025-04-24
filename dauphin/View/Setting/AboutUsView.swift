@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AboutUsView: View {
     // Example data – update these values with your app's info
-    let appVersion = "1.0.2"
+    let appVersion = "1.1.3"
     let packages = [
         ("KeychainSwift", "https://github.com/evgenyneu/keychain-swift"),
         ("Lottie", "https://github.com/airbnb/lottie-ios"),
