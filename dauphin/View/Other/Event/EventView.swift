@@ -44,7 +44,6 @@ struct EventView: View {
                 }
             }.padding(2)
         }
-        .navigationTitle("Calendar")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
