@@ -95,13 +95,8 @@
 
 /* Begin PBXFileReference section */
 		1857DAF22E001FA0008EFC8E /* dauphin Beta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dauphin Beta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1857DAF42E001FA0008EFC8E /* dauphin copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "dauphin copy-Info.plist"; path = "/Users/bochain/Developer/dauphin/dauphin copy-Info.plist"; sourceTree = "<absolute>"; };
-		1857DB292E00267A008EFC8E /* StdIDExtension copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "StdIDExtension copy-Info.plist"; path = "/Users/bochain/Developer/dauphin/StdIDExtension copy-Info.plist"; sourceTree = "<absolute>"; };
 		1857DB392E0026AC008EFC8E /* CoursesWidgetExtension Beta.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "CoursesWidgetExtension Beta.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1857DB3B2E0026AC008EFC8E /* CoursesWidgetExtension copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "CoursesWidgetExtension copy-Info.plist"; path = "/Users/bochain/Developer/dauphin/CoursesWidgetExtension copy-Info.plist"; sourceTree = "<absolute>"; };
 		1857DB482E0026D9008EFC8E /* StdIDExtension Beta.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "StdIDExtension Beta.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1857DB4A2E0026D9008EFC8E /* StdIDExtension copy2-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "StdIDExtension copy2-Info.plist"; path = "/Users/bochain/Developer/dauphin/StdIDExtension copy2-Info.plist"; sourceTree = "<absolute>"; };
-		1857F7692DB7643F00950818 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.2.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
 		185C49542CF6DD8400589C39 /* CoursesWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CoursesWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		185C49562CF6DD8400589C39 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		185C49582CF6DD8400589C39 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -303,7 +298,6 @@
 		185C49552CF6DD8400589C39 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1857F7692DB7643F00950818 /* SwiftUI.framework */,
 				185C49562CF6DD8400589C39 /* WidgetKit.framework */,
 				185C49582CF6DD8400589C39 /* SwiftUI.framework */,
 			);
@@ -319,10 +313,6 @@
 				185C495A2CF6DD8400589C39 /* CoursesWidget */,
 				18E8F2162DB5CC3E00B2FB57 /* StdID */,
 				185C49552CF6DD8400589C39 /* Frameworks */,
-				1857DAF42E001FA0008EFC8E /* dauphin copy-Info.plist */,
-				1857DB292E00267A008EFC8E /* StdIDExtension copy-Info.plist */,
-				1857DB3B2E0026AC008EFC8E /* CoursesWidgetExtension copy-Info.plist */,
-				1857DB4A2E0026D9008EFC8E /* StdIDExtension copy2-Info.plist */,
 				18B3681A2CE5FA110027FEBE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -678,7 +668,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "dauphin copy-Info.plist";
+				INFOPLIST_FILE = dauphin/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Dauphin Beta";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Request calendar access to add event";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "We need to unlock your data";
@@ -725,7 +715,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "dauphin copy-Info.plist";
+				INFOPLIST_FILE = dauphin/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Dauphin Beta";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Request calendar access to add event";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "We need to unlock your data";
@@ -768,7 +758,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = J7DG8X424B;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "CoursesWidgetExtension copy-Info.plist";
+				INFOPLIST_FILE = CoursesWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = CoursesWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
@@ -802,7 +792,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = J7DG8X424B;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "CoursesWidgetExtension copy-Info.plist";
+				INFOPLIST_FILE = CoursesWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = CoursesWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
@@ -837,7 +827,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = J7DG8X424B;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "StdIDExtension copy2-Info.plist";
+				INFOPLIST_FILE = StdID/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = StdID;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 17;
@@ -867,7 +857,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = J7DG8X424B;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "StdIDExtension copy2-Info.plist";
+				INFOPLIST_FILE = StdID/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = StdID;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 17;
