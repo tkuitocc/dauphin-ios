@@ -10,7 +10,19 @@
 		1826CDA82CF4477F00471CA4 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1826CDA72CF4477F00471CA4 /* KeychainSwift */; };
 		184BADB32CFAB273001811DB /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 184BADB22CFAB273001811DB /* Reachability */; };
 		184BADB52CFAB403001811DB /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 184BADB42CFAB403001811DB /* Reachability */; };
-		1857F76A2DB7643F00950818 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1857F7692DB7643F00950818 /* SwiftUI.framework */; };
+		1857DAE72E001FA0008EFC8E /* Code39 in Frameworks */ = {isa = PBXBuildFile; productRef = 1857DAE12E001FA0008EFC8E /* Code39 */; };
+		1857DAE82E001FA0008EFC8E /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1857DADD2E001FA0008EFC8E /* KeychainSwift */; };
+		1857DAE92E001FA0008EFC8E /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 1857DADF2E001FA0008EFC8E /* Reachability */; };
+		1857DAEA2E001FA0008EFC8E /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 1857DAE32E001FA0008EFC8E /* Lottie */; };
+		1857DB312E0026AC008EFC8E /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1857DB2B2E0026AC008EFC8E /* KeychainSwift */; };
+		1857DB322E0026AC008EFC8E /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 1857DB2D2E0026AC008EFC8E /* Reachability */; };
+		1857DB332E0026AC008EFC8E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 185C49582CF6DD8400589C39 /* SwiftUI.framework */; };
+		1857DB342E0026AC008EFC8E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 185C49562CF6DD8400589C39 /* WidgetKit.framework */; };
+		1857DB412E0026D9008EFC8E /* Code39 in Frameworks */ = {isa = PBXBuildFile; productRef = 1857DB3D2E0026D9008EFC8E /* Code39 */; };
+		1857DB422E0026D9008EFC8E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 185C49582CF6DD8400589C39 /* SwiftUI.framework */; };
+		1857DB432E0026D9008EFC8E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 185C49562CF6DD8400589C39 /* WidgetKit.framework */; };
+		1857DB5A2E002869008EFC8E /* StdIDExtension Beta.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1857DB482E0026D9008EFC8E /* StdIDExtension Beta.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1857DB5D2E00286E008EFC8E /* CoursesWidgetExtension Beta.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1857DB392E0026AC008EFC8E /* CoursesWidgetExtension Beta.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		185C49572CF6DD8400589C39 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 185C49562CF6DD8400589C39 /* WidgetKit.framework */; };
 		185C49592CF6DD8400589C39 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 185C49582CF6DD8400589C39 /* SwiftUI.framework */; };
 		185C49662CF6DD8600589C39 /* CoursesWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 185C49542CF6DD8400589C39 /* CoursesWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -24,26 +36,26 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1857DB5B2E002869008EFC8E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 18B368112CE5FA110027FEBE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1857DB3C2E0026D9008EFC8E;
+			remoteInfo = "StdIDExtension Beta";
+		};
+		1857DB5E2E00286E008EFC8E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 18B368112CE5FA110027FEBE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1857DB2A2E0026AC008EFC8E;
+			remoteInfo = "CoursesWidgetExtension Beta";
+		};
 		185C49642CF6DD8600589C39 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 18B368112CE5FA110027FEBE /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 185C49532CF6DD8400589C39;
 			remoteInfo = CoursesWidgetExtension;
-		};
-		18B3682B2CE5FA130027FEBE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 18B368112CE5FA110027FEBE /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 18B368182CE5FA110027FEBE;
-			remoteInfo = campuspass_ios;
-		};
-		18B368352CE5FA130027FEBE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 18B368112CE5FA110027FEBE /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 18B368182CE5FA110027FEBE;
-			remoteInfo = campuspass_ios;
 		};
 		18E8F21E2DB5CC4000B2FB57 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -55,6 +67,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		1857DAEC2E001FA0008EFC8E /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				1857DB5A2E002869008EFC8E /* StdIDExtension Beta.appex in Embed Foundation Extensions */,
+				1857DB5D2E00286E008EFC8E /* CoursesWidgetExtension Beta.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		185C49672CF6DD8600589C39 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -70,14 +94,19 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1857DAF22E001FA0008EFC8E /* dauphin Beta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dauphin Beta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1857DAF42E001FA0008EFC8E /* dauphin copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "dauphin copy-Info.plist"; path = "/Users/bochain/Developer/dauphin/dauphin copy-Info.plist"; sourceTree = "<absolute>"; };
+		1857DB292E00267A008EFC8E /* StdIDExtension copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "StdIDExtension copy-Info.plist"; path = "/Users/bochain/Developer/dauphin/StdIDExtension copy-Info.plist"; sourceTree = "<absolute>"; };
+		1857DB392E0026AC008EFC8E /* CoursesWidgetExtension Beta.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "CoursesWidgetExtension Beta.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1857DB3B2E0026AC008EFC8E /* CoursesWidgetExtension copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "CoursesWidgetExtension copy-Info.plist"; path = "/Users/bochain/Developer/dauphin/CoursesWidgetExtension copy-Info.plist"; sourceTree = "<absolute>"; };
+		1857DB482E0026D9008EFC8E /* StdIDExtension Beta.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "StdIDExtension Beta.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1857DB4A2E0026D9008EFC8E /* StdIDExtension copy2-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "StdIDExtension copy2-Info.plist"; path = "/Users/bochain/Developer/dauphin/StdIDExtension copy2-Info.plist"; sourceTree = "<absolute>"; };
 		1857F7692DB7643F00950818 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.2.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
 		185C49542CF6DD8400589C39 /* CoursesWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CoursesWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		185C49562CF6DD8400589C39 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		185C49582CF6DD8400589C39 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		185C496C2CF6DDD900589C39 /* CoursesWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CoursesWidgetExtension.entitlements; sourceTree = "<group>"; };
 		18B368192CE5FA110027FEBE /* dauphin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dauphin.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		18B3682A2CE5FA130027FEBE /* dauphinTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = dauphinTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		18B368342CE5FA130027FEBE /* dauphinUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = dauphinUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		18E561052DB75E4A001DF39A /* StdIDExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StdIDExtension.entitlements; sourceTree = "<group>"; };
 		18E8F2132DB5CC3E00B2FB57 /* StdIDExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = StdIDExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -89,6 +118,50 @@
 				Info.plist,
 			);
 			target = 18B368182CE5FA110027FEBE /* dauphin */;
+		};
+		1857DAF32E001FA0008EFC8E /* Exceptions for "dauphin" folder in "dauphin Beta" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				api.example.plist,
+				Assets.xcassets,
+				Info.plist,
+				"Preview Content/Preview Assets.xcassets",
+			);
+			target = 1857DAD82E001FA0008EFC8E /* dauphin Beta */;
+		};
+		1857DB3A2E0026AC008EFC8E /* Exceptions for "CoursesWidget" folder in "CoursesWidgetExtension Beta" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 1857DB2A2E0026AC008EFC8E /* CoursesWidgetExtension Beta */;
+		};
+		1857DB492E0026D9008EFC8E /* Exceptions for "StdID" folder in "StdIDExtension Beta" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+				Info.plist,
+			);
+			target = 1857DB3C2E0026D9008EFC8E /* StdIDExtension Beta */;
+		};
+		1857DB522E00273E008EFC8E /* Exceptions for "dauphin" folder in "CoursesWidgetExtension Beta" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Models/Course.swift,
+				Utilities/Constants.swift,
+				Utilities/CourseData.swift,
+				Utilities/Encrypto.swift,
+				Utilities/KeychainManager.swift,
+				ViewModels/CourseViewModel.swift,
+			);
+			target = 1857DB2A2E0026AC008EFC8E /* CoursesWidgetExtension Beta */;
+		};
+		1857DB562E002754008EFC8E /* Exceptions for "dauphin" folder in "StdIDExtension Beta" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Utilities/Constants.swift,
+			);
+			target = 1857DB3C2E0026D9008EFC8E /* StdIDExtension Beta */;
 		};
 		185C496B2CF6DD8600589C39 /* Exceptions for "CoursesWidget" folder in "CoursesWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -130,6 +203,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				185C496B2CF6DD8600589C39 /* Exceptions for "CoursesWidget" folder in "CoursesWidgetExtension" target */,
+				1857DB3A2E0026AC008EFC8E /* Exceptions for "CoursesWidget" folder in "CoursesWidgetExtension Beta" target */,
 			);
 			path = CoursesWidget;
 			sourceTree = "<group>";
@@ -140,6 +214,9 @@
 				182948842CEA34D200D0F31C /* Exceptions for "dauphin" folder in "dauphin" target */,
 				185C496E2CF6E97D00589C39 /* Exceptions for "dauphin" folder in "CoursesWidgetExtension" target */,
 				18E8F2262DB6069800B2FB57 /* Exceptions for "dauphin" folder in "StdIDExtension" target */,
+				1857DAF32E001FA0008EFC8E /* Exceptions for "dauphin" folder in "dauphin Beta" target */,
+				1857DB522E00273E008EFC8E /* Exceptions for "dauphin" folder in "CoursesWidgetExtension Beta" target */,
+				1857DB562E002754008EFC8E /* Exceptions for "dauphin" folder in "StdIDExtension Beta" target */,
 			);
 			path = dauphin;
 			sourceTree = "<group>";
@@ -148,6 +225,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				18E8F2242DB5CC4000B2FB57 /* Exceptions for "StdID" folder in "StdIDExtension" target */,
+				1857DB492E0026D9008EFC8E /* Exceptions for "StdID" folder in "StdIDExtension Beta" target */,
 			);
 			path = StdID;
 			sourceTree = "<group>";
@@ -155,6 +233,38 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1857DAE62E001FA0008EFC8E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1857DAE72E001FA0008EFC8E /* Code39 in Frameworks */,
+				1857DAE82E001FA0008EFC8E /* KeychainSwift in Frameworks */,
+				1857DAE92E001FA0008EFC8E /* Reachability in Frameworks */,
+				1857DAEA2E001FA0008EFC8E /* Lottie in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1857DB302E0026AC008EFC8E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1857DB312E0026AC008EFC8E /* KeychainSwift in Frameworks */,
+				1857DB322E0026AC008EFC8E /* Reachability in Frameworks */,
+				1857DB332E0026AC008EFC8E /* SwiftUI.framework in Frameworks */,
+				1857DB342E0026AC008EFC8E /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1857DB402E0026D9008EFC8E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1857DB412E0026D9008EFC8E /* Code39 in Frameworks */,
+				1857DB422E0026D9008EFC8E /* SwiftUI.framework in Frameworks */,
+				1857DB432E0026D9008EFC8E /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		185C49512CF6DD8400589C39 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -174,21 +284,6 @@
 				1826CDA82CF4477F00471CA4 /* KeychainSwift in Frameworks */,
 				184BADB32CFAB273001811DB /* Reachability in Frameworks */,
 				189DD2CF2D5C516F009AF8E7 /* Lottie in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		18B368272CE5FA130027FEBE /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1857F76A2DB7643F00950818 /* SwiftUI.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		18B368312CE5FA130027FEBE /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,6 +319,10 @@
 				185C495A2CF6DD8400589C39 /* CoursesWidget */,
 				18E8F2162DB5CC3E00B2FB57 /* StdID */,
 				185C49552CF6DD8400589C39 /* Frameworks */,
+				1857DAF42E001FA0008EFC8E /* dauphin copy-Info.plist */,
+				1857DB292E00267A008EFC8E /* StdIDExtension copy-Info.plist */,
+				1857DB3B2E0026AC008EFC8E /* CoursesWidgetExtension copy-Info.plist */,
+				1857DB4A2E0026D9008EFC8E /* StdIDExtension copy2-Info.plist */,
 				18B3681A2CE5FA110027FEBE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -232,10 +331,11 @@
 			isa = PBXGroup;
 			children = (
 				18B368192CE5FA110027FEBE /* dauphin.app */,
-				18B3682A2CE5FA130027FEBE /* dauphinTests.xctest */,
-				18B368342CE5FA130027FEBE /* dauphinUITests.xctest */,
 				185C49542CF6DD8400589C39 /* CoursesWidgetExtension.appex */,
 				18E8F2132DB5CC3E00B2FB57 /* StdIDExtension.appex */,
+				1857DAF22E001FA0008EFC8E /* dauphin Beta.app */,
+				1857DB392E0026AC008EFC8E /* CoursesWidgetExtension Beta.appex */,
+				1857DB482E0026D9008EFC8E /* StdIDExtension Beta.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -243,6 +343,82 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1857DAD82E001FA0008EFC8E /* dauphin Beta */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1857DAEF2E001FA0008EFC8E /* Build configuration list for PBXNativeTarget "dauphin Beta" */;
+			buildPhases = (
+				1857DAE52E001FA0008EFC8E /* Sources */,
+				1857DAE62E001FA0008EFC8E /* Frameworks */,
+				1857DAEB2E001FA0008EFC8E /* Resources */,
+				1857DAEC2E001FA0008EFC8E /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1857DB5C2E002869008EFC8E /* PBXTargetDependency */,
+				1857DB5F2E00286E008EFC8E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				18B3681B2CE5FA110027FEBE /* dauphin */,
+			);
+			name = "dauphin Beta";
+			packageProductDependencies = (
+				1857DADD2E001FA0008EFC8E /* KeychainSwift */,
+				1857DADF2E001FA0008EFC8E /* Reachability */,
+				1857DAE12E001FA0008EFC8E /* Code39 */,
+				1857DAE32E001FA0008EFC8E /* Lottie */,
+			);
+			productName = campuspass_ios;
+			productReference = 1857DAF22E001FA0008EFC8E /* dauphin Beta.app */;
+			productType = "com.apple.product-type.application";
+		};
+		1857DB2A2E0026AC008EFC8E /* CoursesWidgetExtension Beta */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1857DB362E0026AC008EFC8E /* Build configuration list for PBXNativeTarget "CoursesWidgetExtension Beta" */;
+			buildPhases = (
+				1857DB2F2E0026AC008EFC8E /* Sources */,
+				1857DB302E0026AC008EFC8E /* Frameworks */,
+				1857DB352E0026AC008EFC8E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				185C495A2CF6DD8400589C39 /* CoursesWidget */,
+			);
+			name = "CoursesWidgetExtension Beta";
+			packageProductDependencies = (
+				1857DB2B2E0026AC008EFC8E /* KeychainSwift */,
+				1857DB2D2E0026AC008EFC8E /* Reachability */,
+			);
+			productName = CoursesWidgetExtension;
+			productReference = 1857DB392E0026AC008EFC8E /* CoursesWidgetExtension Beta.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		1857DB3C2E0026D9008EFC8E /* StdIDExtension Beta */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1857DB452E0026D9008EFC8E /* Build configuration list for PBXNativeTarget "StdIDExtension Beta" */;
+			buildPhases = (
+				1857DB3F2E0026D9008EFC8E /* Sources */,
+				1857DB402E0026D9008EFC8E /* Frameworks */,
+				1857DB442E0026D9008EFC8E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				18E8F2162DB5CC3E00B2FB57 /* StdID */,
+			);
+			name = "StdIDExtension Beta";
+			packageProductDependencies = (
+				1857DB3D2E0026D9008EFC8E /* Code39 */,
+			);
+			productName = StdIDExtension;
+			productReference = 1857DB482E0026D9008EFC8E /* StdIDExtension Beta.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		185C49532CF6DD8400589C39 /* CoursesWidgetExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 185C496A2CF6DD8600589C39 /* Build configuration list for PBXNativeTarget "CoursesWidgetExtension" */;
@@ -296,46 +472,6 @@
 			productReference = 18B368192CE5FA110027FEBE /* dauphin.app */;
 			productType = "com.apple.product-type.application";
 		};
-		18B368292CE5FA130027FEBE /* dauphinTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 18B368412CE5FA130027FEBE /* Build configuration list for PBXNativeTarget "dauphinTests" */;
-			buildPhases = (
-				18B368262CE5FA130027FEBE /* Sources */,
-				18B368272CE5FA130027FEBE /* Frameworks */,
-				18B368282CE5FA130027FEBE /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				18B3682C2CE5FA130027FEBE /* PBXTargetDependency */,
-			);
-			name = dauphinTests;
-			packageProductDependencies = (
-			);
-			productName = campuspass_iosTests;
-			productReference = 18B3682A2CE5FA130027FEBE /* dauphinTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		18B368332CE5FA130027FEBE /* dauphinUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 18B368442CE5FA130027FEBE /* Build configuration list for PBXNativeTarget "dauphinUITests" */;
-			buildPhases = (
-				18B368302CE5FA130027FEBE /* Sources */,
-				18B368312CE5FA130027FEBE /* Frameworks */,
-				18B368322CE5FA130027FEBE /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				18B368362CE5FA130027FEBE /* PBXTargetDependency */,
-			);
-			name = dauphinUITests;
-			packageProductDependencies = (
-			);
-			productName = campuspass_iosUITests;
-			productReference = 18B368342CE5FA130027FEBE /* dauphinUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 		18E8F2122DB5CC3E00B2FB57 /* StdIDExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 18E8F2232DB5CC4000B2FB57 /* Build configuration list for PBXNativeTarget "StdIDExtension" */;
@@ -378,14 +514,6 @@
 					18B368182CE5FA110027FEBE = {
 						CreatedOnToolsVersion = 16.1;
 					};
-					18B368292CE5FA130027FEBE = {
-						CreatedOnToolsVersion = 16.1;
-						TestTargetID = 18B368182CE5FA110027FEBE;
-					};
-					18B368332CE5FA130027FEBE = {
-						CreatedOnToolsVersion = 16.1;
-						TestTargetID = 18B368182CE5FA110027FEBE;
-					};
 					18E8F2122DB5CC3E00B2FB57 = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -413,15 +541,37 @@
 			projectRoot = "";
 			targets = (
 				18B368182CE5FA110027FEBE /* dauphin */,
-				18B368292CE5FA130027FEBE /* dauphinTests */,
-				18B368332CE5FA130027FEBE /* dauphinUITests */,
 				185C49532CF6DD8400589C39 /* CoursesWidgetExtension */,
 				18E8F2122DB5CC3E00B2FB57 /* StdIDExtension */,
+				1857DAD82E001FA0008EFC8E /* dauphin Beta */,
+				1857DB2A2E0026AC008EFC8E /* CoursesWidgetExtension Beta */,
+				1857DB3C2E0026D9008EFC8E /* StdIDExtension Beta */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1857DAEB2E001FA0008EFC8E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1857DB352E0026AC008EFC8E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1857DB442E0026D9008EFC8E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		185C49522CF6DD8400589C39 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -430,20 +580,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		18B368172CE5FA110027FEBE /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		18B368282CE5FA130027FEBE /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		18B368322CE5FA130027FEBE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -460,6 +596,27 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1857DAE52E001FA0008EFC8E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1857DB2F2E0026AC008EFC8E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1857DB3F2E0026D9008EFC8E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		185C49502CF6DD8400589C39 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -468,20 +625,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		18B368152CE5FA110027FEBE /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		18B368262CE5FA130027FEBE /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		18B368302CE5FA130027FEBE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -498,20 +641,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1857DB5C2E002869008EFC8E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1857DB3C2E0026D9008EFC8E /* StdIDExtension Beta */;
+			targetProxy = 1857DB5B2E002869008EFC8E /* PBXContainerItemProxy */;
+		};
+		1857DB5F2E00286E008EFC8E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1857DB2A2E0026AC008EFC8E /* CoursesWidgetExtension Beta */;
+			targetProxy = 1857DB5E2E00286E008EFC8E /* PBXContainerItemProxy */;
+		};
 		185C49652CF6DD8600589C39 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 185C49532CF6DD8400589C39 /* CoursesWidgetExtension */;
 			targetProxy = 185C49642CF6DD8600589C39 /* PBXContainerItemProxy */;
-		};
-		18B3682C2CE5FA130027FEBE /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 18B368182CE5FA110027FEBE /* dauphin */;
-			targetProxy = 18B3682B2CE5FA130027FEBE /* PBXContainerItemProxy */;
-		};
-		18B368362CE5FA130027FEBE /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 18B368182CE5FA110027FEBE /* dauphin */;
-			targetProxy = 18B368352CE5FA130027FEBE /* PBXContainerItemProxy */;
 		};
 		18E8F21F2DB5CC4000B2FB57 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -521,6 +664,230 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		1857DAF02E001FA0008EFC8E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = dauphin/dauphin.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"dauphin/Preview Content\"";
+				DEVELOPMENT_TEAM = J7DG8X424B;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "dauphin copy-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Dauphin Beta";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Request calendar access to add event";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "We need to unlock your data";
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 15.1;
+				MARKETING_VERSION = 1.1.3;
+				NEW_SETTING = "";
+				NEW_SETTING1 = "";
+				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.dev;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				XROS_DEPLOYMENT_TARGET = 2.1;
+			};
+			name = Debug;
+		};
+		1857DAF12E001FA0008EFC8E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = dauphin/dauphin.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"dauphin/Preview Content\"";
+				DEVELOPMENT_TEAM = J7DG8X424B;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "dauphin copy-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Dauphin Beta";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Request calendar access to add event";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "We need to unlock your data";
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 15.1;
+				MARKETING_VERSION = 1.1.3;
+				NEW_SETTING = "";
+				NEW_SETTING1 = "";
+				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.dev;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				XROS_DEPLOYMENT_TARGET = 2.1;
+			};
+			name = Release;
+		};
+		1857DB372E0026AC008EFC8E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = CoursesWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J7DG8X424B;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CoursesWidgetExtension copy-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = CoursesWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.3;
+				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.dev.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1857DB382E0026AC008EFC8E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = CoursesWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J7DG8X424B;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CoursesWidgetExtension copy-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = CoursesWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.3;
+				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.dev.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1857DB462E0026D9008EFC8E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = StdIDExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J7DG8X424B;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "StdIDExtension copy2-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = StdID;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.1.3;
+				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.dev.StdID;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1857DB472E0026D9008EFC8E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = StdIDExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J7DG8X424B;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "StdIDExtension copy2-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = StdID;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.1.3;
+				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.dev.StdID;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		185C49682CF6DD8600589C39 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -804,100 +1171,6 @@
 			};
 			name = Release;
 		};
-		18B368422CE5FA130027FEBE /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = J7DG8X424B;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
-				MACOSX_DEPLOYMENT_TARGET = 15.1;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "cantpr09ram.campuspass-iosTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/dauphin.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/dauphin";
-				XROS_DEPLOYMENT_TARGET = 2.1;
-			};
-			name = Debug;
-		};
-		18B368432CE5FA130027FEBE /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = J7DG8X424B;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
-				MACOSX_DEPLOYMENT_TARGET = 15.1;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "cantpr09ram.campuspass-iosTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/dauphin.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/dauphin";
-				XROS_DEPLOYMENT_TARGET = 2.1;
-			};
-			name = Release;
-		};
-		18B368452CE5FA130027FEBE /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = J7DG8X424B;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
-				MACOSX_DEPLOYMENT_TARGET = 15.1;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "cantpr09ram.campuspass-iosUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_TARGET_NAME = campuspass_ios;
-				XROS_DEPLOYMENT_TARGET = 2.1;
-			};
-			name = Debug;
-		};
-		18B368462CE5FA130027FEBE /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = J7DG8X424B;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
-				MACOSX_DEPLOYMENT_TARGET = 15.1;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "cantpr09ram.campuspass-iosUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_TARGET_NAME = campuspass_ios;
-				XROS_DEPLOYMENT_TARGET = 2.1;
-			};
-			name = Release;
-		};
 		18E8F2212DB5CC4000B2FB57 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -962,6 +1235,33 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1857DAEF2E001FA0008EFC8E /* Build configuration list for PBXNativeTarget "dauphin Beta" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1857DAF02E001FA0008EFC8E /* Debug */,
+				1857DAF12E001FA0008EFC8E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1857DB362E0026AC008EFC8E /* Build configuration list for PBXNativeTarget "CoursesWidgetExtension Beta" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1857DB372E0026AC008EFC8E /* Debug */,
+				1857DB382E0026AC008EFC8E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1857DB452E0026D9008EFC8E /* Build configuration list for PBXNativeTarget "StdIDExtension Beta" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1857DB462E0026D9008EFC8E /* Debug */,
+				1857DB472E0026D9008EFC8E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		185C496A2CF6DD8600589C39 /* Build configuration list for PBXNativeTarget "CoursesWidgetExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -989,24 +1289,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		18B368412CE5FA130027FEBE /* Build configuration list for PBXNativeTarget "dauphinTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				18B368422CE5FA130027FEBE /* Debug */,
-				18B368432CE5FA130027FEBE /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		18B368442CE5FA130027FEBE /* Build configuration list for PBXNativeTarget "dauphinUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				18B368452CE5FA130027FEBE /* Debug */,
-				18B368462CE5FA130027FEBE /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		18E8F2232DB5CC4000B2FB57 /* Build configuration list for PBXNativeTarget "StdIDExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1025,6 +1307,62 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 24.0.0;
+			};
+		};
+		1857DADE2E001FA0008EFC8E /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/evgenyneu/keychain-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 24.0.0;
+			};
+		};
+		1857DAE02E001FA0008EFC8E /* XCRemoteSwiftPackageReference "Reachability" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ashleymills/Reachability.swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		1857DAE22E001FA0008EFC8E /* XCRemoteSwiftPackageReference "swiftui-code39" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jiahan-wu/swiftui-code39.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
+		1857DAE42E001FA0008EFC8E /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.1;
+			};
+		};
+		1857DB2C2E0026AC008EFC8E /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/evgenyneu/keychain-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 24.0.0;
+			};
+		};
+		1857DB2E2E0026AC008EFC8E /* XCRemoteSwiftPackageReference "Reachability" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ashleymills/Reachability.swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		1857DB3E2E0026D9008EFC8E /* XCRemoteSwiftPackageReference "swiftui-code39" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jiahan-wu/swiftui-code39.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
 			};
 		};
 		1869F7D52D4AF0A70033F539 /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
@@ -1068,6 +1406,41 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 18DF0BEB2CFAB056008E2674 /* XCRemoteSwiftPackageReference "Reachability" */;
 			productName = Reachability;
+		};
+		1857DADD2E001FA0008EFC8E /* KeychainSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1857DADE2E001FA0008EFC8E /* XCRemoteSwiftPackageReference "keychain-swift" */;
+			productName = KeychainSwift;
+		};
+		1857DADF2E001FA0008EFC8E /* Reachability */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1857DAE02E001FA0008EFC8E /* XCRemoteSwiftPackageReference "Reachability" */;
+			productName = Reachability;
+		};
+		1857DAE12E001FA0008EFC8E /* Code39 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1857DAE22E001FA0008EFC8E /* XCRemoteSwiftPackageReference "swiftui-code39" */;
+			productName = Code39;
+		};
+		1857DAE32E001FA0008EFC8E /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1857DAE42E001FA0008EFC8E /* XCRemoteSwiftPackageReference "lottie-spm" */;
+			productName = Lottie;
+		};
+		1857DB2B2E0026AC008EFC8E /* KeychainSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1857DB2C2E0026AC008EFC8E /* XCRemoteSwiftPackageReference "keychain-swift" */;
+			productName = KeychainSwift;
+		};
+		1857DB2D2E0026AC008EFC8E /* Reachability */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1857DB2E2E0026AC008EFC8E /* XCRemoteSwiftPackageReference "Reachability" */;
+			productName = Reachability;
+		};
+		1857DB3D2E0026D9008EFC8E /* Code39 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1857DB3E2E0026D9008EFC8E /* XCRemoteSwiftPackageReference "swiftui-code39" */;
+			productName = Code39;
 		};
 		188D2E7E2CF81E4F005E1B52 /* KeychainSwift */ = {
 			isa = XCSwiftPackageProductDependency;
