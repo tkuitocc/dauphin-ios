@@ -9,6 +9,7 @@ class CourseViewModel: ObservableObject {
     @Published var weekCourses: [Course] = []
     @Published var isLoading = false
     @Published var errorMessage: String? = nil
+    @Published var isCacheEmpty = false
 
     private var reachability: Reachability
     private var helper: CustomAES256Helper?
@@ -56,17 +57,28 @@ class CourseViewModel: ObservableObject {
 
         guard let data = appGroupDefaults?.data(forKey: Constants.Courses) else {
             print("❌ No cached data found for key: \(Constants.Courses)")
+            isCacheEmpty = true
             return nil
         }
 
         do {
             let courses = try decoder.decode([Course].self, from: data)
             print("✅ Successfully loaded courses from cache.")
+            isCacheEmpty = courses.isEmpty
             return courses
         } catch {
             print("❌ Failed to decode cached courses: \(error)")
+            isCacheEmpty = true
             return nil
         }
+    }
+
+    func clearCache() {
+        appGroupDefaults?.removeObject(forKey: Constants.Courses)
+        appGroupDefaults?.synchronize()
+        weekCourses = []
+        isCacheEmpty = true
+        errorMessage = "Cache cleared. Please refresh to load courses."
     }
 
     func saveCoursesToCache(courses: [Course]) {
@@ -98,8 +110,10 @@ class CourseViewModel: ObservableObject {
         }
 
         guard reachability.connection != .unavailable else {
-            if let cachedCourses = loadCoursesFromCache() {
+            if let cachedCourses = loadCoursesFromCache(), !cachedCourses.isEmpty {
                 await updateUI(error: "No internet connection. Showing cached data.", courses: cachedCourses)
+            } else {
+                await updateUI(error: "No internet connection and no cached data available.")
             }
             return
         }
@@ -119,6 +133,9 @@ class CourseViewModel: ObservableObject {
                 let courses = parseCourseData(apiData: json)
                 saveCoursesToCache(courses: courses)
                 await updateUI(courses: courses)
+                await MainActor.run {
+                    self.isCacheEmpty = courses.isEmpty
+                }
             } else {
                 throw URLError(.cannotParseResponse)
             }
@@ -138,6 +155,18 @@ class CourseViewModel: ObservableObject {
         return encoded
     }
 
+    // MARK: - Helper function to clean HTML tags
+    private func cleanHTMLTags(from text: String) -> String {
+        return text
+            .replacingOccurrences(of: "<br/>", with: "\n")
+            .replacingOccurrences(of: "<br>", with: "\n")
+            .replacingOccurrences(of: "</br>", with: "\n")
+            .replacingOccurrences(of: "<BR/>", with: "\n")
+            .replacingOccurrences(of: "<BR>", with: "\n")
+            .replacingOccurrences(of: "\\r\\n", with: "\n")
+            .replacingOccurrences(of: "\r\n", with: "\n")
+    }
+
     // MARK: - Parse Course Data
     private func parseCourseData(apiData: [String: Any]) -> [Course] {
         var weekCourses = [Course]()
@@ -155,13 +184,29 @@ class CourseViewModel: ObservableObject {
                 continue
             }
 
-            // let name = (courseData["ch_cos_name"] as? String ?? "Unknown")
-            //    .replacingOccurrences(of: "\\s*\\(.*\\)", with: "", options: .regularExpression)
-            let name = (courseData["ch_cos_name"] as? String ?? "Unknown")
+            // Clean HTML tags from all fields first
+            let rawCourseName = cleanHTMLTags(from: courseData["ch_cos_name"] as? String ?? "Unknown")
+            let noteText = courseData["note"] as? String ?? ""
+            let cleanedNote = cleanHTMLTags(from: noteText)
+                .trimmingCharacters(in: .whitespacesAndNewlines)
 
-            let room = courseData["room"] as? String ?? (courseData["note"] as? String ?? "Unknown Room")
-            let teacher = courseData["teach_name"] as? String ?? "Unknown Teacher"
-            let seatNo = courseData["seat_no"] as? String ?? "Unknown Seat"
+            // STEP 1: Split the course if "name" contains "," - only keep the first part
+            let courseName = rawCourseName.contains(",")
+                ? rawCourseName.components(separatedBy: ",").first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? rawCourseName
+                : rawCourseName
+
+            // Handle multiple rooms, teachers, and seat numbers - also only keep first
+            let room = cleanHTMLTags(from: courseData["room"] as? String ?? "")
+                .components(separatedBy: ",")
+                .first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+            let teacher = cleanHTMLTags(from: courseData["teach_name"] as? String ?? "Unknown Teacher")
+                .components(separatedBy: ",")
+                .first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "Unknown Teacher"
+
+            let seatNo = cleanHTMLTags(from: courseData["seat_no"] as? String ?? "Unknown Seat")
+                .components(separatedBy: ",")
+                .first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "Unknown Seat"
 
             guard let timeSessions = courseData["timePlase"] as? [String: Any],
                   let sesses = timeSessions["sesses"] as? [String],
@@ -171,28 +216,97 @@ class CourseViewModel: ObservableObject {
                   let lastSessionInt = Int(lastSession),
                   let start = sessionToStartTime(session: firstSessionInt),
                   let end = sessionToEndTime(session: lastSessionInt) else {
-                print("❌ Invalid or missing time information for course: \(name)")
+                print("❌ Invalid or missing time information for course data.")
                 continue
             }
 
             let time = sesses.joined(separator: ", ")
 
+            // Handle empty room
+            let finalRoom = (room.isEmpty || room.replacingOccurrences(of: " ", with: "").isEmpty)
+                ? (cleanedNote.isEmpty ? "Unknown Room" : cleanedNote)
+                : room
+
+            // Create single course entry with first part of comma-separated values
             weekCourses.append(
                 Course(
-                    name: name,
-                    room: room,
+                    name: courseName,
+                    room: finalRoom,
                     teacher: teacher,
                     time: time,
                     startTime: start,
                     endTime: end,
                     stdNo: seatNo,
-                    weekday: weekIndex
+                    weekday: weekIndex,
+                    note: cleanedNote
                 )
             )
         }
 
-        print("✅ Successfully parsed \(weekCourses.count) courses.")
-        return weekCourses
+        // STEP 2: Keep only one course if data is same (remove exact duplicates)
+        var uniqueCourses: [Course] = []
+        for course in weekCourses {
+            let isDuplicate = uniqueCourses.contains { existingCourse in
+                existingCourse.name == course.name &&
+                existingCourse.room == course.room &&
+                existingCourse.teacher == course.teacher &&
+                existingCourse.time == course.time &&
+                existingCourse.startTime == course.startTime &&
+                existingCourse.endTime == course.endTime &&
+                existingCourse.stdNo == course.stdNo &&
+                existingCourse.weekday == course.weekday &&
+                existingCourse.note == course.note
+            }
+
+            if !isDuplicate {
+                uniqueCourses.append(course)
+            }
+        }
+
+        // STEP 3: Replace the "(<note-content>)" inside "name"
+        for i in 0..<uniqueCourses.count {
+            var course = uniqueCourses[i]
+            if !course.note.isEmpty {
+                // Remove content that matches "(note)" pattern
+                let escapedNote = course.note
+                    .replacingOccurrences(of: "(", with: "\\(")
+                    .replacingOccurrences(of: ")", with: "\\)")
+                    .replacingOccurrences(of: ".", with: "\\.")
+                    .replacingOccurrences(of: "[", with: "\\[")
+                    .replacingOccurrences(of: "]", with: "\\]")
+                let pattern = "\\(\(escapedNote)\\)"
+                course.name = course.name.replacingOccurrences(of: pattern, with: "", options: .regularExpression)
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                uniqueCourses[i] = course
+            }
+        }
+
+        // STEP 4: Merge course data if all fields except teacher are same
+        var mergedCourses: [Course] = []
+        for course in uniqueCourses {
+            if let existingIndex = mergedCourses.firstIndex(where: { existingCourse in
+                existingCourse.name == course.name &&
+                existingCourse.room == course.room &&
+                existingCourse.time == course.time &&
+                existingCourse.stdNo == course.stdNo &&
+                existingCourse.weekday == course.weekday &&
+                existingCourse.startTime == course.startTime &&
+                existingCourse.endTime == course.endTime &&
+                existingCourse.note == course.note
+            }) {
+                // Merge teachers if different
+                var mergedCourse = mergedCourses[existingIndex]
+                if !mergedCourse.teacher.contains(course.teacher) {
+                    mergedCourse.teacher += ", " + course.teacher
+                }
+                mergedCourses[existingIndex] = mergedCourse
+            } else {
+                mergedCourses.append(course)
+            }
+        }
+
+        print("✅ Successfully parsed \(mergedCourses.count) courses.")
+        return mergedCourses
     }
 
     // MARK: - Time Helpers

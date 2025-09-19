@@ -17,6 +17,7 @@ struct Course: Identifiable, Hashable, Codable {
     var endTime: Date
     var stdNo: String
     var weekday: Int
+    var note: String = ""
 }
 
 func getNextUpCourses(from weeklySchedule: [Course]) -> [Course] {
