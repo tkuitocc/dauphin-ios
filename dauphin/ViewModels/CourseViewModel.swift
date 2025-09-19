@@ -130,7 +130,9 @@ class CourseViewModel: ObservableObject {
 
             // Use parseCourseData to process API response
             if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                let courses = parseCourseData(apiData: json)
+                // Trim all string fields in the JSON response
+                let trimmedJson = trimAllStringFields(json) as? [String: Any] ?? json
+                let courses = parseCourseData(apiData: trimmedJson)
                 saveCoursesToCache(courses: courses)
                 await updateUI(courses: courses)
                 await MainActor.run {
@@ -167,6 +169,23 @@ class CourseViewModel: ObservableObject {
             .replacingOccurrences(of: "\r\n", with: "\n")
     }
 
+    // MARK: - Helper function to trim all string fields in JSON
+    private func trimAllStringFields(_ object: Any) -> Any {
+        if let dict = object as? [String: Any] {
+            var trimmedDict = [String: Any]()
+            for (key, value) in dict {
+                trimmedDict[key] = trimAllStringFields(value)
+            }
+            return trimmedDict
+        } else if let array = object as? [Any] {
+            return array.map { trimAllStringFields($0) }
+        } else if let string = object as? String {
+            return string.trimmingCharacters(in: .whitespacesAndNewlines)
+        } else {
+            return object
+        }
+    }
+
     // MARK: - Parse Course Data
     private func parseCourseData(apiData: [String: Any]) -> [Course] {
         var weekCourses = [Course]()
@@ -184,29 +203,28 @@ class CourseViewModel: ObservableObject {
                 continue
             }
 
-            // Clean HTML tags from all fields first
+            // Clean HTML tags from all fields first (fields are already trimmed at JSON level)
             let rawCourseName = cleanHTMLTags(from: courseData["ch_cos_name"] as? String ?? "Unknown")
             let noteText = courseData["note"] as? String ?? ""
             let cleanedNote = cleanHTMLTags(from: noteText)
-                .trimmingCharacters(in: .whitespacesAndNewlines)
 
             // STEP 1: Split the course if "name" contains "," - only keep the first part
             let courseName = rawCourseName.contains(",")
-                ? rawCourseName.components(separatedBy: ",").first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? rawCourseName
+                ? rawCourseName.components(separatedBy: ",").first ?? rawCourseName
                 : rawCourseName
 
             // Handle multiple rooms, teachers, and seat numbers - also only keep first
             let room = cleanHTMLTags(from: courseData["room"] as? String ?? "")
                 .components(separatedBy: ",")
-                .first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                .first ?? ""
 
             let teacher = cleanHTMLTags(from: courseData["teach_name"] as? String ?? "Unknown Teacher")
                 .components(separatedBy: ",")
-                .first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "Unknown Teacher"
+                .first ?? "Unknown Teacher"
 
             let seatNo = cleanHTMLTags(from: courseData["seat_no"] as? String ?? "Unknown Seat")
                 .components(separatedBy: ",")
-                .first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "Unknown Seat"
+                .first ?? "Unknown Seat"
 
             guard let timeSessions = courseData["timePlase"] as? [String: Any],
                   let sesses = timeSessions["sesses"] as? [String],
