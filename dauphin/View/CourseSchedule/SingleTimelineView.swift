@@ -143,7 +143,10 @@ struct SingleTimeline: View {
               height: heightForEvent(adjustedStartTime, adjustedEndTime, in: totalHeight),
               yOffset: yPosition(for: adjustedStartTime, in: totalHeight)
             )
-            .frame(width: columnWidth * 0.95)  // Slight padding between columns
+            .frame(
+              width: position.totalColumns > 1 && position.column < position.totalColumns - 1
+                ? columnWidth * 0.95 : columnWidth
+            )
             .offset(x: xOffset)
             .onTapGesture {
               onCourseTap?(position.course)
