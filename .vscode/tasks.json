@@ -1,0 +1,35 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "sweetpad: build",
+      "type": "sweetpad",
+      "action": "build",
+      "scheme": "dauphin",
+      "configuration": "Debug",
+      "problemMatcher": ["$sweetpad-xcodebuild-default"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "sweetpad: clean",
+      "type": "sweetpad",
+      "action": "clean",
+      "scheme": "dauphin",
+      "problemMatcher": ["$sweetpad-xcodebuild-default"],
+    },
+    {
+      "label": "sweetpad: test",
+      "type": "sweetpad",
+      "action": "test",
+      "scheme": "dauphin",
+      "problemMatcher": ["$sweetpad-xcodebuild-default"],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    }
+  ]
+}

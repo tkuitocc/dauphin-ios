@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "*.swift": "swift"
+  },
+  "editor.formatOnSave": false,
+  "lldb.library": "/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/LLDB"
+}
