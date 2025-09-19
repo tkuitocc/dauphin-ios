@@ -149,7 +149,7 @@ struct CourseDetailView: View {
             if !course.note.isEmpty {
               Divider()
 
-              HStack(alignment: .top, spacing: 16) {
+              HStack(spacing: 16) {
                 Image(systemName: "note.text")
                   .font(.system(size: 22))
                   .foregroundColor(courseColor)
