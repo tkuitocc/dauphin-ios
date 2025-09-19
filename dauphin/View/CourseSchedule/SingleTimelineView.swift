@@ -9,11 +9,113 @@ import SwiftUI
 
 struct SingleTimeline: View {
   @Binding var courses: [Course]
+  var onCourseTap: ((Course) -> Void)? = nil
 
   let start = Calendar.current.date(
     bySettingHour: 8, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date()))!
   let end = Calendar.current.date(
     bySettingHour: 22, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date()))!
+
+  // Structure to hold course positioning information
+  struct CoursePosition {
+    let course: Course
+    let column: Int
+    let totalColumns: Int
+  }
+
+  // Calculate overlapping groups and assign columns
+  private var positionedCourses: [CoursePosition] {
+    var groups: [[Course]] = []
+    let sortedCourses = courses.sorted { $0.startTime < $1.startTime }
+
+    for course in sortedCourses {
+      var added = false
+
+      // Try to add to an existing group
+      for i in 0..<groups.count {
+        let group = groups[i]
+        var hasOverlap = false
+
+        for existingCourse in group {
+          if coursesOverlap(course, existingCourse) {
+            hasOverlap = true
+            break
+          }
+        }
+
+        if hasOverlap {
+          // Add to this group
+          groups[i].append(course)
+          added = true
+          break
+        }
+      }
+
+      // Create new group if not added
+      if !added {
+        groups.append([course])
+      }
+    }
+
+    // Now assign positions within each group
+    var positions: [CoursePosition] = []
+
+    for group in groups {
+      // Find all courses that overlap with each other in this group
+      var overlapSets: [[Course]] = []
+
+      for course in group {
+        var addedToSet = false
+
+        for i in 0..<overlapSets.count {
+          // Check if this course overlaps with any course in this set
+          var overlapsWithAll = false
+          for setCourse in overlapSets[i] {
+            if coursesOverlap(course, setCourse) {
+              overlapsWithAll = true
+              break
+            }
+          }
+
+          if overlapsWithAll {
+            overlapSets[i].append(course)
+            addedToSet = true
+            break
+          }
+        }
+
+        if !addedToSet {
+          overlapSets.append([course])
+        }
+      }
+
+      // Assign columns within each overlap set
+      for overlapSet in overlapSets {
+        let totalColumns = overlapSet.count
+        for (index, course) in overlapSet.enumerated() {
+          positions.append(
+            CoursePosition(
+              course: course,
+              column: index,
+              totalColumns: totalColumns
+            ))
+        }
+      }
+    }
+
+    return positions
+  }
+
+  // Check if two courses overlap
+  private func coursesOverlap(_ course1: Course, _ course2: Course) -> Bool {
+    let start1 = adjustedTime(for: course1.startTime)
+    let end1 = adjustedTime(for: course1.endTime)
+    let start2 = adjustedTime(for: course2.startTime)
+    let end2 = adjustedTime(for: course2.endTime)
+
+    // Courses overlap if one starts before the other ends
+    return (start1 < end2 && end1 > start2)
+  }
 
   var body: some View {
     GeometryReader { geometry in
@@ -26,16 +128,28 @@ struct SingleTimeline: View {
         // Grid
         TimeSlotGrid(numberOfSlots: numberOfSlots, totalHeight: totalHeight)
 
-        // Courses
-        ForEach(courses) { course in
-          let adjustedStartTime = adjustedTime(for: course.startTime)
-          let adjustedEndTime = adjustedTime(for: course.endTime)
+        // Courses with overlap handling
+        ForEach(positionedCourses, id: \.course.id) { position in
+          let adjustedStartTime = adjustedTime(for: position.course.startTime)
+          let adjustedEndTime = adjustedTime(for: position.course.endTime)
 
-          CourseView(
-            course: course,
-            height: heightForEvent(adjustedStartTime, adjustedEndTime, in: totalHeight),
-            yOffset: yPosition(for: adjustedStartTime, in: totalHeight)
-          )
+          GeometryReader { geo in
+            let totalWidth = geo.size.width
+            let columnWidth = totalWidth / CGFloat(position.totalColumns)
+            let xOffset = columnWidth * CGFloat(position.column)
+
+            CourseView(
+              course: position.course,
+              height: heightForEvent(adjustedStartTime, adjustedEndTime, in: totalHeight),
+              yOffset: yPosition(for: adjustedStartTime, in: totalHeight)
+            )
+            .frame(width: columnWidth * 0.95)  // Slight padding between columns
+            .offset(x: xOffset)
+            .onTapGesture {
+              onCourseTap?(position.course)
+            }
+          }
+          .frame(height: totalHeight)
         }
       }
     }
