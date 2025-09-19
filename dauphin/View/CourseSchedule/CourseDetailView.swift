@@ -26,19 +26,8 @@ struct CourseDetailView: View {
     return "\(start) - \(end)"
   }
 
-  // Color variations for different courses (same as CourseView)
   private var courseColor: Color {
-    let colors: [Color] = [
-      Color(red: 0.2, green: 0.6, blue: 1.0),  // Blue
-      Color(red: 0.4, green: 0.8, blue: 0.6),  // Green
-      Color(red: 1.0, green: 0.6, blue: 0.4),  // Orange
-      Color(red: 0.8, green: 0.4, blue: 0.8),  // Purple
-      Color(red: 0.95, green: 0.7, blue: 0.3),  // Yellow
-      Color(red: 0.3, green: 0.7, blue: 0.8),  // Cyan
-      Color(red: 0.9, green: 0.5, blue: 0.5),  // Red
-    ]
-    let index = abs(course.name.hashValue) % colors.count
-    return colors[index]
+    CourseColors.color(for: course.name)
   }
 
   var body: some View {
