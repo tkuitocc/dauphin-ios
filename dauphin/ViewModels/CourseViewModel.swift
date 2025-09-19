@@ -205,6 +205,9 @@ class CourseViewModel: ObservableObject {
 
             // Clean HTML tags from all fields first (fields are already trimmed at JSON level)
             let rawCourseName = cleanHTMLTags(from: courseData["ch_cos_name"] as? String ?? "Unknown")
+                // Remove all newline characters from the name field
+                .replacingOccurrences(of: "\n", with: "")
+                .replacingOccurrences(of: "\r", with: "")
             let noteText = courseData["note"] as? String ?? ""
             let cleanedNote = cleanHTMLTags(from: noteText)
 
@@ -285,16 +288,17 @@ class CourseViewModel: ObservableObject {
         for i in 0..<uniqueCourses.count {
             var course = uniqueCourses[i]
             if !course.note.isEmpty {
-                // Remove content that matches "(note)" pattern
-                let escapedNote = course.note
-                    .replacingOccurrences(of: "(", with: "\\(")
-                    .replacingOccurrences(of: ")", with: "\\)")
-                    .replacingOccurrences(of: ".", with: "\\.")
-                    .replacingOccurrences(of: "[", with: "\\[")
-                    .replacingOccurrences(of: "]", with: "\\]")
-                let pattern = "\\(\(escapedNote)\\)"
-                course.name = course.name.replacingOccurrences(of: pattern, with: "", options: .regularExpression)
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                // Since we removed newlines from name but note still has them,
+                // we need to compare with a cleaned version of the note
+                let noteForComparison = course.note
+                    .replacingOccurrences(of: "\n", with: "")
+                    .replacingOccurrences(of: "\r", with: "")
+                let notePattern = "(" + noteForComparison + ")"
+
+                if course.name.contains(notePattern) {
+                    course.name = course.name.replacingOccurrences(of: notePattern, with: "")
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                }
                 uniqueCourses[i] = course
             }
         }
