@@ -33,22 +33,30 @@ struct CourseScheduleByWeekView: View {
                             currentDay: Calendar.current.component(.weekday, from: Date()) // Pass current weekday
                         )
                             .padding(.horizontal)
-                            .frame(height: 20)
+                            .frame(height: 30)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color(UIColor.secondarySystemBackground))
+                            )
+                            .padding(.horizontal, 8)
 
                         ScrollView {
-                            HStack(spacing: 1) {
+                            HStack(spacing: 4) {
                                 // Time Labels
                                 VStack(spacing: 0) {
                                     ForEach(8...22, id: \.self) { hour in
                                         Text("\(hour):00")
                                             .font(.caption)
-                                            .foregroundColor(.gray)
+                                            .foregroundColor(Color(UIColor.secondaryLabel))
                                             .frame(height: 99)
                                             .offset(y: -40)
                                     }
                                 }
                                 .frame(width: 45) // Reduced width for tighter layout
-                                .background(Color(UIColor.systemBackground))
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(Color(UIColor.systemBackground).opacity(0.8))
+                                )
 
                                 ForEach(filteredCourses.indices, id: \.self) { index in
                                     SingleTimeline(courses: .constant(filteredCourses[index]))
@@ -70,22 +78,30 @@ struct CourseScheduleByWeekView: View {
                             currentDay: Calendar.current.component(.weekday, from: Date()) // Pass current weekday
                         )
                             .padding(.horizontal)
-                            .frame(height: 20)
+                            .frame(height: 30)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color(UIColor.secondarySystemBackground))
+                            )
+                            .padding(.horizontal, 8)
 
                         ScrollView {
-                            HStack(spacing: 1) {
+                            HStack(spacing: 4) {
                                 // Time Labels
                                 VStack(spacing: 0) {
                                     ForEach(8...22, id: \.self) { hour in
                                         Text("\(hour):00")
                                             .font(.caption)
-                                            .foregroundColor(.gray)
+                                            .foregroundColor(Color(UIColor.secondaryLabel))
                                             .frame(height: 99)
                                             .offset(y: -40)
                                     }
                                 }
                                 .frame(width: 45) // Reduced width for tighter layout
-                                .background(Color(UIColor.systemBackground))
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(Color(UIColor.systemBackground).opacity(0.8))
+                                )
 
                                 ForEach(filteredCourses.indices, id: \.self) { index in
                                     SingleTimeline(courses: .constant(filteredCourses[index]))
@@ -115,19 +131,19 @@ struct WeekdaysView: View {
 
                 HStack(alignment: .bottom) {
                     Text(days[index])
-                        .font(.title3)
-                        .foregroundColor(.gray)
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(Color(UIColor.secondaryLabel))
 
                     ZStack {
                         if dayIndex == currentDay-1 {
                             Circle()
-                                .fill(Color.red)
-                                .frame(width: 28, height: 28)
+                                .fill(Color.blue)
+                                .frame(width: 32, height: 32)
                         }
 
                         Text("\(date)")
-                            .font(.title3)
-                            .foregroundColor(dayIndex == currentDay-1 ? .white : .gray)
+                            .font(.system(size: 16, weight: dayIndex == currentDay-1 ? .bold : .medium))
+                            .foregroundColor(dayIndex == currentDay-1 ? .white : Color(UIColor.label))
                     }
                 }
                 .frame(width: width, alignment: .center)
