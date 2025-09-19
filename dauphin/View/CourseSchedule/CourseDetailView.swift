@@ -145,27 +145,6 @@ struct CourseDetailView: View {
               Spacer()
             }
 
-            Divider()
-
-            // Session info
-            HStack(spacing: 16) {
-              Image(systemName: "list.bullet.rectangle")
-                .font(.system(size: 22))
-                .foregroundColor(courseColor)
-                .frame(width: 30)
-
-              VStack(alignment: .leading, spacing: 4) {
-                Text("Sessions")
-                  .font(.caption)
-                  .foregroundColor(Color(UIColor.secondaryLabel))
-                Text("Sessions: \(course.time)")
-                  .font(.system(size: 16, weight: .medium))
-                  .foregroundColor(Color(UIColor.label))
-              }
-
-              Spacer()
-            }
-
             // Note section (only show if note is not empty)
             if !course.note.isEmpty {
               Divider()
