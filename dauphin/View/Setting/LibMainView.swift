@@ -17,8 +17,10 @@ struct LibMainView: View {
           if viewModel.isLoggedIn {
             Text("Your student ID is \(viewModel.ssoStuNo)")
           }
-          Button("Log out") {
+          Button(action: {
             viewModel.logout()
+          }) {
+            Label("Logout", systemImage: "person.crop.circle")
           }.buttonStyle(.borderedProminent).tint(.red)
         }
       } else {
