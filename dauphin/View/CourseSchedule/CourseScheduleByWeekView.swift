@@ -24,23 +24,21 @@ struct CourseScheduleByWeekView: View {
           VStack {
             if isSaturday > 0 {
               let days = ["Mo", "Tu", "We", "Th", "Fr", "Sa"]
-              let dayWidth = (geometry.size.width - 45) / CGFloat(days.count) - 10  // Adjust for time label width
+              let dayWidth = (geometry.size.width - 45 - 8) / CGFloat(days.count)
               let filteredCourses = (1...6).map { day in
                 courseViewModel.weekCourses.filter { $0.weekday == day }
               }
 
-              WeekdaysView(
-                days: days,
-                width: dayWidth,
-                currentDay: Calendar.current.component(.weekday, from: Date())  // Pass current weekday
-              )
-              .padding(.horizontal)
-              .frame(height: 30)
-              .background(
-                RoundedRectangle(cornerRadius: 12)
-                  .fill(Color(UIColor.secondarySystemBackground))
-              )
-              .padding(.horizontal, 8)
+              HStack(spacing: 0) {
+                Spacer()
+                  .frame(width: 45)  // Match time label width
+
+                WeekdaysView(
+                  days: days,
+                  width: dayWidth,
+                  currentDay: Calendar.current.component(.weekday, from: Date())
+                )
+              }
 
               ScrollView {
                 HStack(spacing: 0) {
@@ -68,30 +66,26 @@ struct CourseScheduleByWeekView: View {
                         showingCourseDetail = true
                       }
                     )
-                    .frame(width: dayWidth)
                   }
                 }
-                .padding(.horizontal)
               }
             } else {
               let days = ["Mo", "Tu", "We", "Th", "Fr"]
-              let dayWidth = (geometry.size.width - 45) / CGFloat(days.count) - 10  // Adjust for time label width
+              let dayWidth = (geometry.size.width - 45 - 8) / CGFloat(days.count)
               let filteredCourses = (1...5).map { day in
                 courseViewModel.weekCourses.filter { $0.weekday == day }
               }
 
-              WeekdaysView(
-                days: days,
-                width: dayWidth,
-                currentDay: Calendar.current.component(.weekday, from: Date())  // Pass current weekday
-              )
-              .padding(.horizontal)
-              .frame(height: 30)
-              .background(
-                RoundedRectangle(cornerRadius: 12)
-                  .fill(Color(UIColor.secondarySystemBackground))
-              )
-              .padding(.horizontal, 8)
+              HStack(spacing: 0) {
+                Spacer()
+                  .frame(width: 45)  // Match time label width
+
+                WeekdaysView(
+                  days: days,
+                  width: dayWidth,
+                  currentDay: Calendar.current.component(.weekday, from: Date())
+                )
+              }
 
               ScrollView {
                 HStack(spacing: 0) {
@@ -121,7 +115,6 @@ struct CourseScheduleByWeekView: View {
                     )
                   }
                 }
-                .padding(.horizontal)
               }
             }
           }
@@ -134,50 +127,6 @@ struct CourseScheduleByWeekView: View {
         CourseDetailView(course: course)
       }
     }
-  }
-}
-
-struct WeekdaysView: View {
-  let days: [String]
-  let width: CGFloat
-  let currentDay: Int
-
-  var body: some View {
-    HStack(spacing: 0) {
-      ForEach(0..<days.count, id: \.self) { index in
-        let dayIndex = index + 1
-        let date = dateForDay(weekday: dayIndex)
-
-        HStack(alignment: .bottom) {
-          Text(days[index])
-            .font(.system(size: 14, weight: .medium))
-            .foregroundColor(Color(UIColor.secondaryLabel))
-
-          ZStack {
-            if dayIndex == currentDay - 1 {
-              Circle()
-                .fill(Color.blue)
-                .frame(width: 32, height: 32)
-            }
-
-            Text("\(date)")
-              .font(.system(size: 16, weight: dayIndex == currentDay - 1 ? .bold : .medium))
-              .foregroundColor(dayIndex == currentDay - 1 ? .white : Color(UIColor.label))
-          }
-        }
-        .frame(width: width, alignment: .center)
-      }
-    }
-  }
-
-  // Helper to get the date for a specific weekday
-  private func dateForDay(weekday: Int) -> Int {
-    let calendar = Calendar.current
-    let today = Date()
-    let weekStart = calendar.date(
-      from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: today))!
-    let targetDay = calendar.date(byAdding: .day, value: weekday, to: weekStart)!
-    return calendar.component(.day, from: targetDay)
   }
 }
 
