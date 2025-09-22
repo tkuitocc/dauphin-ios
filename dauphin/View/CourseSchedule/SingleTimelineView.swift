@@ -208,7 +208,7 @@ struct TimeSlotGrid: View {
     VStack(spacing: 0) {
       ForEach(0..<numberOfSlots, id: \.self) { index in
         Rectangle()
-          .stroke(Color.gray.opacity(0.3), lineWidth: 0.3)
+          .stroke(Color.gray.opacity(0.4), lineWidth: 0.3)
           .frame(height: totalHeight / CGFloat(numberOfSlots))
       }
     }
