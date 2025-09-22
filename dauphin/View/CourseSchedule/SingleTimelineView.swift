@@ -10,6 +10,7 @@ import SwiftUI
 struct SingleTimeline: View {
   @Binding var courses: [Course]
   var onCourseTap: ((Course) -> Void)? = nil
+  var overlapGap: CGFloat = -4
 
   let start = Calendar.current.date(
     bySettingHour: 8, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date()))!
@@ -121,8 +122,6 @@ struct SingleTimeline: View {
     GeometryReader { geometry in
       let totalHeight = CGFloat(1400)
       let numberOfSlots = 14
-      // let currentTime = Date()
-      // let currentYOffset = yPosition(for: currentTime, in: totalHeight) // Calculate Y position of current time
 
       ZStack(alignment: .top) {
         // Grid
@@ -135,22 +134,39 @@ struct SingleTimeline: View {
 
           GeometryReader { geo in
             let totalWidth = geo.size.width
-            let columnWidth = totalWidth / CGFloat(position.totalColumns)
-            let xOffset = columnWidth * CGFloat(position.column)
 
-            CourseView(
-              course: position.course,
-              height: heightForEvent(adjustedStartTime, adjustedEndTime, in: totalHeight),
-              yOffset: yPosition(for: adjustedStartTime, in: totalHeight)
-            )
-            .frame(
-              width: position.totalColumns > 1 && position.column < position.totalColumns - 1
-                ? columnWidth * 0.95 : columnWidth
-            )
-            .offset(x: xOffset)
-            .onTapGesture {
-              onCourseTap?(position.course)
+            if position.totalColumns == 1 {
+              let courseWidth: CGFloat = totalWidth
+              let xOffset: CGFloat = 0
+
+              CourseView(
+                course: position.course,
+                height: heightForEvent(adjustedStartTime, adjustedEndTime, in: totalHeight),
+                yOffset: yPosition(for: adjustedStartTime, in: totalHeight)
+              )
+              .frame(width: courseWidth)
+              .offset(x: xOffset)
+              .onTapGesture {
+                onCourseTap?(position.course)
+              }
+            } else {
+              let totalGaps = overlapGap * CGFloat(position.totalColumns - 1)
+              let availableWidth = totalWidth - totalGaps
+              let courseWidth: CGFloat = availableWidth / CGFloat(position.totalColumns)
+              let xOffset: CGFloat = (courseWidth + overlapGap) * CGFloat(position.column)
+
+              CourseView(
+                course: position.course,
+                height: heightForEvent(adjustedStartTime, adjustedEndTime, in: totalHeight),
+                yOffset: yPosition(for: adjustedStartTime, in: totalHeight)
+              )
+              .frame(width: courseWidth)
+              .offset(x: xOffset)
+              .onTapGesture {
+                onCourseTap?(position.course)
+              }
             }
+
           }
           .frame(height: totalHeight)
         }
@@ -191,8 +207,8 @@ struct TimeSlotGrid: View {
   var body: some View {
     VStack(spacing: 0) {
       ForEach(0..<numberOfSlots, id: \.self) { index in
-        RoundedRectangle(cornerRadius: 2)
-          .stroke(Color.gray.opacity(0.3), lineWidth: 0.5)
+        Rectangle()
+          .stroke(Color.gray.opacity(0.3), lineWidth: 0.3)
           .frame(height: totalHeight / CGFloat(numberOfSlots))
       }
     }
@@ -211,7 +227,7 @@ struct CourseView: View {
   var body: some View {
     RoundedRectangle(cornerRadius: 8)
       .fill(courseColor.opacity(0.85))
-      .frame(height: height * 0.98)
+      .frame(height: max(height - 4, 20))  // Fixed 4pt gap for even spacing
       .overlay(
         RoundedRectangle(cornerRadius: 8)
           .strokeBorder(courseColor, lineWidth: 1.5)
@@ -247,7 +263,7 @@ struct CourseView: View {
       )
       .shadow(color: courseColor.opacity(0.3), radius: 2, x: 0, y: 1)
       .offset(y: yOffset)
-      .padding(.horizontal, 2)
+      .padding(.horizontal, 4)
   }
 }
 
@@ -261,6 +277,7 @@ struct CourseView: View {
           // Update courseViewModel.weekCourses with the changes from newValue
           // This may require additional logic to ensure filtered courses are updated correctly
         }
-      ))
+      ),
+      overlapGap: 4)
   }
 }
