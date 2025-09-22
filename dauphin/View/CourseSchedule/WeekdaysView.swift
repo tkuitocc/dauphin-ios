@@ -40,7 +40,7 @@ struct WeekdaysView: View {
       }
     }.background(
       RoundedRectangle(cornerRadius: 8)
-        .fill(Color(UIColor.red).opacity(0.8))
+        .fill(Color(UIColor.gray).opacity(0.2))
     )
   }
 
