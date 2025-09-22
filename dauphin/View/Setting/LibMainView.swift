@@ -13,19 +13,13 @@ struct LibMainView: View {
   var body: some View {
     Group {
       if viewModel.isLoggedIn {
-        VStack {
+        VStack(spacing: 20) {
           if viewModel.isLoggedIn {
             Text("Your student ID is \(viewModel.ssoStuNo)")
-              .padding()
           }
-
-          Button(action: {
+          Button("Log out") {
             viewModel.logout()
-          }) {
-            Text("Log out")
-              .foregroundColor(.red)
-              .padding()
-          }
+          }.buttonStyle(.borderedProminent).tint(.red)
         }
       } else {
         LibSSOLoginView(viewModel: viewModel)
