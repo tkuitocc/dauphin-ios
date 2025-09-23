@@ -260,7 +260,7 @@ class CourseViewModel: ObservableObject {
       // Handle empty room
       let finalRoom =
         (room.isEmpty || room.replacingOccurrences(of: " ", with: "").isEmpty
-          || !room.starts(with: /^[A-Z]/))
+          || room.range(of: "^[A-Z]", options: .regularExpression) == nil)
         ? "Unknown Room" : room
 
       // Create single course entry with first part of comma-separated values
