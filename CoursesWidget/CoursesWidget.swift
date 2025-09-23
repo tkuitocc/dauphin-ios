@@ -9,7 +9,6 @@ import WidgetKit
 import SwiftUI
 
 struct Provider: TimelineProvider {
-    let viewModel = CourseViewModel()
 
     func placeholder(in context: Context) -> SimpleEntry {
         SimpleEntry(date: Date(), ssoStuNo: "尚未登入", courses: [], today: 0)
@@ -29,7 +28,7 @@ struct Provider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
         let currentDate = Date()
         if let stdNo = getSsoStuNo(), !stdNo.isEmpty {
-            if let cachedCourses = viewModel.loadCoursesFromCache() {
+            if let cachedCourses = loadCoursesFromCache() {
                 let courses = cachedCourses
                 let currentWeekday = Calendar.current.component(.weekday, from: Date())
                     let filteredCourses = courses.filter { $0.weekday == currentWeekday }
@@ -54,6 +53,23 @@ struct Provider: TimelineProvider {
         } else {
             // No student number found in storage
             return "尚未登入"
+        }
+    }
+
+    private func loadCoursesFromCache() -> [Course]? {
+        let appGroupDefaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+
+        guard let data = appGroupDefaults?.data(forKey: Constants.Courses) else {
+            return nil
+        }
+
+        do {
+            let courses = try decoder.decode([Course].self, from: data)
+            return courses
+        } catch {
+            return nil
         }
     }
 

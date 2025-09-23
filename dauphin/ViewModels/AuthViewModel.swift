@@ -1,88 +1,84 @@
+import OSLog
 import SwiftUI
 import WebKit
 import WidgetKit
-import OSLog
 
+@MainActor
 class AuthViewModel: ObservableObject {
-    private static let logger = Logger(subsystem: "com.dauphin.app", category: "AuthViewModel")
-    private let appGroupDefaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
+  private static let logger = Logger(subsystem: "com.dauphin.app", category: "AuthViewModel")
+  private let appGroupDefaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
 
-    @Published var isLoggedIn: Bool {
-        didSet {
-            appGroupDefaults?.set(isLoggedIn, forKey: Constants.isLoggedInKey)
+  @Published var isLoggedIn: Bool {
+    didSet {
+      appGroupDefaults?.set(isLoggedIn, forKey: Constants.isLoggedInKey)
+    }
+  }
+  @Published var ssoStuNo: String {
+    didSet {
+      appGroupDefaults?.set(ssoStuNo, forKey: Constants.ssoTokenKey)
+    }
+  }
+  private var courseViewModel: CourseViewModel
+
+  init(courseViewModel: CourseViewModel? = nil) {
+    self.isLoggedIn = appGroupDefaults?.bool(forKey: Constants.isLoggedInKey) ?? false
+    self.ssoStuNo = appGroupDefaults?.string(forKey: Constants.ssoTokenKey) ?? ""
+    self.courseViewModel = courseViewModel ?? CourseViewModel()
+  }
+
+  func login(with token: String) {
+    // Processing login with provided token
+    self.ssoStuNo = token
+    self.isLoggedIn = true
+    // Login state updated
+
+    self.appGroupDefaults?.set(token, forKey: Constants.ssoTokenKey)
+    self.appGroupDefaults?.synchronize()
+    Self.logger.info("Saved ssoStuNo to App Group")
+    // Update Widget timelines
+    WidgetCenter.shared.reloadAllTimelines()
+    Self.logger.debug("Widget timelines reloaded")
+
+    // Fetch courses
+    self.fetchCourses(token: token)
+  }
+
+  // Fetch courses for the logged-in user
+  private func fetchCourses(token: String) {
+    Task {
+      // Initiating course fetch for authenticated user
+      await courseViewModel.fetchCourses(with: token)
+    }
+  }
+
+  func logout() {
+    // Clear token and courses from App Group defaults
+    appGroupDefaults?.removeObject(forKey: Constants.ssoTokenKey)
+    appGroupDefaults?.removeObject(forKey: Constants.Courses)
+    Self.logger.info("Cleared user data from App Group")
+
+    // Clear website data
+    clearWebsiteData()
+
+    // Update authentication state
+    self.isLoggedIn = false
+    self.ssoStuNo = ""
+    Self.logger.info("User logged out and state reset")
+
+    // Reload widget timelines after logout
+    WidgetCenter.shared.reloadAllTimelines()
+    Self.logger.debug("Widget timelines reloaded after logout")
+  }
+
+  // MARK: - Clear Website Data
+  private func clearWebsiteData() {
+    let dataStore = WKWebsiteDataStore.default()
+    dataStore.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
+      records.forEach { record in
+        dataStore.removeData(ofTypes: record.dataTypes, for: [record]) {
+          Self.logger.debug("Cleared website data record: \(record.displayName)")
         }
+      }
     }
-    @Published var ssoStuNo: String {
-        didSet {
-            appGroupDefaults?.set(ssoStuNo, forKey: Constants.ssoTokenKey)
-        }
-    }
-    private var courseViewModel: CourseViewModel
-
-    init(courseViewModel: CourseViewModel = CourseViewModel()) {
-        self.isLoggedIn = appGroupDefaults?.bool(forKey: Constants.isLoggedInKey) ?? false
-        self.ssoStuNo = appGroupDefaults?.string(forKey: Constants.ssoTokenKey) ?? ""
-        self.courseViewModel = courseViewModel
-    }
-
-    func login(with token: String) {
-        // Processing login with provided token
-        DispatchQueue.main.async {
-            self.ssoStuNo = token
-            self.isLoggedIn = true
-            // Login state updated
-            
-            self.appGroupDefaults?.set(token, forKey: Constants.ssoTokenKey)
-            self.appGroupDefaults?.synchronize()
-            Self.logger.info("Saved ssoStuNo to App Group")
-            // Update Widget timelines
-            WidgetCenter.shared.reloadAllTimelines()
-            Self.logger.debug("Widget timelines reloaded")
-
-            // Fetch courses
-            self.fetchCourses(token: token)
-
-        }
-    }
-
-    // Fetch courses for the logged-in user
-    private func fetchCourses(token: String) {
-        Task {
-            // Initiating course fetch for authenticated user
-            await courseViewModel.fetchCourses(with: token)
-        }
-    }
-
-    func logout() {
-        // Clear token and courses from App Group defaults
-        appGroupDefaults?.removeObject(forKey: Constants.ssoTokenKey)
-        appGroupDefaults?.removeObject(forKey: Constants.Courses)
-        Self.logger.info("Cleared user data from App Group")
-
-        // Clear website data
-        clearWebsiteData()
-
-        // Update authentication state
-        DispatchQueue.main.async {
-            self.isLoggedIn = false
-            self.ssoStuNo = ""
-            Self.logger.info("User logged out and state reset")
-
-            // Reload widget timelines after logout
-            WidgetCenter.shared.reloadAllTimelines()
-            Self.logger.debug("Widget timelines reloaded after logout")
-        }
-    }
-
-    // MARK: - Clear Website Data
-    private func clearWebsiteData() {
-        let dataStore = WKWebsiteDataStore.default()
-        dataStore.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
-            records.forEach { record in
-                dataStore.removeData(ofTypes: record.dataTypes, for: [record]) {
-                    Self.logger.debug("Cleared website data record: \(record.displayName)")
-                }
-            }
-        }
-    }
+  }
 }
