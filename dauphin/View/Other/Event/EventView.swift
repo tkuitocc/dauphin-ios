@@ -10,7 +10,8 @@ import SwiftUI
 struct EventView: View {
   @StateObject private var viewModel = EventViewModel()
   private let eventManager = EventManager()
-  @State private var toggleState = false  // false = Second semester (default)
+  @State private var toggleState = true
+  @State private var hasCheckedFirstEvent = false
 
   var body: some View {
     List(viewModel.events) { event in
@@ -61,11 +62,38 @@ struct EventView: View {
       }
     }
     .onAppear {
-      let queryParameters = [
-        "t": "2"
-      ]
-      viewModel.loadXMLData(withQuery: queryParameters)
-      // Events loaded
+      // First, load first semester to check the date
+      if !hasCheckedFirstEvent {
+        let queryParameters = [
+          "t": "1"
+        ]
+        viewModel.loadXMLData(withQuery: queryParameters)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+          if let firstEvent = viewModel.events.first {
+            let month = Calendar.current.component(.month, from: firstEvent.startDate)
+
+            // First semester starts after July (month > 7)
+            // Second semester starts after January (month > 1 and month <= 7)
+            if month > 7 {
+              toggleState = true
+            } else {
+              toggleState = false
+              let queryParameters = [
+                "t": "2"
+              ]
+              viewModel.loadXMLData(withQuery: queryParameters)
+            }
+          } else {
+            toggleState = false
+            let queryParameters = [
+              "t": "1"
+            ]
+            viewModel.loadXMLData(withQuery: queryParameters)
+          }
+          hasCheckedFirstEvent = true
+        }
+      }
     }
   }
 }
