@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CourseScheduleByWeekView: View {
   @ObservedObject var courseViewModel: CourseViewModel
-  @State private var selectedCourse: Course? = nil
+  @State private var selectedCourse: Course?
 
   // Cache computed values
   private var hasSaturdayCourses: Bool {

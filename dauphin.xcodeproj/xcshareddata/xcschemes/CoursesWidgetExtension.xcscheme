@@ -67,6 +67,17 @@
                ReferencedContainer = "container:dauphin.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "188CEB672E8367DE00CDD450"
+               BuildableName = "ModelsTests.xctest"
+               BlueprintName = "ModelsTests"
+               ReferencedContainer = "container:dauphin.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

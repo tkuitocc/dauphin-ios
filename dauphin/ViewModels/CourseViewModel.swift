@@ -3,12 +3,13 @@ import Reachability
 import SwiftUI
 
 // MARK: - ViewModel for Courses
+
 class CourseViewModel: ObservableObject {
   private let appGroupDefaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
 
   @Published var weekCourses: [Course] = []
   @Published var isLoading = false
-  @Published var errorMessage: String? = nil
+  @Published var errorMessage: String?
   @Published var isCacheEmpty = false
 
   private var reachability: Reachability
@@ -31,11 +32,12 @@ class CourseViewModel: ObservableObject {
   }
 
   init(mockData: [Course]) {
-    self.weekCourses = mockData
-    self.reachability = try! Reachability()
+    weekCourses = mockData
+    reachability = try! Reachability()
   }
 
   // MARK: - Helper Initialization
+
   private func initializeHelper() async {
     if let key = KeychainManager.shared.get(forKey: "AES256KEY"),
       let iv = KeychainManager.shared.get(forKey: "AES256IV")
@@ -51,6 +53,7 @@ class CourseViewModel: ObservableObject {
   }
 
   // MARK: - Cache Management
+
   func loadCoursesFromCache() -> [Course]? {
     print("Load courses from cache")
     let decoder = JSONDecoder()
@@ -97,6 +100,7 @@ class CourseViewModel: ObservableObject {
   }
 
   // MARK: - Fetch Courses
+
   func fetchCourses(with stdNo: String) async {
     print("Fetch courses")
     timeoutWorkItem?.cancel()
@@ -113,7 +117,8 @@ class CourseViewModel: ObservableObject {
     guard reachability.connection != .unavailable else {
       if let cachedCourses = loadCoursesFromCache(), !cachedCourses.isEmpty {
         await updateUI(
-          error: "No internet connection. Showing cached data.", courses: cachedCourses)
+          error: "No internet connection. Showing cached data.", courses: cachedCourses
+        )
       } else {
         await updateUI(error: "No internet connection and no cached data available.")
       }
@@ -165,6 +170,7 @@ class CourseViewModel: ObservableObject {
   }
 
   // MARK: - Helper function to clean HTML tags
+
   private func cleanHTMLTags(from text: String) -> String {
     return
       text
@@ -178,6 +184,7 @@ class CourseViewModel: ObservableObject {
   }
 
   // MARK: - Helper function to trim all string fields in JSON
+
   private func trimAllStringFields(_ object: Any) -> Any {
     if let dict = object as? [String: Any] {
       var trimmedDict = [String: Any]()
@@ -195,6 +202,7 @@ class CourseViewModel: ObservableObject {
   }
 
   // MARK: - Parse Course Data
+
   private func parseCourseData(apiData: [String: Any]) -> [Course] {
     var weekCourses = [Course]()
 
@@ -335,6 +343,7 @@ class CourseViewModel: ObservableObject {
   }
 
   // MARK: - Time Helpers
+
   private func sessionToStartTime(session: Int) -> Date? {
     let sessionTimes = [
       1: 8, 2: 9, 3: 10, 4: 11, 5: 12, 6: 13,
@@ -360,11 +369,13 @@ class CourseViewModel: ObservableObject {
   }
 
   // MARK: - UI Updates
+
   private func setCacheTimeoutFallback(using cachedCourses: [Course]) {
     let workItem = DispatchWorkItem { [weak self] in
       Task {
         await self?.updateUI(
-          error: "Fetching data took too long. Using cached data.", courses: cachedCourses)
+          error: "Fetching data took too long. Using cached data.", courses: cachedCourses
+        )
       }
     }
     timeoutWorkItem = workItem
@@ -391,6 +402,7 @@ class CourseViewModel: ObservableObject {
   }
 
   // MARK: - Reachability Configuration
+
   private func configureReachability() {
     reachability.whenReachable = { reachability in
       DispatchQueue.main.async {
@@ -412,6 +424,7 @@ class CourseViewModel: ObservableObject {
 }
 
 // MARK: - Custom Errors
+
 enum EncryptionError: Error {
   case failed
 }

@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct WifiView: View {
-    var body: some View {
-        Text("Coming Soon")
-    }
+  var body: some View {
+    Text("Coming Soon")
+  }
 }
 
 #Preview {
-    WifiView()
+  WifiView()
 }

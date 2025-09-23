@@ -8,9 +8,9 @@
 import SwiftUI
 
 enum OtherSection: String, CaseIterable {
-  case calendar = "calendar"
-  case library = "library"
-  case map = "map"
+  case calendar
+  case library
+  case map
 }
 
 struct OtherView: View {

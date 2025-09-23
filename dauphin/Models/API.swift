@@ -4,6 +4,6 @@ import SwiftUI
 
 // Model for AES configuration
 struct AES: Decodable {
-    let IV: String
-    let KEY: String
+  let IV: String
+  let KEY: String
 }

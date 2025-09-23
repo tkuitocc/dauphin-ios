@@ -13,7 +13,6 @@ struct EventView: View {
   @State private var toggleState = false  // false = Second semester (default)
 
   var body: some View {
-
     List(viewModel.events) { event in
       HStack {
         VStack(alignment: .leading) {
