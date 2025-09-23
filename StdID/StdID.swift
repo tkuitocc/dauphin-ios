@@ -23,7 +23,7 @@ struct Provider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
         let now = Date()
         let stuNo = fetchSsoStuNo()
-        print("fetchSsoStuNo() → \(stuNo)")
+        // Fetching student number for widget
         let entry = SimpleEntry(date: now, ssoStuNo: stuNo)
         
         let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: now)!
@@ -35,10 +35,10 @@ struct Provider: TimelineProvider {
         let defaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
         defaults?.synchronize()
         if let value = defaults?.string(forKey: Constants.ssoTokenKey) {
-            print("Retrieved ssoStuNo: \(value)")
+            // Retrieved student number from storage
             return value
         } else {
-            print("ssoStuNo not found, returning default value.")
+            // No student number found in storage
             return ""
         }
     }

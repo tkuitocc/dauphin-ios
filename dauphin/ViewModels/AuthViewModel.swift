@@ -1,8 +1,10 @@
 import SwiftUI
 import WebKit
 import WidgetKit
+import OSLog
 
 class AuthViewModel: ObservableObject {
+    private static let logger = Logger(subsystem: "com.dauphin.app", category: "AuthViewModel")
     private let appGroupDefaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
 
     @Published var isLoggedIn: Bool {
@@ -24,18 +26,18 @@ class AuthViewModel: ObservableObject {
     }
 
     func login(with token: String) {
-        print("Logging in with token: \(token)")
+        // Processing login with provided token
         DispatchQueue.main.async {
             self.ssoStuNo = token
             self.isLoggedIn = true
-            print("Updated login state")
+            // Login state updated
             
             self.appGroupDefaults?.set(token, forKey: Constants.ssoTokenKey)
             self.appGroupDefaults?.synchronize()
-            print("Saved ssoStuNo to App Group")
+            Self.logger.info("Saved ssoStuNo to App Group")
             // Update Widget timelines
             WidgetCenter.shared.reloadAllTimelines()
-            print("Widget timelines reloaded.")
+            Self.logger.debug("Widget timelines reloaded")
 
             // Fetch courses
             self.fetchCourses(token: token)
@@ -46,7 +48,7 @@ class AuthViewModel: ObservableObject {
     // Fetch courses for the logged-in user
     private func fetchCourses(token: String) {
         Task {
-            print("Fetching courses for token: \(token)")
+            // Initiating course fetch for authenticated user
             await courseViewModel.fetchCourses(with: token)
         }
     }
@@ -55,7 +57,7 @@ class AuthViewModel: ObservableObject {
         // Clear token and courses from App Group defaults
         appGroupDefaults?.removeObject(forKey: Constants.ssoTokenKey)
         appGroupDefaults?.removeObject(forKey: Constants.Courses)
-        print("已清除 App Group 的使用者資料")
+        Self.logger.info("Cleared user data from App Group")
 
         // Clear website data
         clearWebsiteData()
@@ -64,11 +66,11 @@ class AuthViewModel: ObservableObject {
         DispatchQueue.main.async {
             self.isLoggedIn = false
             self.ssoStuNo = ""
-            print("已登出，使用者狀態已重置")
+            Self.logger.info("User logged out and state reset")
 
             // Reload widget timelines after logout
             WidgetCenter.shared.reloadAllTimelines()
-            print("Widget timelines reloaded after logout")
+            Self.logger.debug("Widget timelines reloaded after logout")
         }
     }
 
@@ -78,7 +80,7 @@ class AuthViewModel: ObservableObject {
         dataStore.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
             records.forEach { record in
                 dataStore.removeData(ofTypes: record.dataTypes, for: [record]) {
-                    print("已清除紀錄: \(record.displayName)")
+                    Self.logger.debug("Cleared website data record: \(record.displayName)")
                 }
             }
         }

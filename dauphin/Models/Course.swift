@@ -25,8 +25,7 @@ func getNextUpCourses(from weeklySchedule: [Course]) -> [Course] {
     let now = Date()
 
     let todayWeekday = calendar.component(.weekday, from: now) - 1
-    // log
-    print(todayWeekday)
+    // Get today's weekday
     let sortedCourses = weeklySchedule.sorted { course1, course2 in
         if course1.weekday != course2.weekday {
             return course1.weekday < course2.weekday

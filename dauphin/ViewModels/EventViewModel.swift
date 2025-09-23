@@ -5,8 +5,10 @@
 //  Created by \u8b19 on 12/18/24.
 //
 import SwiftUI
+import OSLog
 
 class EventViewModel: ObservableObject {
+    private static let logger = Logger(subsystem: "com.dauphin.app", category: "EventViewModel")
     @Published var events: [CalendarEvent] = []
 
     func loadXMLData(withQuery query: [String: String]) {
@@ -14,17 +16,14 @@ class EventViewModel: ObservableObject {
         components?.queryItems = query.map { URLQueryItem(name: $0.key, value: $0.value) }
 
         guard let url = components?.url else {
-            print("Failed to create URL")
+            Self.logger.error("Failed to create URL from components")
             return
         }
 
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             if let data = data {
                 // Print original data
-                if let dataString = String(data: data, encoding: .utf8) {
-                    print("Original XML Data:")
-                    print(dataString)
-                }
+                // XML data received successfully
 
                 let parser = XMLParser(data: data)
                 let delegate = XMLParserDelegateImplementation()
@@ -36,7 +35,7 @@ class EventViewModel: ObservableObject {
                     }
                 }
             } else if let error = error {
-                print("Error loading data: \(error)")
+                Self.logger.error("Error loading XML data: \(error.localizedDescription)")
             }
         }
         task.resume()

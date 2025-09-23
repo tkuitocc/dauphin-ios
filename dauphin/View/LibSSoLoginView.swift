@@ -7,8 +7,10 @@
 
 import SwiftUI
 import WebKit
+import OSLog
 
 struct LibSSOLoginView: UIViewRepresentable {
+    private static let logger = Logger(subsystem: "com.dauphin.app", category: "LibSSOLogin")
     @ObservedObject var viewModel: AuthViewModel
 
     class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
@@ -19,7 +21,7 @@ struct LibSSOLoginView: UIViewRepresentable {
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            print("網頁加載完成")
+            // Web page loaded
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 let javascript = """
                     try {
@@ -33,22 +35,20 @@ struct LibSSOLoginView: UIViewRepresentable {
 
                 webView.evaluateJavaScript(javascript) { (result, error) in
                     if let error = error {
-                        print("JavaScript 執行錯誤: \(error.localizedDescription)")
-                    } else {
-                        print("JavaScript 執行成功")
+                        LibSSOLoginView.logger.error("JavaScript execution error: \(error.localizedDescription)")
                     }
                 }
             }
         }
 
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-            print("收到 JavaScript 訊息: \(message.body)")
+            // Received JavaScript message
             if message.name == "ExtObj" {
                 if let token = message.body as? String {
                     if token.starts(with: "error:") {
-                        print("JavaScript 錯誤: \(token)")
+                        LibSSOLoginView.logger.error("JavaScript token retrieval failed: \(token)")
                     } else {
-                        print("成功獲取 token: \(token)")
+                        LibSSOLoginView.logger.info("Authentication token received successfully")
                         parent.handleToken(token)
                     }
                 }
@@ -82,11 +82,11 @@ struct LibSSOLoginView: UIViewRepresentable {
 
     private func handleToken(_ token: String) {
         guard !token.isEmpty else {
-            print("Token 無效")
+            Self.logger.error("Invalid authentication token received")
             return
         }
 
-        print("處理有效的 token")
+        // Processing valid authentication token
         viewModel.login(with: token)
     }
 }

@@ -1,9 +1,12 @@
 import Foundation
+import OSLog
 
 enum KeyConstants {
+    private static let logger = Logger(subsystem: "com.dauphin.app", category: "KeyConstants")
+
     static func loadAPIKeys() async throws {
         guard let url = Bundle.main.url(forResource: "api", withExtension: "plist") else {
-            print("Error: Unable to find 'api.plist' in the main bundle.")
+            logger.error("Unable to find 'api.plist' in the main bundle")
             throw NSError(domain: "KeyConstants", code: 404, userInfo: [NSLocalizedDescriptionKey: "api.plist file not found in main bundle."])
         }
 
@@ -13,22 +16,21 @@ enum KeyConstants {
             let aesDict = try decoder.decode([String: AES].self, from: data)
 
             guard let aes = aesDict["AES"] else {
-                print("Error: 'AES' key not found in plist.")
+                logger.error("'AES' key not found in plist")
                 throw NSError(domain: "KeyConstants", code: 404, userInfo: [NSLocalizedDescriptionKey: "'AES' key not found in plist."])
             }
 
             APIKeys.storage["AES256IV"] = aes.IV
             APIKeys.storage["AES256KEY"] = aes.KEY
 
-            print("Loaded AES: \(aes)")
 
             // 將 API keys 儲存到 Keychain（假設 KeychainManager 已實作）
             for (key, value) in APIKeys.storage {
                 KeychainManager.shared.save(value, forKey: key)
             }
-            print("API keys successfully saved to Keychain.")
+            logger.info("API keys successfully saved to Keychain")
         } catch {
-            print("Error: Failed to load or decode 'APIKEYS.plist'. Details: \(error.localizedDescription)")
+            logger.error("Failed to load or decode 'APIKEYS.plist': \(error.localizedDescription)")
             throw error
         }
     }
@@ -40,7 +42,7 @@ enum KeyConstants {
             if let value = storage["AES256IV"] {
                 return value
             } else {
-                print("Warning: 'AES256IV' not found in storage. Returning default value 'NOTHING1'.")
+                logger.warning("'AES256IV' not found in storage. Returning default value")
                 return "NOTHING1"
             }
         }
@@ -49,7 +51,7 @@ enum KeyConstants {
             if let value = storage["AES256KEY"] {
                 return value
             } else {
-                print("Warning: 'AES256KEY' not found in storage. Returning default value 'NOTHING2'.")
+                logger.warning("'AES256KEY' not found in storage. Returning default value")
                 return "NOTHING2"
             }
         }

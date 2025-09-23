@@ -1,7 +1,9 @@
 import SwiftUI
+import OSLog
 
 @main
 struct MyApp: App {
+    private static let logger = Logger(subsystem: "com.dauphin.app", category: "App")
     @State private var isLoaded = false
     @State private var errorMessage: String?
 
@@ -17,6 +19,7 @@ struct MyApp: App {
                             isLoaded = true // 立即切換到 ContentView
                         } catch {
                             errorMessage = error.localizedDescription
+                            Self.logger.fault("Failed to load API keys at app launch: \(error.localizedDescription)")
                         }
                     }
             }

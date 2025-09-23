@@ -1,9 +1,11 @@
 import Combine
 import Reachability
 import SwiftUI
+import OSLog
 
 // MARK: - ViewModel for Courses
 class CourseViewModel: ObservableObject {
+  private static let logger = Logger(subsystem: "com.dauphin.app", category: "CourseViewModel")
   private let appGroupDefaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
 
   @Published var weekCourses: [Course] = []
@@ -23,7 +25,7 @@ class CourseViewModel: ObservableObject {
     do {
       try reachability.startNotifier()
     } catch {
-      print("Unable to start reachability notifier: \(error)")
+      Self.logger.error("Unable to start reachability notifier: \(error.localizedDescription)")
     }
     Task {
       await initializeHelper()
@@ -41,34 +43,34 @@ class CourseViewModel: ObservableObject {
       let iv = KeychainManager.shared.get(forKey: "AES256IV")
     {
       helper = CustomAES256Helper(key: key, iv: iv)
-      print("✅ Successfully initialized helper with AES256 key and IV.")
+      Self.logger.debug("Successfully initialized AES256 helper")
     } else {
       await MainActor.run {
         self.errorMessage = "Failed to retrieve AES256 key or IV from Keychain."
       }
-      print("❌ Error: \(errorMessage ?? "Unknown error")")
+      Self.logger.error("Failed to retrieve AES256 key or IV from Keychain")
     }
   }
 
   // MARK: - Cache Management
   func loadCoursesFromCache() -> [Course]? {
-    print("Load courses from cache")
+    // Loading courses from cache
     let decoder = JSONDecoder()
     decoder.dateDecodingStrategy = .iso8601
 
     guard let data = appGroupDefaults?.data(forKey: Constants.Courses) else {
-      print("❌ No cached data found for key: \(Constants.Courses)")
+      Self.logger.debug("No cached data found for courses")
       isCacheEmpty = true
       return nil
     }
 
     do {
       let courses = try decoder.decode([Course].self, from: data)
-      print("✅ Successfully loaded courses from cache.")
+      Self.logger.debug("Successfully loaded courses from cache")
       isCacheEmpty = courses.isEmpty
       return courses
     } catch {
-      print("❌ Failed to decode cached courses: \(error)")
+      Self.logger.error("Failed to decode cached courses: \(error.localizedDescription)")
       isCacheEmpty = true
       return nil
     }
@@ -83,22 +85,22 @@ class CourseViewModel: ObservableObject {
   }
 
   func saveCoursesToCache(courses: [Course]) {
-    print("Save courses from cache")
+    // Saving courses to cache
     let encoder = JSONEncoder()
     encoder.dateEncodingStrategy = .iso8601
 
     do {
       let data = try encoder.encode(courses)
       appGroupDefaults?.set(data, forKey: Constants.Courses)
-      print("✅ Courses saved to cache successfully.")
+      Self.logger.debug("Courses saved to cache successfully")
     } catch {
-      print("❌ Failed to encode and save courses: \(error)")
+      Self.logger.error("Failed to encode and save courses: \(error.localizedDescription)")
     }
   }
 
   // MARK: - Fetch Courses
   func fetchCourses(with stdNo: String) async {
-    print("Fetch courses")
+    // Fetching courses from API
     timeoutWorkItem?.cancel()
 
     if let cachedCourses = loadCoursesFromCache() {
@@ -129,6 +131,9 @@ class CourseViewModel: ObservableObject {
       let (data, response) = try await URLSession.shared.data(from: url)
       guard let httpResponse = response as? HTTPURLResponse, 200...299 ~= httpResponse.statusCode
       else {
+        if let httpResponse = response as? HTTPURLResponse {
+          Self.logger.error("Network request failed with status code: \(httpResponse.statusCode)")
+        }
         throw URLError(.badServerResponse)
       }
 
@@ -155,6 +160,7 @@ class CourseViewModel: ObservableObject {
     -> String
   {
     guard let encrypted = helper.encrypt(data: "20220901200540356," + stdNo) else {
+      Self.logger.fault("Failed to encrypt authentication data for student: \(stdNo, privacy: .private)")
       throw EncryptionError.failed
     }
     guard let encoded = encrypted.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
@@ -199,7 +205,7 @@ class CourseViewModel: ObservableObject {
     var weekCourses = [Course]()
 
     guard let stuelelist = apiData["stuelelist"] as? [[String: Any]] else {
-      print("❌ Failed to parse 'stuelelist' from API data.")
+      Self.logger.error("Failed to parse 'stuelelist' from API data")
       return weekCourses
     }
 
@@ -208,7 +214,7 @@ class CourseViewModel: ObservableObject {
         let weekIndex = Int(weekString),
         (1...6).contains(weekIndex)
       else {
-        print("❌ Invalid or missing 'week' in course data.")
+        Self.logger.warning("Invalid or missing 'week' in course data")
         continue
       }
 
@@ -251,7 +257,7 @@ class CourseViewModel: ObservableObject {
         let start = sessionToStartTime(session: firstSessionInt),
         let end = sessionToEndTime(session: lastSessionInt)
       else {
-        print("❌ Invalid or missing time information for course data.")
+        Self.logger.warning("Invalid or missing time information for course data")
         continue
       }
 
@@ -330,7 +336,7 @@ class CourseViewModel: ObservableObject {
       }
     }
 
-    print("✅ Successfully parsed \(mergedCourses.count) courses.")
+    Self.logger.info("Successfully parsed \(mergedCourses.count) courses")
     return mergedCourses
   }
 
@@ -363,6 +369,7 @@ class CourseViewModel: ObservableObject {
   private func setCacheTimeoutFallback(using cachedCourses: [Course]) {
     let workItem = DispatchWorkItem { [weak self] in
       Task {
+        Self.logger.notice("Network timeout: Falling back to cached data")
         await self?.updateUI(
           error: "Fetching data took too long. Using cached data.", courses: cachedCourses)
       }
@@ -373,7 +380,7 @@ class CourseViewModel: ObservableObject {
 
   private func updateUI(error: String, courses: [Course]? = nil) async {
     await MainActor.run {
-      print(self.errorMessage ?? "Error in fetchCourses")
+      // Error already captured in errorMessage
       self.errorMessage = error
       self.isLoading = false
       if let courses = courses {
@@ -395,9 +402,9 @@ class CourseViewModel: ObservableObject {
     reachability.whenReachable = { reachability in
       DispatchQueue.main.async {
         if reachability.connection == .wifi {
-          print("Network is reachable via WiFi.")
+          // Network reachable via WiFi
         } else {
-          print("Network is reachable via Cellular.")
+          // Network reachable via Cellular
         }
         self.errorMessage = nil
       }

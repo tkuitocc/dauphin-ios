@@ -49,10 +49,10 @@ struct Provider: TimelineProvider {
         let defaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
         defaults?.synchronize()
         if let value = defaults?.string(forKey: Constants.ssoTokenKey) {
-            print("Retrieved ssoStuNo: \(value)")
+            // Retrieved student number from storage
             return value
         } else {
-            print("ssoStuNo not found, returning default value.")
+            // No student number found in storage
             return "尚未登入"
         }
     }
