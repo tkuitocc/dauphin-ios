@@ -10,21 +10,30 @@ import SwiftUI
 struct CourseScheduleByWeekView: View {
   @ObservedObject var courseViewModel: CourseViewModel
   @State private var selectedCourse: Course? = nil
-  @State private var showingCourseDetail = false
 
-  var isSaturday: Int {
-    courseViewModel.weekCourses.filter { $0.weekday == 6 }.count
+  // Cache computed values
+  private var hasSaturdayCourses: Bool {
+    courseViewModel.weekCourses.contains { $0.weekday == 6 }
+  }
+
+  private var dayCount: Int {
+    hasSaturdayCourses ? 6 : 5
+  }
+
+  private var days: [String] {
+    hasSaturdayCourses
+      ? ["Mo", "Tu", "We", "Th", "Fr", "Sa"]
+      : ["Mo", "Tu", "We", "Th", "Fr"]
   }
 
   var body: some View {
     GeometryReader { geometry in
       VStack {
-        let days =
-          isSaturday > 0
-          ? ["Mo", "Tu", "We", "Th", "Fr", "Sa"] : ["Mo", "Tu", "We", "Th", "Fr"]
         let dayWidth = (geometry.size.width - 45 - 8) / CGFloat(days.count)
-        let filteredCourses = (1...(isSaturday > 0 ? 6 : 5)).map { day in
-          courseViewModel.weekCourses.filter { $0.weekday == day }
+        // Pre-group courses by weekday for O(n) performance
+        let coursesByDay = Dictionary(grouping: courseViewModel.weekCourses) { $0.weekday }
+        let filteredCourses = (1...dayCount).map { day in
+          coursesByDay[day] ?? []
         }
 
         HStack(spacing: 0) {
@@ -56,12 +65,11 @@ struct CourseScheduleByWeekView: View {
                 .fill(Color(UIColor.systemBackground).opacity(0.8))
             )
 
-            ForEach(filteredCourses.indices, id: \.self) { index in
+            ForEach(Array(filteredCourses.enumerated()), id: \.offset) { _, courses in
               SingleTimeline(
-                courses: .constant(filteredCourses[index]),
+                courses: .constant(courses),
                 onCourseTap: { course in
-                  selectedCourse = course
-                  showingCourseDetail = true
+                  handleCourseTap(course)
                 }
               )
             }
@@ -69,11 +77,14 @@ struct CourseScheduleByWeekView: View {
         }
       }
     }
-    .sheet(isPresented: $showingCourseDetail) {
-      if let course = selectedCourse {
-        CourseDetailView(course: course)
-      }
+    .sheet(item: $selectedCourse) { course in
+      CourseDetailView(course: course)
     }
+  }
+
+  // Separate function to handle tap with minimal state updates
+  private func handleCourseTap(_ course: Course) {
+    selectedCourse = course
   }
 }
 
