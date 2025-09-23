@@ -8,9 +8,9 @@
 import SwiftUI
 
 enum SettingsSection: String, CaseIterable {
-  case account = "account"
-  case about = "about"
-  case cache = "cache"
+  case account
+  case about
+  case cache
 }
 
 struct SettingView: View {

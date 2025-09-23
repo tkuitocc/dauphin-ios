@@ -9,13 +9,15 @@ import SwiftUI
 
 struct SingleTimeline: View {
   @Binding var courses: [Course]
-  var onCourseTap: ((Course) -> Void)? = nil
+  var onCourseTap: ((Course) -> Void)?
   var overlapGap: CGFloat = -4
 
   let start = Calendar.current.date(
-    bySettingHour: 8, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date()))!
+    bySettingHour: 8, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date())
+  )!
   let end = Calendar.current.date(
-    bySettingHour: 22, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date()))!
+    bySettingHour: 22, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date())
+  )!
 
   // Structure to hold course positioning information
   struct CoursePosition {
@@ -115,11 +117,11 @@ struct SingleTimeline: View {
     let end2 = adjustedTime(for: course2.endTime)
 
     // Courses overlap if one starts before the other ends
-    return (start1 < end2 && end1 > start2)
+    return start1 < end2 && end1 > start2
   }
 
   var body: some View {
-    GeometryReader { geometry in
+    GeometryReader { _ in
       let totalHeight = CGFloat(1400)
       let numberOfSlots = 14
 
@@ -166,7 +168,6 @@ struct SingleTimeline: View {
                 onCourseTap?(position.course)
               }
             }
-
           }
           .frame(height: totalHeight)
         }
@@ -179,7 +180,8 @@ struct SingleTimeline: View {
     let baseDate = Calendar.current.startOfDay(for: Date())
     let calendar = Calendar.current
     return calendar.date(
-      bySettingHour: calendar.component(.hour, from: time), minute: 0, second: 0, of: baseDate)!
+      bySettingHour: calendar.component(.hour, from: time), minute: 0, second: 0, of: baseDate
+    )!
   }
 
   // 計算課程的高度
@@ -206,7 +208,7 @@ struct TimeSlotGrid: View {
 
   var body: some View {
     VStack(spacing: 0) {
-      ForEach(0..<numberOfSlots, id: \.self) { index in
+      ForEach(0..<numberOfSlots, id: \.self) { _ in
         Rectangle()
           .stroke(Color.gray.opacity(0.4), lineWidth: 0.3)
           .frame(height: totalHeight / CGFloat(numberOfSlots))
@@ -273,11 +275,12 @@ struct CourseView: View {
     SingleTimeline(
       courses: Binding(
         get: { courseViewModel.weekCourses.filter { $0.weekday == 1 } },
-        set: { newValue in
+        set: { _ in
           // Update courseViewModel.weekCourses with the changes from newValue
           // This may require additional logic to ensure filtered courses are updated correctly
         }
       ),
-      overlapGap: 4)
+      overlapGap: 4
+    )
   }
 }
