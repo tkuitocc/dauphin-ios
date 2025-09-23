@@ -32,7 +32,7 @@ struct OtherView: View {
           Label("Campus Map", systemImage: "map.fill")
             .tag(OtherSection.map)
         }
-        .navigationTitle("Browse")
+        .navigationTitle("Other")
         .listStyle(SidebarListStyle())
       } detail: {
         Group {
@@ -73,7 +73,7 @@ struct OtherView: View {
             Label("Campus Map", systemImage: "map.fill")
           }
         }
-        .navigationTitle("Browse")
+        .navigationTitle("Other")
       }
     }
   }
