@@ -70,3 +70,4 @@ iOSInjectionProject/
 # App-specific
 dauphin/APIKEYS.json
 dauphin/api.plist
+buildServer.json
