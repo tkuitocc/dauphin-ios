@@ -11,153 +11,61 @@ struct CourseDetailView: View {
   let course: Course
   @Environment(\.dismiss) var dismiss
 
-  // Get day of week string
-  private var dayOfWeek: String {
-    let days = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    return days[min(max(course.weekday, 0), days.count - 1)]
-  }
+  // Cache expensive computations
+  private let dayOfWeek: String
+  private let timeRange: String
+  private let courseColor: Color
+  private let hasNote: Bool
 
-  // Format time for display
-  private var timeRange: String {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "HH:mm"
+  init(course: Course) {
+    self.course = course
+
+    // Pre-compute day of week
+    let days = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    self.dayOfWeek = days[min(max(course.weekday, 0), days.count - 1)]
+
+    // Pre-compute time range with cached formatter
+    let formatter = CourseDetailView.timeFormatter
     let start = formatter.string(from: course.startTime)
     let end = formatter.string(from: course.endTime)
-    return "\(start) - \(end)"
+    self.timeRange = "\(start) - \(end)"
+
+    // Pre-compute color
+    self.courseColor = CourseColors.color(for: course.name)
+
+    // Pre-compute note check
+    self.hasNote = !course.note.isEmpty
   }
 
-  private var courseColor: Color {
-    CourseColors.color(for: course.name)
-  }
+  // Shared formatter to avoid recreation
+  private static let timeFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "HH:mm"
+    return formatter
+  }()
 
   var body: some View {
     NavigationView {
       ScrollView {
         VStack(spacing: 0) {
           // Header with color
-          VStack(spacing: 12) {
-            Text(course.name)
-              .font(.title2)
-              .fontWeight(.bold)
-              .foregroundColor(.white)
-              .multilineTextAlignment(.center)
-              .padding(.horizontal)
-          }
-          .frame(maxWidth: .infinity)
-          .padding(.vertical, 32)
-          .background(courseColor)
+          headerView
 
           // Course details
           VStack(alignment: .leading, spacing: 20) {
-            // Time section
-            HStack(spacing: 16) {
-              Image(systemName: "clock.fill")
-                .font(.system(size: 22))
-                .foregroundColor(courseColor)
-                .frame(width: 30)
-
-              VStack(alignment: .leading, spacing: 4) {
-                Text("Time")
-                  .font(.caption)
-                  .foregroundColor(Color(UIColor.secondaryLabel))
-                Text(timeRange)
-                  .font(.system(size: 16, weight: .medium))
-                  .foregroundColor(Color(UIColor.label))
-                Text(dayOfWeek)
-                  .font(.system(size: 14))
-                  .foregroundColor(Color(UIColor.secondaryLabel))
-              }
-
-              Spacer()
-            }
-
+            detailRow(icon: "clock.fill", title: "Time", content: timeRange, subcontent: dayOfWeek)
             Divider()
-
-            // Location section
-            HStack(spacing: 16) {
-              Image(systemName: "location.circle.fill")
-                .font(.system(size: 22))
-                .foregroundColor(courseColor)
-                .frame(width: 30)
-
-              VStack(alignment: .leading, spacing: 4) {
-                Text("Location")
-                  .font(.caption)
-                  .foregroundColor(Color(UIColor.secondaryLabel))
-                Text(course.room)
-                  .font(.system(size: 16, weight: .medium))
-                  .foregroundColor(Color(UIColor.label))
-              }
-
-              Spacer()
-            }
-
+            detailRow(icon: "location.circle.fill", title: "Location", content: course.room)
             Divider()
-
-            // Teacher section
-            HStack(spacing: 16) {
-              Image(systemName: "person.fill")
-                .font(.system(size: 22))
-                .foregroundColor(courseColor)
-                .frame(width: 30)
-
-              VStack(alignment: .leading, spacing: 4) {
-                Text("Instructor")
-                  .font(.caption)
-                  .foregroundColor(Color(UIColor.secondaryLabel))
-                Text(course.teacher)
-                  .font(.system(size: 16, weight: .medium))
-                  .foregroundColor(Color(UIColor.label))
-              }
-
-              Spacer()
-            }
-
+            detailRow(icon: "person.fill", title: "Instructor", content: course.teacher)
             Divider()
-
-            // Seat number section
-            HStack(spacing: 16) {
-              Image(systemName: "number.circle.fill")
-                .font(.system(size: 22))
-                .foregroundColor(courseColor)
-                .frame(width: 30)
-
-              VStack(alignment: .leading, spacing: 4) {
-                Text("Seat Number")
-                  .font(.caption)
-                  .foregroundColor(Color(UIColor.secondaryLabel))
-                Text(course.stdNo)
-                  .font(.system(size: 16, weight: .medium))
-                  .foregroundColor(Color(UIColor.label))
-              }
-
-              Spacer()
-            }
+            detailRow(icon: "number.circle.fill", title: "Seat Number", content: course.stdNo)
 
             // Note section (only show if note is not empty)
-            if !course.note.isEmpty {
+            if hasNote {
               Divider()
-
-              HStack(spacing: 16) {
-                Image(systemName: "note.text")
-                  .font(.system(size: 22))
-                  .foregroundColor(courseColor)
-                  .frame(width: 30)
-
-                VStack(alignment: .leading, spacing: 4) {
-                  Text("Note")
-                    .font(.caption)
-                    .foregroundColor(Color(UIColor.secondaryLabel))
-                  Text(course.note)
-                    .font(.system(size: 14))
-                    .foregroundColor(Color(UIColor.label))
-                    .fixedSize(horizontal: false, vertical: true)
-                }
-
-                Spacer()
-              }
+              detailRow(icon: "note.text", title: "Note", content: course.note, isNote: true)
             }
-
           }
           .padding(24)
           .background(Color(UIColor.systemBackground))
@@ -172,6 +80,50 @@ struct CourseDetailView: View {
           .fontWeight(.medium)
         }
       }
+    }
+  }
+
+  // Extract header as ViewBuilder for better performance
+  @ViewBuilder
+  private var headerView: some View {
+    Text(course.name)
+      .font(.title2)
+      .fontWeight(.bold)
+      .foregroundColor(.white)
+      .multilineTextAlignment(.center)
+      .padding(.horizontal)
+      .frame(maxWidth: .infinity)
+      .padding(.vertical, 32)
+      .background(courseColor)
+  }
+
+  // Reusable detail row component to reduce code duplication
+  @ViewBuilder
+  private func detailRow(
+    icon: String, title: String, content: String, subcontent: String? = nil, isNote: Bool = false
+  ) -> some View {
+    HStack(spacing: 16) {
+      Image(systemName: icon)
+        .font(.system(size: 22))
+        .foregroundColor(courseColor)
+        .frame(width: 30)
+
+      VStack(alignment: .leading, spacing: 4) {
+        Text(title)
+          .font(.caption)
+          .foregroundColor(Color(UIColor.secondaryLabel))
+        Text(content)
+          .font(.system(size: isNote ? 14 : 16, weight: isNote ? .regular : .medium))
+          .foregroundColor(Color(UIColor.label))
+          .fixedSize(horizontal: false, vertical: isNote)
+        if let subcontent = subcontent {
+          Text(subcontent)
+            .font(.system(size: 14))
+            .foregroundColor(Color(UIColor.secondaryLabel))
+        }
+      }
+
+      Spacer()
     }
   }
 }
