@@ -1,22 +1,26 @@
 import Combine
+import OSLog
 import Reachability
 import SwiftUI
-import OSLog
 
 // MARK: - ViewModel for Courses
+@MainActor
 class CourseViewModel: ObservableObject {
   private static let logger = Logger(subsystem: "com.dauphin.app", category: "CourseViewModel")
   private let appGroupDefaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
 
   @Published var weekCourses: [Course] = []
-  @Published var isLoading = false
   @Published var errorMessage: String? = nil
   @Published var isCacheEmpty = false
+  @Published var isUpdatingCache = false
+  @Published var cacheUpdateMessage: String? = nil
+  @Published var isRefreshing = false
 
   private var reachability: Reachability
   private var helper: CustomAES256Helper?
   private var timeoutWorkItem: DispatchWorkItem?
   private var cancellables = Set<AnyCancellable>()
+  private static var hasPerformedInitialLoad = false
 
   init() {
     reachability = try! Reachability()
@@ -27,9 +31,7 @@ class CourseViewModel: ObservableObject {
     } catch {
       Self.logger.error("Unable to start reachability notifier: \(error.localizedDescription)")
     }
-    Task {
-      await initializeHelper()
-    }
+    initializeHelper()
   }
 
   init(mockData: [Course]) {
@@ -38,16 +40,14 @@ class CourseViewModel: ObservableObject {
   }
 
   // MARK: - Helper Initialization
-  private func initializeHelper() async {
+  private func initializeHelper() {
     if let key = KeychainManager.shared.get(forKey: "AES256KEY"),
       let iv = KeychainManager.shared.get(forKey: "AES256IV")
     {
       helper = CustomAES256Helper(key: key, iv: iv)
       Self.logger.debug("Successfully initialized AES256 helper")
     } else {
-      await MainActor.run {
-        self.errorMessage = "Failed to retrieve AES256 key or IV from Keychain."
-      }
+      self.errorMessage = "Failed to retrieve AES256 key or IV from Keychain."
       Self.logger.error("Failed to retrieve AES256 key or IV from Keychain")
     }
   }
@@ -99,35 +99,56 @@ class CourseViewModel: ObservableObject {
   }
 
   // MARK: - Fetch Courses
-  func fetchCourses(with stdNo: String) async {
+  func fetchCourses(with stdNo: String, forceRefresh: Bool = false) async {
     // Fetching courses from API
     timeoutWorkItem?.cancel()
 
-    if let cachedCourses = loadCoursesFromCache() {
-      setCacheTimeoutFallback(using: cachedCourses)
+    // Set refreshing state for pull-to-refresh
+    if forceRefresh {
+      self.isRefreshing = true
+    }
+
+    // Load and display cached data immediately
+    if let cachedCourses = loadCoursesFromCache(), !cachedCourses.isEmpty {
+      self.weekCourses = cachedCourses
+      self.isCacheEmpty = false
+      self.errorMessage = nil
+    }
+
+    // Only fetch from network on app launch or manual refresh
+    guard !Self.hasPerformedInitialLoad || forceRefresh else {
+      // Already loaded once this session, just show cached data
+      self.isRefreshing = false
+      return
     }
 
     guard let helper = helper else {
-      await updateUI(error: "Encryption helper not initialized.")
+      self.errorMessage = "Encryption helper not initialized."
+      self.isRefreshing = false
       return
     }
 
+    // Check network availability
     guard reachability.connection != .unavailable else {
-      if let cachedCourses = loadCoursesFromCache(), !cachedCourses.isEmpty {
-        await updateUI(
-          error: "No internet connection. Showing cached data.", courses: cachedCourses)
-      } else {
-        await updateUI(error: "No internet connection and no cached data available.")
+      if weekCourses.isEmpty {
+        self.errorMessage = "No internet connection and no cached data available."
       }
+      self.isRefreshing = false
+      // If we have cached data, it's already displayed
       return
     }
+
+    // Network is available - update cache in background (only on first load)
+    Self.hasPerformedInitialLoad = true
+
+    self.isUpdatingCache = true
+    self.cacheUpdateMessage = "Updating course data..."
 
     do {
       let encryptedQuery = try await createEncryptedQuery(for: stdNo, helper: helper)
       let url = URL(
         string: "https://ilifeapi.az.tku.edu.tw/api/ilifeStuClassApi?q=\(encryptedQuery)")!
 
-      // isLoading = true
       let (data, response) = try await URLSession.shared.data(from: url)
       guard let httpResponse = response as? HTTPURLResponse, 200...299 ~= httpResponse.statusCode
       else {
@@ -143,16 +164,36 @@ class CourseViewModel: ObservableObject {
         let trimmedJson = trimAllStringFields(json) as? [String: Any] ?? json
         let courses = parseCourseData(apiData: trimmedJson)
         saveCoursesToCache(courses: courses)
-        await updateUI(courses: courses)
-        await MainActor.run {
-          self.isCacheEmpty = courses.isEmpty
+
+        self.weekCourses = courses
+        self.isCacheEmpty = courses.isEmpty
+        self.errorMessage = nil
+        self.isUpdatingCache = false
+        self.isRefreshing = false
+        self.cacheUpdateMessage = forceRefresh ? "Refreshed successfully" : "Course data updated"
+
+        // Hide the message after 2 seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+          self.cacheUpdateMessage = nil
         }
       } else {
         throw URLError(.cannotParseResponse)
       }
 
     } catch {
-      await updateUI(error: "Failed to fetch courses: \(error.localizedDescription)")
+      self.isUpdatingCache = false
+      self.isRefreshing = false
+      self.cacheUpdateMessage = nil
+      // Only show error if we don't have cached data
+      if self.weekCourses.isEmpty {
+        self.errorMessage = "Failed to fetch courses: \(error.localizedDescription)"
+      } else if forceRefresh {
+        // Show brief error notification for refresh failures
+        self.cacheUpdateMessage = "Refresh failed"
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+          self.cacheUpdateMessage = nil
+        }
+      }
     }
   }
 
@@ -160,7 +201,8 @@ class CourseViewModel: ObservableObject {
     -> String
   {
     guard let encrypted = helper.encrypt(data: "20220901200540356," + stdNo) else {
-      Self.logger.fault("Failed to encrypt authentication data for student: \(stdNo, privacy: .private)")
+      Self.logger.fault(
+        "Failed to encrypt authentication data for student: \(stdNo, privacy: .private)")
       throw EncryptionError.failed
     }
     guard let encoded = encrypted.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
@@ -368,33 +410,29 @@ class CourseViewModel: ObservableObject {
   // MARK: - UI Updates
   private func setCacheTimeoutFallback(using cachedCourses: [Course]) {
     let workItem = DispatchWorkItem { [weak self] in
-      Task {
+      Task { @MainActor in
         Self.logger.notice("Network timeout: Falling back to cached data")
-        await self?.updateUI(
-          error: "Fetching data took too long. Using cached data.", courses: cachedCourses)
+        self?.errorMessage = "Fetching data took too long. Using cached data."
+        if let courses = cachedCourses as [Course]? {
+          self?.weekCourses = courses
+        }
       }
     }
     timeoutWorkItem = workItem
     DispatchQueue.global().asyncAfter(deadline: .now() + 2, execute: workItem)
   }
 
-  private func updateUI(error: String, courses: [Course]? = nil) async {
-    await MainActor.run {
-      // Error already captured in errorMessage
-      self.errorMessage = error
-      self.isLoading = false
-      if let courses = courses {
-        self.weekCourses = courses
-      }
+  private func updateUI(error: String, courses: [Course]? = nil) {
+    // Error already captured in errorMessage
+    self.errorMessage = error
+    if let courses = courses {
+      self.weekCourses = courses
     }
   }
 
-  private func updateUI(courses: [Course]) async {
-    await MainActor.run {
-      self.weekCourses = courses
-      self.errorMessage = nil
-      self.isLoading = false
-    }
+  private func updateUI(courses: [Course]) {
+    self.weekCourses = courses
+    self.errorMessage = nil
   }
 
   // MARK: - Reachability Configuration
