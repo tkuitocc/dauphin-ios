@@ -280,17 +280,12 @@ class CourseViewModel: ObservableObject {
     }
 
     // STEP 2: Keep only one course if data is same (remove exact duplicates)
+    // Using Set for O(n) performance instead of O(n²)
+    var seenCourses = Set<Course>()
     var uniqueCourses: [Course] = []
-    for course in weekCourses {
-      let isDuplicate = uniqueCourses.contains { existingCourse in
-        existingCourse.name == course.name && existingCourse.room == course.room
-          && existingCourse.teacher == course.teacher && existingCourse.time == course.time
-          && existingCourse.startTime == course.startTime
-          && existingCourse.endTime == course.endTime && existingCourse.stdNo == course.stdNo
-          && existingCourse.weekday == course.weekday && existingCourse.note == course.note
-      }
 
-      if !isDuplicate {
+    for course in weekCourses {
+      if seenCourses.insert(course).inserted {
         uniqueCourses.append(course)
       }
     }
