@@ -16,7 +16,6 @@ struct CourseCardView: View {
   let weekday: Int
 
   @Environment(\.colorScheme) var colorScheme
-  @State private var isPressed = false
   @State private var isOngoing = false
   @State private var currentTime = Date()
   let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
@@ -68,17 +67,28 @@ struct CourseCardView: View {
         Spacer()
 
         // Status Indicator
-        if !isOngoing {
+        if isOngoing {
           HStack(spacing: 6) {
-            Circle()
-              .fill(Color.green)
-              .frame(width: 8, height: 8)
-              .overlay(
-                Circle()
-                  .fill(Color.green.opacity(0.5))
-                  .frame(width: 16, height: 16)
-                  .scaleEffect(isPressed ? 1.2 : 1.0)
-              )
+            ZStack {
+              // Outer pulsing circle
+              Circle()
+                .fill(Color.green.opacity(0.3))
+                .frame(width: 16, height: 16)
+                .modifier(PulsingAnimation(finalScale: 1.5, finalOpacity: 0.3, duration: 1.0))
+
+              // Middle pulsing circle
+              Circle()
+                .fill(Color.green.opacity(0.5))
+                .frame(width: 12, height: 12)
+                .modifier(PulsingAnimation(finalScale: 1.3, duration: 1.0))
+
+              // Core dot that pulses
+              Circle()
+                .fill(Color.green)
+                .frame(width: 8, height: 8)
+                .modifier(PulsingAnimation(finalScale: 1.2, initialScale: 0.8, duration: 1.0))
+            }
+
             Text("Ongoing")
               .font(.system(size: 12, weight: .semibold))
               .foregroundColor(.green)
@@ -178,13 +188,8 @@ struct CourseCardView: View {
           lineWidth: 1
         )
     )
-    .scaleEffect(isPressed && !isOngoing ? 0.98 : 1.0)
-    .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isPressed)
     .onAppear {
       updateOngoingStatus()
-      if isOngoing {
-        isPressed = true
-      }
     }
     .onReceive(timer) { _ in
       updateOngoingStatus()
@@ -193,7 +198,6 @@ struct CourseCardView: View {
 
   private func updateOngoingStatus() {
     currentTime = Date()
-    let wasOngoing = isOngoing
 
     let calendar = Calendar.current
     let now = Date()
@@ -224,10 +228,30 @@ struct CourseCardView: View {
     // Check if current time is between start and end times
     isOngoing =
       currentTimeInMinutes >= startTimeInMinutes && currentTimeInMinutes <= endTimeInMinutes
+  }
+}
 
-    if isOngoing && !wasOngoing {
-      isPressed = true
-    }
+// Custom ViewModifier for continuous pulsing animation
+struct PulsingAnimation: ViewModifier {
+  @State private var isAnimating = false
+  let finalScale: CGFloat
+  var initialScale: CGFloat = 1.0
+  var finalOpacity: Double = 1.0
+  var initialOpacity: Double = 0.6
+  let duration: Double
+
+  func body(content: Content) -> some View {
+    content
+      .scaleEffect(isAnimating ? finalScale : initialScale)
+      .opacity(isAnimating ? finalOpacity : initialOpacity)
+      .onAppear {
+        withAnimation(
+          Animation.easeInOut(duration: duration)
+            .repeatForever(autoreverses: true)
+        ) {
+          isAnimating = true
+        }
+      }
   }
 }
 
