@@ -20,7 +20,7 @@ class CourseViewModel: ObservableObject {
   private var helper: CustomAES256Helper?
   private var timeoutWorkItem: DispatchWorkItem?
   private var cancellables = Set<AnyCancellable>()
-  private static var hasPerformedInitialLoad = false
+  static var hasPerformedInitialLoad = false
 
   init() {
     reachability = try! Reachability()
@@ -84,6 +84,12 @@ class CourseViewModel: ObservableObject {
     errorMessage = "Cache cleared. Please refresh to load courses."
   }
 
+  func resetInitializationFlag() {
+    // Reset the initialization flag on logout
+    Self.hasPerformedInitialLoad = false
+    Self.logger.debug("Reset initialization flag for fresh session")
+  }
+
   func saveCoursesToCache(courses: [Course]) {
     // Saving courses to cache
     let encoder = JSONEncoder()
@@ -99,7 +105,7 @@ class CourseViewModel: ObservableObject {
   }
 
   // MARK: - Fetch Courses
-  func fetchCourses(with stdNo: String, forceRefresh: Bool = false) async {
+  func fetchCourses(with stdNo: String, forceRefresh: Bool = false, isFirstLogin: Bool = false) async {
     // Fetching courses from API
     timeoutWorkItem?.cancel()
 
@@ -115,8 +121,8 @@ class CourseViewModel: ObservableObject {
       self.errorMessage = nil
     }
 
-    // Only fetch from network on app launch or manual refresh
-    guard !Self.hasPerformedInitialLoad || forceRefresh else {
+    // Only fetch from network on app launch, manual refresh, or first login
+    guard !Self.hasPerformedInitialLoad || forceRefresh || isFirstLogin else {
       // Already loaded once this session, just show cached data
       self.isRefreshing = false
       return

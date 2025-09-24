@@ -46,8 +46,8 @@ class AuthViewModel: ObservableObject {
   // Fetch courses for the logged-in user
   private func fetchCourses(token: String) {
     Task {
-      // Initiating course fetch for authenticated user
-      await courseViewModel.fetchCourses(with: token)
+      // Initiating course fetch for authenticated user - force fetch on login
+      await courseViewModel.fetchCourses(with: token, forceRefresh: false, isFirstLogin: true)
     }
   }
 
@@ -56,6 +56,9 @@ class AuthViewModel: ObservableObject {
     appGroupDefaults?.removeObject(forKey: Constants.ssoTokenKey)
     appGroupDefaults?.removeObject(forKey: Constants.Courses)
     Self.logger.info("Cleared user data from App Group")
+
+    // Reset course view model initialization flag for fresh session
+    courseViewModel.resetInitializationFlag()
 
     // Clear website data
     clearWebsiteData()
