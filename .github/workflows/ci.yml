@@ -46,5 +46,5 @@ jobs:
           xcrun simctl list runtimes
           xcodebuild -project dauphin.xcodeproj \
             -scheme "dauphin" -configuration Debug \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.5' \
             clean build
