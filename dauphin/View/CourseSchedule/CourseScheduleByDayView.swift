@@ -84,7 +84,7 @@ struct CourseScheduleByDayView: View {
                 let isSelected = selectedDateIndex == index
                 let isToday = date.day == Calendar.current.component(.day, from: Date())
 
-                VStack(spacing: 6) {
+                VStack(spacing: 4) {
                   Text("\(date.day)")
                     .font(.system(size: 20, weight: isSelected ? .semibold : .regular))
                     .foregroundColor(isSelected ? .white : (isToday ? .accentColor : .primary))
@@ -93,7 +93,9 @@ struct CourseScheduleByDayView: View {
                     .font(.system(size: 14, weight: isSelected ? .medium : .regular))
                     .foregroundColor(isSelected ? .white.opacity(0.9) : .secondary)
                 }
-                .frame(width: 65, height: 85)
+                .padding(
+                  EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
+                )
                 .background(
                   ZStack {
                     if isSelected {
@@ -105,7 +107,8 @@ struct CourseScheduleByDayView: View {
                         .fill(Color(UIColor.secondarySystemGroupedBackground))
                         .overlay(
                           RoundedRectangle(cornerRadius: 12)
-                            .strokeBorder(isToday ? Color.accentColor.opacity(0.3) : Color.clear, lineWidth: 2)
+                            .strokeBorder(
+                              isToday ? Color.accentColor.opacity(0.3) : Color.clear, lineWidth: 2)
                         )
                     }
                   }
@@ -180,7 +183,8 @@ struct CourseScheduleByDayView: View {
                 teacherName: course.teacher,
                 StartTime: course.startTime,
                 EndTime: course.endTime,
-                stdNo: course.stdNo
+                stdNo: course.stdNo,
+                weekday: course.weekday
               )
               .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
               .scaleEffect(1.0)
@@ -189,9 +193,9 @@ struct CourseScheduleByDayView: View {
                 selectedCourse = course
               }
             }
-            .padding(.horizontal)
-            .padding(.top, 12)
           }
+          .padding(.horizontal)
+          .padding(.vertical, 12)
         }
       }
       .background(Color(UIColor.systemBackground))
@@ -221,5 +225,6 @@ struct CourseScheduleByDayView: View {
 }
 
 #Preview {
-  CourseScheduleByDayView(courseViewModel: CourseViewModel(mockData: mockData), authViewModel: AuthViewModel())
+  CourseScheduleByDayView(
+    courseViewModel: CourseViewModel(mockData: mockData), authViewModel: AuthViewModel())
 }

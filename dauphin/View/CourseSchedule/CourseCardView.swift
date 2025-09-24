@@ -13,6 +13,7 @@ struct CourseCardView: View {
   let StartTime: Date
   let EndTime: Date
   let stdNo: String
+  let weekday: Int
 
   @Environment(\.colorScheme) var colorScheme
   @State private var isPressed = false
@@ -23,10 +24,22 @@ struct CourseCardView: View {
   private var timeColor: Color {
     if isOngoing {
       return .green
-    } else if currentTime < StartTime {
-      return .accentColor
     } else {
-      return .secondary
+      // Compare only time components for future courses
+      let calendar = Calendar.current
+      let currentHour = calendar.component(.hour, from: currentTime)
+      let currentMinute = calendar.component(.minute, from: currentTime)
+      let currentTimeInMinutes = currentHour * 60 + currentMinute
+
+      let startHour = calendar.component(.hour, from: StartTime)
+      let startMinute = calendar.component(.minute, from: StartTime)
+      let startTimeInMinutes = startHour * 60 + startMinute
+
+      if currentTimeInMinutes < startTimeInMinutes {
+        return .accentColor
+      } else {
+        return .secondary
+      }
     }
   }
 
@@ -37,7 +50,7 @@ struct CourseCardView: View {
   }
 
   var body: some View {
-    VStack(alignment: .leading, spacing: 16) {
+    VStack(alignment: .leading, spacing: 10) {
       HStack {
         // Time Badge
         HStack(spacing: 4) {
@@ -55,8 +68,8 @@ struct CourseCardView: View {
         Spacer()
 
         // Status Indicator
-        if isOngoing {
-          HStack(spacing: 4) {
+        if !isOngoing {
+          HStack(spacing: 6) {
             Circle()
               .fill(Color.green)
               .frame(width: 8, height: 8)
@@ -70,7 +83,6 @@ struct CourseCardView: View {
               .font(.system(size: 12, weight: .semibold))
               .foregroundColor(.green)
           }
-          .animation(.easeInOut(duration: 1).repeatForever(autoreverses: true), value: isPressed)
         }
       }
 
@@ -83,7 +95,7 @@ struct CourseCardView: View {
 
       VStack(alignment: .leading, spacing: 8) {
         // Course Details
-        HStack(spacing: 12) {
+        HStack(spacing: 8) {
           // Location Badge
           HStack(spacing: 4) {
             Image(systemName: "location.circle.fill")
@@ -128,7 +140,7 @@ struct CourseCardView: View {
         }
 
         // Teacher Info
-        HStack(spacing: 8) {
+        HStack(spacing: 4) {
           Image(systemName: "person.fill")
             .font(.system(size: 14))
             .foregroundColor(.secondary)
@@ -139,7 +151,7 @@ struct CourseCardView: View {
         }
       }
     }
-    .padding(20)
+    .padding(15)
     .background(
       RoundedRectangle(cornerRadius: 16)
         .fill(cardBackground)
@@ -182,7 +194,37 @@ struct CourseCardView: View {
   private func updateOngoingStatus() {
     currentTime = Date()
     let wasOngoing = isOngoing
-    isOngoing = currentTime >= StartTime && currentTime <= EndTime
+
+    let calendar = Calendar.current
+    let now = Date()
+
+    let currentWeekday = calendar.component(.weekday, from: now)
+
+    let courseWeekdayIOS = weekday == 7 ? 1 : weekday + 1
+
+    // If not today, not ongoing
+    if currentWeekday != courseWeekdayIOS {
+      isOngoing = false
+      return
+    }
+
+    // Check time if it's the right day
+    let currentHour = calendar.component(.hour, from: now)
+    let currentMinute = calendar.component(.minute, from: now)
+    let currentTimeInMinutes = currentHour * 60 + currentMinute
+
+    let startHour = calendar.component(.hour, from: StartTime)
+    let startMinute = calendar.component(.minute, from: StartTime)
+    let startTimeInMinutes = startHour * 60 + startMinute
+
+    let endHour = calendar.component(.hour, from: EndTime)
+    let endMinute = calendar.component(.minute, from: EndTime)
+    let endTimeInMinutes = endHour * 60 + endMinute
+
+    // Check if current time is between start and end times
+    isOngoing =
+      currentTimeInMinutes >= startTimeInMinutes && currentTimeInMinutes <= endTimeInMinutes
+
     if isOngoing && !wasOngoing {
       isPressed = true
     }
@@ -192,7 +234,9 @@ struct CourseCardView: View {
 #Preview {
   CourseCardView(
     courseName: "計算機組織", roomNumber: "E305", teacherName: "我", StartTime: stringToTime("8:10")!,
-    EndTime: stringToTime("9:00")!, stdNo: "178"
+    EndTime: stringToTime("9:00")!,
+    stdNo: "178",
+    weekday: 1
   )
   .padding()
 }
