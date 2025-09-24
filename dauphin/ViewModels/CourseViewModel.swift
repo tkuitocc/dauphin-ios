@@ -71,8 +71,8 @@ final class CourseViewModel: ObservableObject {
     let decoder = JSONDecoder()
     decoder.dateDecodingStrategy = .iso8601
 
-    guard let data = defaults.data(forKey: Constants.Courses) else {
-      logger.info("No cached data for key \(Constants.Courses, privacy: .public).")
+    guard let data = defaults.data(forKey: Constants.courses) else {
+      logger.info("No cached data for key \(Constants.courses, privacy: .public).")
       isCacheEmpty = true
       return nil
     }
@@ -89,7 +89,7 @@ final class CourseViewModel: ObservableObject {
   }
 
   func clearCache() {
-    defaults.removeObject(forKey: Constants.Courses)
+    defaults.removeObject(forKey: Constants.courses)
     weekCourses = []
     isCacheEmpty = true
     errorMessage = "Cache cleared. Please refresh to load courses."
@@ -101,7 +101,7 @@ final class CourseViewModel: ObservableObject {
     encoder.dateEncodingStrategy = .iso8601
     do {
       let data = try encoder.encode(courses)
-      defaults.set(data, forKey: Constants.Courses)
+      defaults.set(data, forKey: Constants.courses)
     } catch {
       logger.error("Encode+save courses failed: \(String(describing: error), privacy: .public)")
     }
@@ -232,11 +232,20 @@ final class CourseViewModel: ObservableObject {
 
   struct CourseDTO: Decodable {
     let week: String
-    let ch_cos_name: String?
+    let chCosName: String?
     let note: String?
     let room: String?
-    let teach_name: String?
-    let timePlase: TimePlace?
+    let teachName: String?
+    let timePlace: TimePlace?
+
+    enum CodingKeys: String, CodingKey {
+      case week
+      case chCosName = "ch_cos_name"
+      case note
+      case room
+      case teachName = "teach_name"
+      case timePlace = "timePlase"
+    }
 
     struct TimePlace: Decodable {
       let sesses: [String]
@@ -252,7 +261,7 @@ final class CourseViewModel: ObservableObject {
         (1...7).contains(weekIndex)
       else { continue }
 
-      let rawCourseName = cleanHTMLTags(from: courseData.ch_cos_name ?? "Unknown")
+      let rawCourseName = cleanHTMLTags(from: courseData.chCosName ?? "Unknown")
         .replacingOccurrences(of: "\n", with: "")
         .replacingOccurrences(of: "\r", with: "")
 
@@ -267,17 +276,18 @@ final class CourseViewModel: ObservableObject {
         .first ?? ""
 
       let teacher =
-        cleanHTMLTags(from: courseData.teach_name ?? "Unknown Teacher")
+        cleanHTMLTags(from: courseData.teachName ?? "Unknown Teacher")
         .components(separatedBy: ",")
         .first ?? "Unknown Teacher"
 
+      // original code called this seat_no; API lacks here in Decodable path
       let seatNo =
-        cleanHTMLTags(from: "")  // original code called this seat_no; API lacks here in Decodable path
+        cleanHTMLTags(from: "")
         .components(separatedBy: ",")
         .first ?? "Unknown Seat"
 
       guard
-        let sesses = courseData.timePlase?.sesses,
+        let sesses = courseData.timePlace?.sesses,
         let firstSession = sesses.first,
         let lastSession = sesses.last,
         let firstSessionInt = Int(firstSession),

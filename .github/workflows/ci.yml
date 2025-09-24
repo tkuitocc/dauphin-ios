@@ -1,14 +1,12 @@
 name: Format
 
-# 觸發條件
 on:
-  pull_request:       # 所有 PR 都觸發
+  pull_request:
   push:
     branches:
-      - dev           # 只有 push 到 dev 時觸發
-  workflow_dispatch:  # 手動觸發
+      - dev
+  workflow_dispatch:
 
-# 自動取消舊的 workflow
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -26,17 +24,9 @@ jobs:
       - name: Install swift-format
         run: brew install swift-format
 
-      - name: Format
-        run: make format
-
-      - name: Auto-commit formatted code
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "[ci skip] Run swift-format"
-          branch: "main"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Check Format
+        run: swift-format lint --configuration .swift-format --recursive .
+  
   build:
     name: build
     runs-on: macOS-14

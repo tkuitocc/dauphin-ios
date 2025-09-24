@@ -85,7 +85,7 @@ struct Provider: TimelineProvider {
       coursesWidgetLogger.error("App Group defaults unavailable.")
       return nil
     }
-    guard let data = defaults.data(forKey: Constants.Courses) else {
+    guard let data = defaults.data(forKey: Constants.courses) else {
       return nil
     }
     let decoder = JSONDecoder()

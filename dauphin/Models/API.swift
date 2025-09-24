@@ -4,6 +4,11 @@ import SwiftUI
 
 // Model for AES configuration
 struct AES: Decodable {
-  let IV: String
-  let KEY: String
+  let iv: String
+  let key: String
+
+  private enum CodingKeys: String, CodingKey {
+    case iv = "IV"
+    case key = "KEY"
+  }
 }

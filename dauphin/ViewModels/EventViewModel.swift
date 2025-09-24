@@ -15,7 +15,8 @@ class EventViewModel: ObservableObject {
   )
 
   func loadXMLData(withQuery query: [String: String]) {
-    var components = URLComponents(string: "https://ilifeapi.az.tku.edu.tw/data/xml_cal.ashx?")  // Base URL
+    // Base URL
+    var components = URLComponents(string: "https://ilifeapi.az.tku.edu.tw/data/xml_cal.ashx?")
     components?.queryItems = query.map { URLQueryItem(name: $0.key, value: $0.value) }
 
     guard let url = components?.url else {

@@ -62,7 +62,7 @@ final class AuthViewModel: ObservableObject {
   func logout() {
     // 清除 App Group 中的使用者資料與快取
     appGroupDefaults?.removeObject(forKey: Constants.ssoTokenKey)
-    appGroupDefaults?.removeObject(forKey: Constants.Courses)
+    appGroupDefaults?.removeObject(forKey: Constants.courses)
     appGroupDefaults?.set(false, forKey: Constants.isLoggedInKey)
     logger.info("Cleared App Group user data.")
 
@@ -87,8 +87,8 @@ final class AuthViewModel: ObservableObject {
     store.fetchDataRecords(ofTypes: all) { [logger] records in
       guard !records.isEmpty else { return }
       store.removeData(ofTypes: all, for: records) {
-        records.forEach { rec in
-          logger.info("Cleared web data: \(rec.displayName, privacy: .public)")
+        for record in records {
+          logger.info("Cleared web data: \(record.displayName, privacy: .public)")
         }
       }
     }
