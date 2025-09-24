@@ -12,7 +12,13 @@
     "testTimeoutsEnabled" : true
   },
   "testTargets" : [
-
+    {
+      "target" : {
+        "containerPath" : "container:dauphin.xcodeproj",
+        "identifier" : "188CEB902E838D7000CDD450",
+        "name" : "FeaturesTests"
+      }
+    }
   ],
   "version" : 1
 }

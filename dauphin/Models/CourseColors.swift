@@ -1,10 +1,3 @@
-//
-//  CourseColors.swift
-//  dauphin
-//
-//  Created on 2025-09-19.
-//
-
 import SwiftUI
 
 class CourseColors {

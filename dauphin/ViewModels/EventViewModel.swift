@@ -4,17 +4,22 @@
 //
 //  Created by \u8b19 on 12/18/24.
 //
+import OSLog
 import SwiftUI
 
 class EventViewModel: ObservableObject {
   @Published var events: [CalendarEvent] = []
+  private let logger = Logger(
+    subsystem: "group.cantpr09ram.dauphin",
+    category: "EventViewModel"
+  )
 
   func loadXMLData(withQuery query: [String: String]) {
     var components = URLComponents(string: "https://ilifeapi.az.tku.edu.tw/data/xml_cal.ashx?")  // Base URL
     components?.queryItems = query.map { URLQueryItem(name: $0.key, value: $0.value) }
 
     guard let url = components?.url else {
-      print("Failed to create URL")
+      logger.error("Failed to create URL")
       return
     }
 
@@ -22,8 +27,7 @@ class EventViewModel: ObservableObject {
       if let data = data {
         // Print original data
         if let dataString = String(data: data, encoding: .utf8) {
-          print("Original XML Data:")
-          print(dataString)
+          self.logger.debug("Original XML Data: \(dataString, privacy: .public)")
         }
 
         let parser = XMLParser(data: data)
@@ -36,7 +40,7 @@ class EventViewModel: ObservableObject {
           }
         }
       } else if let error = error {
-        print("Error loading data: \(error)")
+        self.logger.error("Error loading data: \(String(describing: error), privacy: .public)")
       }
     }
     task.resume()

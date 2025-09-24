@@ -1,12 +1,11 @@
-//
-//  LibSSoLoginView.swift
-//  campuspass_ios
-//
-//  Created by \u8b19 on 11/17/24.
-//
-
+import OSLog
 import SwiftUI
 import WebKit
+
+private let ssoLogger = Logger(
+  subsystem: "group.cantpr09ram.dauphin",
+  category: "LibSSOLoginView"
+)
 
 struct LibSSOLoginView: UIViewRepresentable {
   @ObservedObject var viewModel: AuthViewModel
@@ -19,7 +18,7 @@ struct LibSSOLoginView: UIViewRepresentable {
     }
 
     func webView(_ webView: WKWebView, didFinish _: WKNavigation!) {
-      print("網頁加載完成")
+      ssoLogger.info("網頁加載完成")
       DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
         let javascript = """
               try {
@@ -33,22 +32,26 @@ struct LibSSOLoginView: UIViewRepresentable {
 
         webView.evaluateJavaScript(javascript) { _, error in
           if let error = error {
-            print("JavaScript 執行錯誤: \(error.localizedDescription)")
+            ssoLogger.error(
+              "JavaScript 執行錯誤: \(error.localizedDescription, privacy: .public)"
+            )
           } else {
-            print("JavaScript 執行成功")
+            ssoLogger.info("JavaScript 執行成功")
           }
         }
       }
     }
 
     func userContentController(_: WKUserContentController, didReceive message: WKScriptMessage) {
-      print("收到 JavaScript 訊息: \(message.body)")
+      ssoLogger.debug(
+        "收到 JavaScript 訊息: \(String(describing: message.body), privacy: .public)"
+      )
       if message.name == "ExtObj" {
         if let token = message.body as? String {
           if token.starts(with: "error:") {
-            print("JavaScript 錯誤: \(token)")
+            ssoLogger.error("JavaScript 錯誤: \(token, privacy: .public)")
           } else {
-            print("成功獲取 token: \(token)")
+            ssoLogger.info("成功獲取 token: \(token, privacy: .public)")
             parent.handleToken(token)
           }
         }
@@ -82,11 +85,11 @@ struct LibSSOLoginView: UIViewRepresentable {
 
   private func handleToken(_ token: String) {
     guard !token.isEmpty else {
-      print("Token 無效")
+      ssoLogger.error("Token 無效")
       return
     }
 
-    print("處理有效的 token")
+    ssoLogger.info("處理有效的 token")
     viewModel.login(with: token)
   }
 }

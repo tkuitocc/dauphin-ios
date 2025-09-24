@@ -1,11 +1,9 @@
-//
-//  Course.swift
-//  campuspass_ios
-//
-//  Created by \u8b19 on 11/17/24.
-//
-
 import Foundation
+import OSLog
+
+private let courseLogger = Logger(
+  subsystem: "group.cantpr09ram.dauphin", category: "CourseUtilities"
+)
 
 struct Course: Identifiable, Hashable, Codable {
   var id = UUID()
@@ -26,7 +24,7 @@ func getNextUpCourses(from weeklySchedule: [Course]) -> [Course] {
 
   let todayWeekday = calendar.component(.weekday, from: now) - 1
   // log
-  print(todayWeekday)
+  courseLogger.debug("Today weekday index: \(todayWeekday)")
   let sortedCourses = weeklySchedule.sorted { course1, course2 in
     if course1.weekday != course2.weekday {
       return course1.weekday < course2.weekday
