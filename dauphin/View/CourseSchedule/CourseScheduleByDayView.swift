@@ -19,6 +19,7 @@ struct CourseScheduleByDayView: View {
   @State private var selectedDateIndex: Int = 0
   @State private var dates: [DateItem] = generateDates(includeSaturday: false)
   @State private var showSheet = false
+  @State private var selectedCourse: Course? = nil
   static func generateDates(includeSaturday: Bool = false) -> [DateItem] {
     let calendar = Calendar.current
     let today = Date()
@@ -58,11 +59,11 @@ struct CourseScheduleByDayView: View {
   }
 
   var body: some View {
-    VStack {
-      VStack(alignment: .leading) {
+    VStack(spacing: 0) {
+      // Header Section
+      VStack(alignment: .leading, spacing: 8) {
         Text("Hey, \(authViewModel.ssoStuNo).")
-          .padding(.top)
-          .font(.title)
+          .font(.largeTitle)
           .fontWeight(.bold)
           .padding(.horizontal)
           .onTapGesture {
@@ -70,38 +71,57 @@ struct CourseScheduleByDayView: View {
           }
 
         Text(getFormattedDate())
-          .foregroundColor(.gray)
+          .font(.subheadline)
+          .foregroundColor(.secondary)
           .padding(.horizontal)
 
+        // Date Selector
         ScrollViewReader { proxy in
           ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 16) {
+            HStack(spacing: 12) {
               ForEach(dates.indices, id: \.self) { index in
                 let date = dates[index]
-                VStack {
+                let isSelected = selectedDateIndex == index
+                let isToday = date.day == Calendar.current.component(.day, from: Date())
+
+                VStack(spacing: 6) {
                   Text("\(date.day)")
-                    .font(.headline)
-                    .foregroundColor(selectedDateIndex == index ? .white : .primary)
+                    .font(.system(size: 20, weight: isSelected ? .semibold : .regular))
+                    .foregroundColor(isSelected ? .white : (isToday ? .accentColor : .primary))
+
                   Text(date.weekday)
-                    .font(.subheadline)
-                    .foregroundColor(selectedDateIndex == index ? .white : .gray)
+                    .font(.system(size: 14, weight: isSelected ? .medium : .regular))
+                    .foregroundColor(isSelected ? .white.opacity(0.9) : .secondary)
                 }
-                .frame(width: 70, height: 90)
+                .frame(width: 65, height: 85)
                 .background(
-                  RoundedRectangle(cornerRadius: 10)
-                    .fill(
-                      selectedDateIndex == index ? Color.accentColor : Color(UIColor.systemGray5)
-                    )
-                    .shadow(
-                      color: selectedDateIndex == index ? .gray.opacity(0.4) : .clear, radius: 4)
+                  ZStack {
+                    if isSelected {
+                      RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.accentColor)
+                        .shadow(color: Color.accentColor.opacity(0.3), radius: 8, x: 0, y: 4)
+                    } else {
+                      RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(UIColor.secondarySystemGroupedBackground))
+                        .overlay(
+                          RoundedRectangle(cornerRadius: 12)
+                            .strokeBorder(isToday ? Color.accentColor.opacity(0.3) : Color.clear, lineWidth: 2)
+                        )
+                    }
+                  }
                 )
+                .scaleEffect(isSelected ? 1.05 : 1.0)
+                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
                 .id(index)
                 .onTapGesture {
-                  selectedDateIndex = index
+                  withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    selectedDateIndex = index
+                  }
                 }
               }
             }
-            .padding(5)
+            .padding(.horizontal)
+            .padding(.vertical, 8)
           }
           .sheet(isPresented: $showSheet) {
             LibraryView(authViewModel: authViewModel)
@@ -122,45 +142,80 @@ struct CourseScheduleByDayView: View {
           }
         }
       }
+      .background(Color(UIColor.systemGroupedBackground))
 
+      // Courses List
       ScrollView {
         let todaysCourses = courseViewModel.weekCourses.filter {
           $0.weekday == (selectedDateIndex + 1)
-        }  // Map index to weekday
+        }.sorted { $0.startTime < $1.startTime }
+
         if todaysCourses.isEmpty {
-          // Show nothing while loading from cache, or "No courses" if truly empty
-          if !courseViewModel.weekCourses.isEmpty || courseViewModel.isCacheEmpty {
-            Text("No courses for \(dates[selectedDateIndex].weekday).")
-              .foregroundColor(.gray)
+          // Empty state
+          VStack(spacing: 16) {
+            Spacer(minLength: 100)
+
+            Image(systemName: "calendar.badge.exclamationmark")
+              .font(.system(size: 60))
+              .foregroundColor(.secondary)
+
+            Text("No courses for \(dates[selectedDateIndex].weekday)")
+              .font(.headline)
+              .foregroundColor(.primary)
+
+            Text("Enjoy your free day!")
+              .font(.subheadline)
+              .foregroundColor(.secondary)
+
+            Spacer()
           }
+          .frame(maxWidth: .infinity)
+          .padding()
         } else {
-          ForEach(todaysCourses) { course in
-            CourseCardView(
-              courseName: course.name,
-              roomNumber: course.room,
-              teacherName: course.teacher,
-              StartTime: course.startTime,
-              EndTime: course.endTime,
-              stdNo: course.stdNo
-            )
-            .padding(2)
+          LazyVStack(spacing: 12) {
+            ForEach(Array(todaysCourses.enumerated()), id: \.element.id) { index, course in
+              CourseCardView(
+                courseName: course.name,
+                roomNumber: course.room,
+                teacherName: course.teacher,
+                StartTime: course.startTime,
+                EndTime: course.endTime,
+                stdNo: course.stdNo
+              )
+              .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+              .scaleEffect(1.0)
+              .animation(.spring(response: 0.3, dampingFraction: 0.7), value: index)
+              .onTapGesture {
+                selectedCourse = course
+              }
+            }
+            .padding(.horizontal)
+            .padding(.top, 12)
           }
         }
       }
+      .background(Color(UIColor.systemBackground))
       .gesture(
         DragGesture()
           .onEnded { value in
-            if value.translation.width < -50 {
-              // Swipe left
-              selectedDateIndex = (selectedDateIndex + 1) % dates.count
-            } else if value.translation.width > 50 {
-              // Swipe right
-              selectedDateIndex = (selectedDateIndex - 1 + dates.count) % dates.count
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+              if value.translation.width < -50 {
+                // Swipe left - next day
+                selectedDateIndex = min(selectedDateIndex + 1, dates.count - 1)
+              } else if value.translation.width > 50 {
+                // Swipe right - previous day
+                selectedDateIndex = max(selectedDateIndex - 1, 0)
+              }
             }
           }
       )
       .scrollIndicators(.hidden)
-      .presentationBackground(.thinMaterial)
+    }
+    .background(Color(UIColor.systemBackground))
+    .sheet(item: $selectedCourse) { course in
+      CourseDetailView(course: course)
+        .presentationDragIndicator(.visible)
+        .presentationDetents([.medium, .large])
     }
   }
 }

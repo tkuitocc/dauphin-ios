@@ -70,7 +70,7 @@ struct CoursesNextUpSmallView: View {
               .cornerRadius(4)
 
               HStack(spacing: 2) {
-                Image(systemName: "person.fill")
+                Image(systemName: "number.circle.fill")
                   .font(.system(size: 8))
                 Text("\(entry.courses[0].stdNo)")
                   .font(.system(size: 10))

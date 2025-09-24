@@ -250,7 +250,7 @@ struct CourseView: View {
               .foregroundColor(.white.opacity(0.95))
           }
           HStack(spacing: 3) {
-            Image(systemName: "person.fill")
+            Image(systemName: "number.circle.fill")
               .font(.system(size: 9))
               .foregroundColor(.white.opacity(0.9))
             Text(course.stdNo)
