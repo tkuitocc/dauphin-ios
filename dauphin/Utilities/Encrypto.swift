@@ -11,19 +11,19 @@ import Foundation
 import SwiftUI
 
 class CustomAES256Helper {
-  private let AES256IV: String
-  private let AES256KEY: String
+  private let aes256IV: String
+  private let aes256Key: String
 
   init(key: String, iv: String) {
-    AES256KEY = key
-    AES256IV = iv
+    aes256Key = key
+    aes256IV = iv
   }
 
   // MARK: - AES-256 Encryption and Decryption
 
   func encryptDecrypt(data: String, mode: CCOperation) -> String? {
-    guard let keyData = AES256KEY.data(using: .utf8),
-      let ivData = AES256IV.data(using: .utf8),
+    guard let keyData = aes256Key.data(using: .utf8),
+      let ivData = aes256IV.data(using: .utf8),
       let inputData = mode == CCOperation(kCCEncrypt)
         ? data.data(using: .utf8) : Data(base64Encoded: data)
     else {

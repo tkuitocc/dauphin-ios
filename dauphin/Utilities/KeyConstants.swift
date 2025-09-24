@@ -26,8 +26,8 @@ enum KeyConstants {
           userInfo: [NSLocalizedDescriptionKey: "'AES' key not found in plist."])
       }
 
-      APIKeys.storage["AES256IV"] = aes.IV
-      APIKeys.storage["AES256KEY"] = aes.KEY
+      APIKeys.storage["AES256IV"] = aes.iv
+      APIKeys.storage["AES256KEY"] = aes.key
 
       keyConstantsLogger.info(
         "Loaded AES: \(String(describing: aes), privacy: .public)"
@@ -49,7 +49,7 @@ enum KeyConstants {
   enum APIKeys {
     fileprivate(set) static var storage = [String: String]()
 
-    static var AES256IV: String {
+    static var aes256IV: String {
       if let value = storage["AES256IV"] {
         return value
       } else {
@@ -60,7 +60,7 @@ enum KeyConstants {
       }
     }
 
-    static var AES256KEY: String {
+    static var aes256Key: String {
       if let value = storage["AES256KEY"] {
         return value
       } else {

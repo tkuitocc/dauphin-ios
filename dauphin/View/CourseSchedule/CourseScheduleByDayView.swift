@@ -108,7 +108,8 @@ struct CourseScheduleByDayView: View {
               .padding()
           }
           .onAppear {
-            let hasSaturdayCourses = courseViewModel.weekCourses.contains { $0.weekday == 6 }  // Assuming 6 = Saturday
+            // Assuming 6 = Saturday
+            let hasSaturdayCourses = courseViewModel.weekCourses.contains { $0.weekday == 6 }
             dates = Self.generateDates(includeSaturday: hasSaturdayCourses)
 
             if let todayIndex = dates.firstIndex(where: {
@@ -117,7 +118,8 @@ struct CourseScheduleByDayView: View {
               selectedDateIndex = todayIndex
               proxy.scrollTo(todayIndex, anchor: .center)
             } else {
-              selectedDateIndex = 1  // Default to Monday if today is Sunday or Saturday
+              // Default to Monday if today is Sunday or Saturday
+              selectedDateIndex = 1
             }
           }
         }
@@ -128,9 +130,10 @@ struct CourseScheduleByDayView: View {
           Text("Loading courses...")
             .foregroundColor(.gray)
         } else {
+          // Map index to weekday
           let todaysCourses = courseViewModel.weekCourses.filter {
             $0.weekday == (selectedDateIndex + 1)
-          }  // Map index to weekday
+          }
           if todaysCourses.isEmpty {
             Text("No courses for \(dates[selectedDateIndex].weekday).")
               .foregroundColor(.gray)
@@ -140,8 +143,8 @@ struct CourseScheduleByDayView: View {
                 courseName: course.name,
                 roomNumber: course.room,
                 teacherName: course.teacher,
-                StartTime: course.startTime,
-                EndTime: course.endTime,
+                startTime: course.startTime,
+                endTime: course.endTime,
                 stdNo: course.stdNo
               )
               .padding(2)

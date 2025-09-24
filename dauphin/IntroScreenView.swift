@@ -94,9 +94,9 @@ struct InrtoScreen: View {
         },
         label: {
           Text("Continue")
-            .fontWeight( /*@START_MENU_TOKEN@*/.bold /*@END_MENU_TOKEN@*/)
+            .fontWeight(.bold)
             .foregroundStyle(.white)
-            .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity /*@END_MENU_TOKEN@*/)
+            .frame(maxWidth: .infinity)
             .padding(.vertical, 14)
             .background(Color.blue.gradient, in: .rect(cornerRadius: 12))
             .contentShape(.rect)
