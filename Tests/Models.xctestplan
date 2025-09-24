@@ -1,0 +1,30 @@
+{
+  "configurations" : [
+    {
+      "id" : "E59995AC-0517-42CF-9883-EA7217AC48EA",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:dauphin.xcodeproj",
+      "identifier" : "18B368182CE5FA110027FEBE",
+      "name" : "dauphin"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:dauphin.xcodeproj",
+        "identifier" : "188CEB672E8367DE00CDD450",
+        "name" : "ModelsTests"
+      }
+    }
+  ],
+  "version" : 1
+}
