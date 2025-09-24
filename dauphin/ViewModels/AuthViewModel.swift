@@ -1,86 +1,94 @@
 import SwiftUI
 import WebKit
 import WidgetKit
+import os
 
-class AuthViewModel: ObservableObject {
+@MainActor
+final class AuthViewModel: ObservableObject {
+  // App Group defaults
   private let appGroupDefaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
 
+  private let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "AuthViewModel")
+
+  // 將寫入集中於 didSet，避免重複 set
   @Published var isLoggedIn: Bool {
-    didSet {
-      appGroupDefaults?.set(isLoggedIn, forKey: Constants.isLoggedInKey)
-    }
+    didSet { appGroupDefaults?.set(isLoggedIn, forKey: Constants.isLoggedInKey) }
   }
 
   @Published var ssoStuNo: String {
-    didSet {
-      appGroupDefaults?.set(ssoStuNo, forKey: Constants.ssoTokenKey)
-    }
+    didSet { appGroupDefaults?.set(ssoStuNo, forKey: Constants.ssoTokenKey) }
   }
 
+  // 由外部注入，預設建置
   private var courseViewModel: CourseViewModel
 
-  init(courseViewModel: CourseViewModel = CourseViewModel()) {
-    isLoggedIn = appGroupDefaults?.bool(forKey: Constants.isLoggedInKey) ?? false
-    ssoStuNo = appGroupDefaults?.string(forKey: Constants.ssoTokenKey) ?? ""
-    self.courseViewModel = courseViewModel
+  init(courseViewModel: CourseViewModel? = nil) {
+    self.isLoggedIn = appGroupDefaults?.bool(forKey: Constants.isLoggedInKey) ?? false
+    self.ssoStuNo = appGroupDefaults?.string(forKey: Constants.ssoTokenKey) ?? ""
+    // 在 MainActor 隔離的 init 主體內建立預設實例，合法
+    self.courseViewModel = courseViewModel ?? CourseViewModel()
   }
+
+  // MARK: - Login
 
   func login(with token: String) {
-    print("Logging in with token: \(token)")
-    DispatchQueue.main.async {
-      self.ssoStuNo = token
-      self.isLoggedIn = true
-      print("Updated login state")
+    // 避免把敏感資訊寫入公開日誌
+    logger.info("Login invoked with token length: \(token.count, privacy: .public)")
 
-      self.appGroupDefaults?.set(token, forKey: Constants.ssoTokenKey)
-      self.appGroupDefaults?.synchronize()
-      print("Saved ssoStuNo to App Group")
-      // Update Widget timelines
-      WidgetCenter.shared.reloadAllTimelines()
-      print("Widget timelines reloaded.")
+    // 更新狀態（didSet 會自動寫入 App Group）
+    self.ssoStuNo = token
+    self.isLoggedIn = true
+    logger.info("Login state updated.")
 
-      // Fetch courses
-      self.fetchCourses(token: token)
-    }
+    // 先刷新 Widget（讀取到剛寫入的值）
+    WidgetCenter.shared.reloadAllTimelines()
+    logger.info("Widget timelines reloaded after login.")
+
+    // 取課表（與原邏輯相同）
+    fetchCourses(token: token)
   }
 
-  // Fetch courses for the logged-in user
+  // MARK: - Fetch courses
+
   private func fetchCourses(token: String) {
-    Task {
-      print("Fetching courses for token: \(token)")
+    Task { [courseViewModel, logger] in
+      logger.info("Fetching courses for token length: \(token.count, privacy: .public)")
       await courseViewModel.fetchCourses(with: token)
     }
   }
 
+  // MARK: - Logout
+
   func logout() {
-    // Clear token and courses from App Group defaults
+    // 清除 App Group 中的使用者資料與快取
     appGroupDefaults?.removeObject(forKey: Constants.ssoTokenKey)
     appGroupDefaults?.removeObject(forKey: Constants.Courses)
-    print("已清除 App Group 的使用者資料")
+    appGroupDefaults?.set(false, forKey: Constants.isLoggedInKey)
+    logger.info("Cleared App Group user data.")
 
-    // Clear website data
+    // 清除 Web 資料
     clearWebsiteData()
 
-    // Update authentication state
-    DispatchQueue.main.async {
-      self.isLoggedIn = false
-      self.ssoStuNo = ""
-      print("已登出，使用者狀態已重置")
+    // 更新本地狀態
+    self.isLoggedIn = false
+    self.ssoStuNo = ""
+    logger.info("User logged out and state reset.")
 
-      // Reload widget timelines after logout
-      WidgetCenter.shared.reloadAllTimelines()
-      print("Widget timelines reloaded after logout")
-    }
+    // 刷新 Widget
+    WidgetCenter.shared.reloadAllTimelines()
+    logger.info("Widget timelines reloaded after logout.")
   }
 
   // MARK: - Clear Website Data
 
   private func clearWebsiteData() {
-    let dataStore = WKWebsiteDataStore.default()
-    dataStore.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
-      for record in records {
-        dataStore.removeData(ofTypes: record.dataTypes, for: [record]) {
-          print("已清除紀錄: \(record.displayName)")
+    let store = WKWebsiteDataStore.default()
+    let all = WKWebsiteDataStore.allWebsiteDataTypes()
+    store.fetchDataRecords(ofTypes: all) { [logger] records in
+      guard !records.isEmpty else { return }
+      store.removeData(ofTypes: all, for: records) {
+        records.forEach { rec in
+          logger.info("Cleared web data: \(rec.displayName, privacy: .public)")
         }
       }
     }

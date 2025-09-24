@@ -5,7 +5,12 @@
 //  Created by \u8b19 on 12/18/24.
 //
 
+import OSLog
 import SwiftUI
+
+private let eventViewLogger = Logger(
+  subsystem: "group.cantpr09ram.dauphin", category: "EventView"
+)
 
 struct EventView: View {
   @StateObject private var viewModel = EventViewModel()
@@ -65,7 +70,7 @@ struct EventView: View {
         "t": "2"
       ]
       viewModel.loadXMLData(withQuery: queryParameters)
-      print(viewModel.events.count)
+      eventViewLogger.info("Event count on appear: \(viewModel.events.count)")
     }
   }
 }

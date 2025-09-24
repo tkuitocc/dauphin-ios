@@ -2,6 +2,7 @@
   "sourceLanguage" : "en",
   "strings" : {
     ": %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -165,6 +166,9 @@
         }
       }
     },
+    "Cache cleared successfully" : {
+
+    },
     "calendar" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -201,6 +205,18 @@
           }
         }
       }
+    },
+    "Cancel" : {
+
+    },
+    "Clear" : {
+
+    },
+    "Clear Cache" : {
+
+    },
+    "Clear cached course data to free up storage" : {
+
     },
     "Coming Soon" : {
       "localizations" : {
@@ -250,6 +266,9 @@
         }
       }
     },
+    "Data Management" : {
+
+    },
     "Data Sources and Resources" : {
       "localizations" : {
         "en" : {
@@ -265,6 +284,9 @@
           }
         }
       }
+    },
+    "Done" : {
+
     },
     "First" : {
       "localizations" : {
@@ -356,6 +378,7 @@
       }
     },
     "Log out" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hant" : {
           "stringUnit" : {
@@ -364,6 +387,9 @@
           }
         }
       }
+    },
+    "Logout" : {
+
     },
     "No courses for %@." : {
       "localizations" : {
@@ -417,6 +443,15 @@
         }
       }
     },
+    "Select a setting" : {
+
+    },
+    "Select an option" : {
+
+    },
+    "Semester" : {
+
+    },
     "Setting" : {
       "localizations" : {
         "en" : {
@@ -432,6 +467,9 @@
           }
         }
       }
+    },
+    "Settings" : {
+
     },
     "stdID:%@" : {
       "extractionState" : "manual",
@@ -465,6 +503,9 @@
           }
         }
       }
+    },
+    "This will remove all cached course data. You'll need to refresh to reload your courses." : {
+
     },
     "Version" : {
       "localizations" : {
@@ -527,6 +568,9 @@
           }
         }
       }
+    },
+    "Your student ID is %@" : {
+
     }
   },
   "version" : "1.0"

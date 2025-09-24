@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1620"
+   LastUpgradeVersion = "2600"
    wasCreatedForAppExtension = "YES"
    version = "2.0">
    <BuildAction
@@ -75,6 +75,17 @@
                BlueprintIdentifier = "188CEB672E8367DE00CDD450"
                BuildableName = "ModelsTests.xctest"
                BlueprintName = "ModelsTests"
+               ReferencedContainer = "container:dauphin.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "188CEB902E838D7000CDD450"
+               BuildableName = "FeaturesTests.xctest"
+               BlueprintName = "FeaturesTests"
                ReferencedContainer = "container:dauphin.xcodeproj">
             </BuildableReference>
          </TestableReference>

@@ -6,9 +6,13 @@
 //
 
 import EventKit
+import OSLog
 
 class EventManager {
   let eventStore = EKEventStore()
+  private let logger = Logger(
+    subsystem: "group.cantpr09ram.dauphin", category: "EventManager"
+  )
 
   /// Request access and add an event in one step
   func requestAccessAndAddEvent(event: CalendarEvent) {
@@ -17,10 +21,12 @@ class EventManager {
         guard let self = self else { return }
         DispatchQueue.main.async {
           if granted {
-            print("Access granted")
+            self.logger.info("Access granted")
             self.addEvent(event: event)
           } else {
-            print("Access denied: \(String(describing: error))")
+            self.logger.error(
+              "Access denied: \(String(describing: error), privacy: .public)"
+            )
           }
         }
       }
@@ -29,10 +35,12 @@ class EventManager {
         guard let self = self else { return }
         DispatchQueue.main.async {
           if granted {
-            print("Access granted")
+            self.logger.info("Access granted")
             self.addEvent(event: event)
           } else {
-            print("Access denied: \(String(describing: error))")
+            self.logger.error(
+              "Access denied: \(String(describing: error), privacy: .public)"
+            )
           }
         }
       }
@@ -42,12 +50,14 @@ class EventManager {
   /// Add an event to the calendar
   private func addEvent(event: CalendarEvent) {
     let calendars = eventStore.calendars(for: .event)
-    print("Available Calendars: \(calendars.map { $0.title })")
+    logger.debug(
+      "Available Calendars: \(calendars.map { $0.title }, privacy: .public)"
+    )
 
     let calendar = selectModifiableCalendar(from: calendars) ?? createLocalCalendar()
 
     guard let calendar = calendar else {
-      print("No modifiable calendar found.")
+      logger.error("No modifiable calendar found.")
       return
     }
 
@@ -62,9 +72,9 @@ class EventManager {
 
     do {
       try eventStore.save(calendarEvent, span: .thisEvent)
-      print("Event added successfully!")
+      logger.info("Event added successfully!")
     } catch {
-      print("Failed to save event: \(error)")
+      logger.error("Failed to save event: \(String(describing: error), privacy: .public)")
     }
   }
 
@@ -89,16 +99,16 @@ class EventManager {
     if let localSource = eventStore.sources.first(where: { $0.sourceType == .local }) {
       newCalendar.source = localSource
     } else {
-      print("No local source available")
+      logger.error("No local source available")
       return nil
     }
 
     do {
       try eventStore.saveCalendar(newCalendar, commit: true)
-      print("Custom calendar created successfully!")
+      logger.info("Custom calendar created successfully!")
       return newCalendar
     } catch {
-      print("Failed to create calendar: \(error)")
+      logger.error("Failed to create calendar: \(String(describing: error), privacy: .public)")
       return nil
     }
   }
