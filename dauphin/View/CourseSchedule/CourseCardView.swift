@@ -139,18 +139,14 @@ struct CourseCardView: View {
           .padding(.vertical, 6)
           .background(
             RoundedRectangle(cornerRadius: 8)
-              .fill(Color.purple.opacity(0.1))
-              .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                  .strokeBorder(Color.purple.opacity(0.3), lineWidth: 1)
-              )
+              .fill(Color.purple.opacity(0.15))
           )
 
           // Student Number Badge
           HStack(spacing: 4) {
             Image(systemName: "number.circle.fill")
               .font(.system(size: 12))
-              .foregroundColor(.purple)
+              .foregroundColor(.orange)
             Text(stdNo)
               .font(.system(size: 12, weight: .medium))
               .foregroundColor(.primary)
@@ -159,11 +155,7 @@ struct CourseCardView: View {
           .padding(.vertical, 6)
           .background(
             RoundedRectangle(cornerRadius: 8)
-              .fill(Color.purple.opacity(0.1))
-              .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                  .strokeBorder(Color.purple.opacity(0.3), lineWidth: 1)
-              )
+              .fill(Color.orange.opacity(0.15))
           )
 
           Spacer()
