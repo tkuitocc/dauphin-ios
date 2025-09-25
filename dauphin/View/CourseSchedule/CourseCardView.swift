@@ -24,20 +24,40 @@ struct CourseCardView: View {
     if isOngoing {
       return .green
     } else {
-      // Compare only time components for future courses
       let calendar = Calendar.current
-      let currentHour = calendar.component(.hour, from: currentTime)
-      let currentMinute = calendar.component(.minute, from: currentTime)
-      let currentTimeInMinutes = currentHour * 60 + currentMinute
+      let now = Date()
+      let currentWeekday = calendar.component(.weekday, from: now)
+      let courseWeekdayIOS = weekday == 7 ? 1 : weekday + 1
 
-      let startHour = calendar.component(.hour, from: StartTime)
-      let startMinute = calendar.component(.minute, from: StartTime)
-      let startTimeInMinutes = startHour * 60 + startMinute
+      // Check if course is today
+      if currentWeekday == courseWeekdayIOS {
+        // Same day - check time
+        let currentHour = calendar.component(.hour, from: now)
+        let currentMinute = calendar.component(.minute, from: now)
+        let currentTimeInMinutes = currentHour * 60 + currentMinute
 
-      if currentTimeInMinutes < startTimeInMinutes {
-        return .accentColor
+        let startHour = calendar.component(.hour, from: StartTime)
+        let startMinute = calendar.component(.minute, from: StartTime)
+        let startTimeInMinutes = startHour * 60 + startMinute
+
+        if currentTimeInMinutes < startTimeInMinutes {
+          return .accentColor  // Upcoming today
+        } else {
+          return .secondary  // Already passed today
+        }
       } else {
-        return .secondary
+        // Different day - check if it's a past or future day
+        // Course weekday: 1 = Monday, 2 = Tuesday, ..., 6 = Saturday, 7 = Sunday
+        // We need to determine if the course day is before or after today
+
+        // Convert both to a comparable format (1-7 where 1 = Monday)
+        let todayAsMondayBased = currentWeekday == 1 ? 7 : currentWeekday - 1  // Convert iOS Sunday=1 to Monday-based
+
+        if weekday < todayAsMondayBased {
+          return .secondary  // Past day
+        } else {
+          return .accentColor  // Future day
+        }
       }
     }
   }
@@ -110,7 +130,7 @@ struct CourseCardView: View {
           HStack(spacing: 4) {
             Image(systemName: "location.circle.fill")
               .font(.system(size: 12))
-              .foregroundColor(.blue)
+              .foregroundColor(.purple)
             Text(roomNumber)
               .font(.system(size: 12, weight: .medium))
               .foregroundColor(.primary)
@@ -119,10 +139,10 @@ struct CourseCardView: View {
           .padding(.vertical, 6)
           .background(
             RoundedRectangle(cornerRadius: 8)
-              .fill(Color.blue.opacity(0.1))
+              .fill(Color.purple.opacity(0.1))
               .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                  .strokeBorder(Color.blue.opacity(0.3), lineWidth: 1)
+                  .strokeBorder(Color.purple.opacity(0.3), lineWidth: 1)
               )
           )
 
@@ -169,9 +189,9 @@ struct CourseCardView: View {
           color: colorScheme == .dark
             ? Color.black.opacity(0.3)
             : Color.black.opacity(0.08),
-          radius: 12,
+          radius: 8,
           x: 0,
-          y: 4
+          y: 0
         )
     )
     .overlay(

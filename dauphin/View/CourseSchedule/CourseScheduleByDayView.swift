@@ -62,7 +62,7 @@ struct CourseScheduleByDayView: View {
     VStack(spacing: 0) {
       // Header Section
       VStack(alignment: .leading, spacing: 8) {
-        Text("Hey, \(authViewModel.ssoStuNo).")
+        Text("Hey, \(authViewModel.ssoStuNo)")
           .font(.largeTitle)
           .fontWeight(.bold)
           .padding(.horizontal)
@@ -101,7 +101,7 @@ struct CourseScheduleByDayView: View {
                     if isSelected {
                       RoundedRectangle(cornerRadius: 12)
                         .fill(Color.accentColor)
-                        .shadow(color: Color.accentColor.opacity(0.3), radius: 8, x: 0, y: 4)
+                        .shadow(color: Color.accentColor.opacity(0.3), radius: 4, x: 0, y: 0)
                     } else {
                       RoundedRectangle(cornerRadius: 12)
                         .fill(Color(UIColor.secondarySystemGroupedBackground))
@@ -126,10 +126,6 @@ struct CourseScheduleByDayView: View {
             .padding(.horizontal)
             .padding(.vertical, 8)
           }
-          .sheet(isPresented: $showSheet) {
-            LibraryView(authViewModel: authViewModel)
-              .padding()
-          }
           .onAppear {
             let hasSaturdayCourses = courseViewModel.weekCourses.contains { $0.weekday == 6 }  // Assuming 6 = Saturday
             dates = Self.generateDates(includeSaturday: hasSaturdayCourses)
@@ -145,7 +141,11 @@ struct CourseScheduleByDayView: View {
           }
         }
       }
-      .background(Color(UIColor.systemGroupedBackground))
+      .sheet(isPresented: $showSheet) {
+        LibraryView(authViewModel: authViewModel)
+          .presentationDragIndicator(.visible)
+          .padding()
+      }
 
       // Courses List
       ScrollView {
@@ -198,7 +198,6 @@ struct CourseScheduleByDayView: View {
           .padding(.vertical, 12)
         }
       }
-      .background(Color(UIColor.systemBackground))
       .gesture(
         DragGesture()
           .onEnded { value in
@@ -215,11 +214,11 @@ struct CourseScheduleByDayView: View {
       )
       .scrollIndicators(.hidden)
     }
-    .background(Color(UIColor.systemBackground))
+    .background(Color(UIColor.systemGroupedBackground))
     .sheet(item: $selectedCourse) { course in
       CourseDetailView(course: course)
         .presentationDragIndicator(.visible)
-        .presentationDetents([.medium, .large])
+        .presentationDetents([.fraction(0.75), .large])
     }
   }
 }
