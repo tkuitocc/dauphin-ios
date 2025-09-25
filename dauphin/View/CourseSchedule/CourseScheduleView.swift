@@ -68,8 +68,8 @@ struct CourseScheduleView: View {
       }
 
       // Floating notification overlay
-      if let message = viewModel.cacheUpdateMessage {
-        VStack {
+      VStack {
+        if let message = viewModel.cacheUpdateMessage {
           HStack {
             if viewModel.isUpdatingCache {
               ProgressView()
@@ -92,12 +92,18 @@ struct CourseScheduleView: View {
               .fill(.regularMaterial)
               .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
           )
-          .padding(.top, 50)
-          Spacer()
+          .transition(
+            .asymmetric(
+              insertion: .move(edge: .top).combined(with: .opacity),
+              removal: .move(edge: .top).combined(with: .opacity)
+            ))
         }
-        .animation(.easeInOut(duration: 0.3), value: message)
-        .transition(.move(edge: .top).combined(with: .opacity))
+        Spacer()
       }
+      .padding(.top, 50)
+      .animation(
+        .spring(response: 0.35, dampingFraction: 0.85, blendDuration: 0),
+        value: viewModel.cacheUpdateMessage)
     }
   }
 }
