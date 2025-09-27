@@ -21,13 +21,13 @@ struct DayScheduleView: View {
 
     // Calculate the start of the week (Monday)
     let weekday = calendar.component(.weekday, from: today)
-    let daysFromMonday = (weekday == 1 ? 6 : weekday - 2)  // Adjust for Monday start
+    let daysFromMonday = (weekday == 1 ? 6 : weekday - 2) // Adjust for Monday start
     guard let startOfWeek = calendar.date(byAdding: .day, value: -daysFromMonday, to: today) else {
       return []
     }
 
     // Generate dates for Monday to Friday
-    var dateItems = (0..<5).map { offset in
+    var dateItems = (0 ..< 5).map { offset in
       let date = calendar.date(byAdding: .day, value: offset, to: startOfWeek)!
       let day = calendar.component(.day, from: date)
       let weekday = weekdayFormatter.string(from: date)
@@ -47,7 +47,7 @@ struct DayScheduleView: View {
 
   private func getFormattedDate() -> String {
     let formatter = DateFormatter()
-    formatter.dateFormat = "MMMM, yyyy"  // Month and year format
+    formatter.dateFormat = "MMMM, yyyy" // Month and year format
     return formatter.string(from: Date())
   }
 
@@ -92,7 +92,7 @@ struct DayScheduleView: View {
         // Date Selector
         DateSelectorView(selectedDateIndex: $selectedDateIndex, dates: dates)
           .onAppear {
-            let hasSaturdayCourses = courseViewModel.weekCourses.contains { $0.weekday == 6 }  // Assuming 6 = Saturday
+            let hasSaturdayCourses = courseViewModel.weekCourses.contains { $0.weekday == 6 } // Assuming 6 = Saturday
             dates = Self.generateDates(includeSaturday: hasSaturdayCourses)
           }
       }
@@ -175,5 +175,6 @@ struct DayScheduleView: View {
 
 #Preview {
   DayScheduleView(
-    courseViewModel: CourseViewModel(mockData: mockData), authViewModel: AuthViewModel())
+    courseViewModel: CourseViewModel(mockData: mockData), authViewModel: AuthViewModel()
+  )
 }

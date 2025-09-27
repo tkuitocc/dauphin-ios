@@ -22,19 +22,19 @@ struct CourseDetailView: View {
 
     // Pre-compute day of week
     let days = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    self.dayOfWeek = days[min(max(course.weekday, 0), days.count - 1)]
+    dayOfWeek = days[min(max(course.weekday, 0), days.count - 1)]
 
     // Pre-compute time range with cached formatter
     let formatter = CourseDetailView.timeFormatter
     let start = formatter.string(from: course.startTime)
     let end = formatter.string(from: course.endTime)
-    self.timeRange = "\(start) - \(end)"
+    timeRange = "\(start) - \(end)"
 
     // Pre-compute color
-    self.courseColor = CourseColors.color(for: course.name)
+    courseColor = CourseColors.color(for: course.name)
 
     // Pre-compute note check
-    self.hasNote = !course.note.isEmpty
+    hasNote = !course.note.isEmpty
   }
 
   // Shared formatter to avoid recreation

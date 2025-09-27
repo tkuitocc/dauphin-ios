@@ -14,7 +14,7 @@ struct WeekdaysView: View {
 
   var body: some View {
     HStack(spacing: 0) {
-      ForEach(0..<days.count, id: \.self) { index in
+      ForEach(0 ..< days.count, id: \.self) { index in
         let dayIndex = index + 1
         let date = dateForDay(weekday: dayIndex)
         let isToday = dayIndex == currentDay - 1

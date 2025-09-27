@@ -21,6 +21,7 @@ struct CourseCardView: View {
   let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
 
   // MARK: - Mock Date for Testing
+
   // October 3, 2025 at 1:30 PM (Friday)
   private let useMockDate = false
   private var mockDate: Date {
@@ -60,9 +61,9 @@ struct CourseCardView: View {
         let startTimeInMinutes = startHour * 60 + startMinute
 
         if currentTimeInMinutes < startTimeInMinutes {
-          return .accentColor  // Upcoming today
+          return .accentColor // Upcoming today
         } else {
-          return .secondary  // Already passed today
+          return .secondary // Already passed today
         }
       } else {
         // Different day - check if it's a past or future day
@@ -70,12 +71,12 @@ struct CourseCardView: View {
         // We need to determine if the course day is before or after today
 
         // Convert both to a comparable format (1-7 where 1 = Monday)
-        let todayAsMondayBased = currentWeekday == 1 ? 7 : currentWeekday - 1  // Convert iOS Sunday=1 to Monday-based
+        let todayAsMondayBased = currentWeekday == 1 ? 7 : currentWeekday - 1 // Convert iOS Sunday=1 to Monday-based
 
         if weekday < todayAsMondayBased {
-          return .secondary  // Past day
+          return .secondary // Past day
         } else {
-          return .accentColor  // Future day
+          return .accentColor // Future day
         }
       }
     }

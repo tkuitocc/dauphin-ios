@@ -17,6 +17,7 @@ struct CourseView: View {
   let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
 
   // MARK: - Mock Date for Testing
+
   // October 3, 2025 at 1:30 PM (Friday)
   private let useMockDate = false
   private var mockDate: Date {
@@ -42,7 +43,7 @@ struct CourseView: View {
   var body: some View {
     RoundedRectangle(cornerRadius: 8)
       .fill(courseColor.opacity(0.85))
-      .frame(height: max(height - 4, 20))  // Fixed 4pt gap for even spacing
+      .frame(height: max(height - 4, 20)) // Fixed 4pt gap for even spacing
       .overlay(
         RoundedRectangle(cornerRadius: 8)
           .strokeBorder(courseColor, lineWidth: 1.5)

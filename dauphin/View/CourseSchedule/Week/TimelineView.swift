@@ -13,9 +13,11 @@ struct TimelineView: View {
   var overlapGap: CGFloat = -4
 
   let start = Calendar.current.date(
-    bySettingHour: 8, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date()))!
+    bySettingHour: 8, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date())
+  )!
   let end = Calendar.current.date(
-    bySettingHour: 22, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date()))!
+    bySettingHour: 22, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date())
+  )!
 
   // Calculate overlapping groups and assign columns
   private var positionedCourses: [CoursePosition] {
@@ -26,7 +28,7 @@ struct TimelineView: View {
       var added = false
 
       // Try to add to an existing group
-      for i in 0..<groups.count {
+      for i in 0 ..< groups.count {
         let group = groups[i]
         var hasOverlap = false
 
@@ -61,7 +63,7 @@ struct TimelineView: View {
       for course in group {
         var addedToSet = false
 
-        for i in 0..<overlapSets.count {
+        for i in 0 ..< overlapSets.count {
           // Check if this course overlaps with any course in this set
           var overlapsWithAll = false
           for setCourse in overlapSets[i] {
@@ -108,11 +110,11 @@ struct TimelineView: View {
     let end2 = adjustedTime(for: course2.endTime)
 
     // Courses overlap if one starts before the other ends
-    return (start1 < end2 && end1 > start2)
+    return start1 < end2 && end1 > start2
   }
 
   var body: some View {
-    GeometryReader { geometry in
+    GeometryReader { _ in
       let totalHeight = CGFloat(1400)
       let numberOfSlots = 14
 
@@ -159,7 +161,6 @@ struct TimelineView: View {
                 onCourseTap?(position.course)
               }
             }
-
           }
           .frame(height: totalHeight)
         }
@@ -172,7 +173,8 @@ struct TimelineView: View {
     let baseDate = Calendar.current.startOfDay(for: Date())
     let calendar = Calendar.current
     return calendar.date(
-      bySettingHour: calendar.component(.hour, from: time), minute: 0, second: 0, of: baseDate)!
+      bySettingHour: calendar.component(.hour, from: time), minute: 0, second: 0, of: baseDate
+    )!
   }
 
   // 計算課程的高度
@@ -199,11 +201,12 @@ struct TimelineView: View {
     TimelineView(
       courses: Binding(
         get: { courseViewModel.weekCourses.filter { $0.weekday == 1 } },
-        set: { newValue in
+        set: { _ in
           // Update courseViewModel.weekCourses with the changes from newValue
           // This may require additional logic to ensure filtered courses are updated correctly
         }
       ),
-      overlapGap: 4)
+      overlapGap: 4
+    )
   }
 }
