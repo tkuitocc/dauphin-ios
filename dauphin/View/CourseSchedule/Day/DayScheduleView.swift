@@ -1,4 +1,4 @@
-//  CourseScheduleByDayView.swift
+//  DayScheduleView.swift
 //  campuspass_ios
 //
 //  Created by \u8b19 on 11/17/24.
@@ -6,14 +6,7 @@
 
 import SwiftUI
 
-struct DateItem: Identifiable {
-  let id = UUID()
-  let day: Int
-  let weekday: String
-  let isSelected: Bool
-}
-
-struct CourseScheduleByDayView: View {
+struct DayScheduleView: View {
   @ObservedObject var courseViewModel: CourseViewModel
   @ObservedObject var authViewModel: AuthViewModel
   @State private var selectedDateIndex: Int = 0
@@ -97,70 +90,11 @@ struct CourseScheduleByDayView: View {
           .padding(.horizontal)
 
         // Date Selector
-        ScrollViewReader { proxy in
-          ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
-              ForEach(dates.indices, id: \.self) { index in
-                let date = dates[index]
-                let isSelected = selectedDateIndex == index
-                let isToday = date.day == Calendar.current.component(.day, from: Date())
-
-                VStack(spacing: 4) {
-                  Text("\(date.day)")
-                    .font(.system(size: 20, weight: isSelected ? .semibold : .regular))
-                    .foregroundColor(isSelected ? .white : (isToday ? .accentColor : .primary))
-
-                  Text(date.weekday)
-                    .font(.system(size: 14, weight: isSelected ? .medium : .regular))
-                    .foregroundColor(isSelected ? .white.opacity(0.9) : .secondary)
-                }
-                .padding(
-                  EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
-                )
-                .background(
-                  ZStack {
-                    if isSelected {
-                      RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.accentColor)
-                        .shadow(color: Color.accentColor.opacity(0.3), radius: 4, x: 0, y: 0)
-                    } else {
-                      RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(UIColor.secondarySystemGroupedBackground))
-                        .overlay(
-                          RoundedRectangle(cornerRadius: 12)
-                            .strokeBorder(
-                              isToday ? Color.accentColor.opacity(0.3) : Color.clear, lineWidth: 2)
-                        )
-                    }
-                  }
-                )
-                .scaleEffect(isSelected ? 1.05 : 1.0)
-                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
-                .id(index)
-                .onTapGesture {
-                  withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                    selectedDateIndex = index
-                  }
-                }
-              }
-            }
-            .padding(.horizontal)
-            .padding(.vertical, 8)
-          }
+        DateSelectorView(selectedDateIndex: $selectedDateIndex, dates: dates)
           .onAppear {
             let hasSaturdayCourses = courseViewModel.weekCourses.contains { $0.weekday == 6 }  // Assuming 6 = Saturday
             dates = Self.generateDates(includeSaturday: hasSaturdayCourses)
-
-            if let todayIndex = dates.firstIndex(where: {
-              $0.day == Calendar.current.component(.day, from: Date())
-            }) {
-              selectedDateIndex = todayIndex
-              proxy.scrollTo(todayIndex, anchor: .center)
-            } else {
-              selectedDateIndex = 1  // Default to Monday if today is Sunday or Saturday
-            }
           }
-        }
       }
 
       // Courses List
@@ -240,6 +174,6 @@ struct CourseScheduleByDayView: View {
 }
 
 #Preview {
-  CourseScheduleByDayView(
+  DayScheduleView(
     courseViewModel: CourseViewModel(mockData: mockData), authViewModel: AuthViewModel())
 }

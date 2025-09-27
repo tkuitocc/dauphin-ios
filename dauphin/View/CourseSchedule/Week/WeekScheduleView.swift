@@ -1,5 +1,5 @@
 //
-//  CourseScheduleByWeekView.swift
+//  WeekScheduleView.swift
 //  dauphin
 //
 //  Created by \u8b19 on 11/19/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CourseScheduleByWeekView: View {
+struct WeekScheduleView: View {
   @ObservedObject var courseViewModel: CourseViewModel
   @State private var selectedCourse: Course? = nil
 
@@ -66,7 +66,7 @@ struct CourseScheduleByWeekView: View {
             )
 
             ForEach(Array(filteredCourses.enumerated()), id: \.offset) { _, courses in
-              SingleTimeline(
+              TimelineView(
                 courses: .constant(courses),
                 onCourseTap: { course in
                   handleCourseTap(course)
@@ -90,5 +90,5 @@ struct CourseScheduleByWeekView: View {
 
 #Preview {
   let courseViewModel = CourseViewModel(mockData: mockData)
-  CourseScheduleByWeekView(courseViewModel: courseViewModel)
+  WeekScheduleView(courseViewModel: courseViewModel)
 }
