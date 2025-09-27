@@ -11,26 +11,26 @@ class CourseColors {
   static let shared = CourseColors()
 
   private let palette: [Color] = [
-    Color(red: 0.2, green: 0.6, blue: 1.0),  // Blue
-    Color(red: 0.4, green: 0.8, blue: 0.6),  // Green
-    Color(red: 1.0, green: 0.6, blue: 0.4),  // Orange
-    Color(red: 0.8, green: 0.4, blue: 0.8),  // Purple
-    Color(red: 0.95, green: 0.7, blue: 0.3),  // Yellow
-    Color(red: 0.3, green: 0.7, blue: 0.8),  // Cyan
-    Color(red: 0.9, green: 0.5, blue: 0.5),  // Red
-    Color(red: 0.6, green: 0.5, blue: 0.9),  // Indigo
-    Color(red: 0.9, green: 0.4, blue: 0.7),  // Pink
-    Color(red: 0.5, green: 0.9, blue: 0.4),  // Lime
-    Color(red: 0.4, green: 0.9, blue: 0.9),  // Aqua
-    Color(red: 0.7, green: 0.4, blue: 0.5),  // Maroon
-    Color(red: 0.5, green: 0.3, blue: 0.7),  // Violet
-    Color(red: 0.9, green: 0.7, blue: 0.5),  // Peach
-    Color(red: 0.3, green: 0.5, blue: 0.4),  // Forest Green
-    Color(red: 0.8, green: 0.6, blue: 0.8),  // Lavender
-    Color(red: 0.6, green: 0.8, blue: 0.5),  // Light Green
-    Color(red: 0.9, green: 0.5, blue: 0.3),  // Coral
-    Color(red: 0.4, green: 0.6, blue: 0.8),  // Sky Blue
-    Color(red: 0.7, green: 0.5, blue: 0.6),  // Dusty Rose
+    Color(red: 0.15, green: 0.45, blue: 0.85),  // Deep Blue
+    Color(red: 0.25, green: 0.6, blue: 0.45),   // Forest Green
+    Color(red: 0.85, green: 0.45, blue: 0.25),  // Burnt Orange
+    Color(red: 0.55, green: 0.3, blue: 0.65),   // Deep Purple
+    Color(red: 0.75, green: 0.55, blue: 0.15),  // Amber
+    Color(red: 0.2, green: 0.55, blue: 0.65),   // Teal
+    Color(red: 0.75, green: 0.35, blue: 0.35),  // Crimson
+    Color(red: 0.45, green: 0.35, blue: 0.75),  // Indigo
+    Color(red: 0.7, green: 0.3, blue: 0.55),    // Magenta
+    Color(red: 0.4, green: 0.7, blue: 0.3),     // Grass Green
+    Color(red: 0.25, green: 0.65, blue: 0.7),   // Cyan
+    Color(red: 0.6, green: 0.3, blue: 0.35),    // Maroon
+    Color(red: 0.4, green: 0.25, blue: 0.6),    // Violet
+    Color(red: 0.7, green: 0.5, blue: 0.35),    // Bronze
+    Color(red: 0.25, green: 0.4, blue: 0.3),    // Dark Green
+    Color(red: 0.6, green: 0.45, blue: 0.65),   // Lavender
+    Color(red: 0.45, green: 0.65, blue: 0.35),  // Olive
+    Color(red: 0.75, green: 0.4, blue: 0.25),   // Sienna
+    Color(red: 0.3, green: 0.45, blue: 0.65),   // Steel Blue
+    Color(red: 0.55, green: 0.35, blue: 0.45),  // Plum
   ]
 
   private var courseColorMap: [String: Color] = [:]
