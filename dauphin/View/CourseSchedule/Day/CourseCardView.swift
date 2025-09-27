@@ -20,12 +20,31 @@ struct CourseCardView: View {
   @State private var currentTime = Date()
   let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
 
+  // MARK: - Mock Date for Testing
+  // October 3, 2025 at 1:30 PM (Friday)
+  private let useMockDate = false
+  private var mockDate: Date {
+    let calendar = Calendar.current
+    var components = DateComponents()
+    components.year = 2025
+    components.month = 10
+    components.day = 3
+    components.hour = 13
+    components.minute = 30
+    components.second = 0
+    return calendar.date(from: components) ?? Date()
+  }
+
+  private func getCurrentDate() -> Date {
+    return useMockDate ? mockDate : Date()
+  }
+
   private var timeColor: Color {
     if isOngoing {
       return .green
     } else {
       let calendar = Calendar.current
-      let now = Date()
+      let now = getCurrentDate()
       let currentWeekday = calendar.component(.weekday, from: now)
       let courseWeekdayIOS = weekday == 7 ? 1 : weekday + 1
 
@@ -185,10 +204,10 @@ struct CourseCardView: View {
   }
 
   private func updateOngoingStatus() {
-    currentTime = Date()
+    currentTime = getCurrentDate()
 
     let calendar = Calendar.current
-    let now = Date()
+    let now = getCurrentDate()
 
     let currentWeekday = calendar.component(.weekday, from: now)
 
