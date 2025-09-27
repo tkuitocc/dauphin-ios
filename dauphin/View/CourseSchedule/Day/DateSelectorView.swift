@@ -70,7 +70,7 @@ struct DateSelectorView: View {
           selectedDateIndex = todayIndex
           proxy.scrollTo(todayIndex, anchor: .center)
         } else {
-          selectedDateIndex = 1 // Default to Monday if today is Sunday or Saturday
+          selectedDateIndex = 0 // Default to Monday if today is Sunday or Saturday
         }
       }
     }
