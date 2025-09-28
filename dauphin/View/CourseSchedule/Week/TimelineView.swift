@@ -15,8 +15,6 @@ struct TimelineView: View {
   let start = Calendar.current.date(
     bySettingHour: 8, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date())
   )!
-    bySettingHour: 8, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date())
-  )!
   let end = Calendar.current.date(
     bySettingHour: 22, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date())
   )!
@@ -113,11 +111,9 @@ struct TimelineView: View {
 
     // Courses overlap if one starts before the other ends
     return start1 < end2 && end1 > start2
-    return start1 < end2 && end1 > start2
   }
 
   var body: some View {
-    GeometryReader { _ in
     GeometryReader { _ in
       let totalHeight = CGFloat(1400)
       let numberOfSlots = 14
@@ -179,8 +175,6 @@ struct TimelineView: View {
     return calendar.date(
       bySettingHour: calendar.component(.hour, from: time), minute: 0, second: 0, of: baseDate
     )!
-      bySettingHour: calendar.component(.hour, from: time), minute: 0, second: 0, of: baseDate
-    )!
   }
 
   // 計算課程的高度
@@ -201,73 +195,6 @@ struct TimelineView: View {
   }
 }
 
-struct TimeSlotGrid: View {
-  let numberOfSlots: Int
-  let totalHeight: CGFloat
-
-  var body: some View {
-    VStack(spacing: 0) {
-      ForEach(0..<numberOfSlots, id: \.self) { index in
-        Rectangle()
-          .stroke(Color.gray.opacity(0.4), lineWidth: 0.3)
-          .frame(height: totalHeight / CGFloat(numberOfSlots))
-      }
-    }
-  }
-}
-
-struct CourseView: View {
-  let course: Course
-  let height: CGFloat
-  let yOffset: CGFloat
-
-  private var courseColor: Color {
-    CourseColors.color(for: course.name)
-  }
-
-  var body: some View {
-    RoundedRectangle(cornerRadius: 8)
-      .fill(courseColor.opacity(0.85))
-      .frame(height: max(height - 4, 20))  // Fixed 4pt gap for even spacing
-      .overlay(
-        RoundedRectangle(cornerRadius: 8)
-          .strokeBorder(courseColor, lineWidth: 1.5)
-      )
-      .overlay(
-        VStack(alignment: .leading, spacing: 3) {
-          HStack {
-            Text(course.name)
-              .font(.system(size: 11, weight: .semibold))
-              .foregroundColor(.white)
-              .lineLimit(2)
-            Spacer()
-          }
-          HStack(spacing: 3) {
-            Image(systemName: "location.circle.fill")
-              .font(.system(size: 9))
-              .foregroundColor(.white.opacity(0.9))
-            Text(course.room)
-              .font(.system(size: 10))
-              .foregroundColor(.white.opacity(0.95))
-          }
-          HStack(spacing: 3) {
-            Image(systemName: "person.fill")
-              .font(.system(size: 9))
-              .foregroundColor(.white.opacity(0.9))
-            Text(course.stdNo)
-              .font(.system(size: 10))
-              .foregroundColor(.white.opacity(0.95))
-          }
-        }
-        .padding(8),
-        alignment: .topLeading
-      )
-      .shadow(color: courseColor.opacity(0.3), radius: 2, x: 0, y: 1)
-      .offset(y: yOffset)
-      .padding(.horizontal, 4)
-  }
-}
-
 #Preview {
   let courseViewModel = CourseViewModel(mockData: mockData)
   ScrollView {
@@ -275,13 +202,10 @@ struct CourseView: View {
       courses: Binding(
         get: { courseViewModel.weekCourses.filter { $0.weekday == 1 } },
         set: { _ in
-        set: { _ in
           // Update courseViewModel.weekCourses with the changes from newValue
           // This may require additional logic to ensure filtered courses are updated correctly
         }
       ),
-      overlapGap: 4
-    )
       overlapGap: 4
     )
   }

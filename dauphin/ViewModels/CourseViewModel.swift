@@ -1,6 +1,6 @@
 import Combine
+import Network
 import OSLog
-import Reachability
 import SwiftUI
 import os
 
@@ -19,35 +19,47 @@ class CourseViewModel: ObservableObject {
 
   // MARK: Private State
 
-  private let appGroupDefaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
-  private let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "CourseViewModel")
-
-  private var monitor: NWPathMonitor?
+  private var monitor: NWPathMonitor
   private let monitorQueue = DispatchQueue(label: "CourseViewModel.Network")
+  private var isNetworkAvailable = true
   private var helper: CustomAES256Helper?
   private var timeoutWorkItem: DispatchWorkItem?
   private var cancellables = Set<AnyCancellable>()
   static var hasPerformedInitialLoad = false
 
   init() {
-    reachability = try! Reachability()
-
-    configureReachability()
-    do {
-      try reachability.startNotifier()
-    } catch {
-      Self.logger.error("Unable to start reachability notifier: \(error.localizedDescription)")
-    }
+    monitor = NWPathMonitor()
+    startNetworkMonitor()
     initializeHelper()
   }
 
   // Testing initializer
   init(mockData: [Course]) {
     weekCourses = mockData
+    monitor = NWPathMonitor()
     startNetworkMonitor()
   }
 
-  deinit { monitor?.cancel() }
+  deinit {
+    monitor.cancel()
+  }
+
+  private func startNetworkMonitor() {
+    monitor.pathUpdateHandler = { [weak self] path in
+      guard let self = self else { return }
+      DispatchQueue.main.async {
+        self.isNetworkAvailable = (path.status == .satisfied)
+        if path.status == .satisfied {
+          Self.logger.debug("Network is available")
+          self.errorMessage = nil
+        } else {
+          Self.logger.debug("Network is unavailable")
+          self.errorMessage = "No internet connection. Please check your network."
+        }
+      }
+    }
+    monitor.start(queue: monitorQueue)
+  }
 
   // MARK: - Helper Initialization
   private func initializeHelper() {
@@ -66,7 +78,7 @@ class CourseViewModel: ObservableObject {
 
   private var defaults: UserDefaults {
     guard let d = appGroupDefaults else {
-      logger.error("App Group defaults unavailable. Falling back to .standard.")
+      Self.logger.error("App Group defaults unavailable. Falling back to .standard.")
       return .standard
     }
     return d
@@ -77,7 +89,7 @@ class CourseViewModel: ObservableObject {
     let decoder = JSONDecoder()
     decoder.dateDecodingStrategy = .iso8601
 
-    guard let data = appGroupDefaults?.data(forKey: Constants.Courses) else {
+    guard let data = appGroupDefaults?.data(forKey: Constants.courses) else {
       Self.logger.debug("No cached data found for courses")
       isCacheEmpty = true
       return nil
@@ -114,7 +126,7 @@ class CourseViewModel: ObservableObject {
     encoder.dateEncodingStrategy = .iso8601
     do {
       let data = try encoder.encode(courses)
-      appGroupDefaults?.set(data, forKey: Constants.Courses)
+      appGroupDefaults?.set(data, forKey: Constants.courses)
       Self.logger.debug("Courses saved to cache successfully")
     } catch {
       Self.logger.error("Failed to encode and save courses: \(error.localizedDescription)")
@@ -152,7 +164,7 @@ class CourseViewModel: ObservableObject {
     }
 
     // Check network availability
-    guard reachability.connection != .unavailable else {
+    guard isNetworkAvailable else {
       if weekCourses.isEmpty {
         self.errorMessage = "No internet connection and no cached data available."
       }
@@ -185,9 +197,9 @@ class CourseViewModel: ObservableObject {
       if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
         // Trim all string fields in the JSON response
         let trimmedJson = trimAllStringFields(json) as? [String: Any] ?? json
-        let courses = parseCourseData(apiData: trimmedJson)
-        saveCoursesToCache(courses: courses)
+        let courses = parseCourseDataFromDictionary(apiData: trimmedJson)
 
+        saveCoursesToCache(courses: courses)
         self.weekCourses = courses
         self.isCacheEmpty = courses.isEmpty
         self.errorMessage = nil
@@ -202,13 +214,6 @@ class CourseViewModel: ObservableObject {
       } else {
         throw URLError(.cannotParseResponse)
       }
-
-      timeoutTask?.cancel()
-      saveCoursesToCache(courses: courses)
-      weekCourses = courses
-      isCacheEmpty = courses.isEmpty
-      errorMessage = nil
-      isLoading = false
     } catch {
       self.isUpdatingCache = false
       self.isRefreshing = false
@@ -270,27 +275,11 @@ class CourseViewModel: ObservableObject {
     self.errorMessage = nil
   }
 
-  // MARK: - Reachability Configuration
-  private func configureReachability() {
-    reachability.whenReachable = { reachability in
-      DispatchQueue.main.async {
-        if reachability.connection == .wifi {
-          // Network reachable via WiFi
-        } else {
-          // Network reachable via Cellular
-        }
-        self.errorMessage = nil
-      }
-    }
-
-    reachability.whenUnreachable = { _ in
-      DispatchQueue.main.async {
-        self.errorMessage = "No internet connection. Please check your network."
-      }
-    }
+  // MARK: - Helper function to clean HTML tags
+  private func stripHTML(_ text: String) -> String {
+    return text.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression)
   }
 
-  // MARK: - Helper function to clean HTML tags
   private func cleanHTMLTags(from text: String) -> String {
     // kept for backward-compat usage; now calls stripHTML
     stripHTML(text)
@@ -532,8 +521,8 @@ class CourseViewModel: ObservableObject {
       }
     }
 
-    Self.logger.info("Successfully parsed \(mergedCourses.count) courses")
-    return mergedCourses
+    Self.logger.info("Successfully parsed \(merged.count) courses")
+    return merged
   }
 
   // MARK: - Time Helpers (reference hour/minute only; no hardcoded date)

@@ -9,7 +9,6 @@ import WidgetKit
 
 struct CoursesNextUpViewLockScreenView: View {
   @Environment(\.colorScheme) var colorScheme
-  @Environment(\.colorScheme) var colorScheme
 
   var entry: Provider.Entry
   var body: some View {
@@ -56,7 +55,6 @@ struct CoursesNextUpViewLockScreenView: View {
               }
 
             Spacer(minLength: 20)
-              Spacer(minLength: 20)
 
               HStack(spacing: 0) {
                 Image(systemName: "graduationcap")

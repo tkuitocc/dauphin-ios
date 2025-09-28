@@ -55,7 +55,7 @@ class AuthViewModel: ObservableObject {
   func logout() {
     // Clear token and courses from App Group defaults
     appGroupDefaults?.removeObject(forKey: Constants.ssoTokenKey)
-    appGroupDefaults?.removeObject(forKey: Constants.Courses)
+    appGroupDefaults?.removeObject(forKey: Constants.courses)
     Self.logger.info("Cleared user data from App Group")
 
     // Reset course view model initialization flag for fresh session
