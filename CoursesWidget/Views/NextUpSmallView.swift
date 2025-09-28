@@ -48,6 +48,7 @@ struct CoursesNextUpSmallView: View {
           VStack(alignment: .leading, spacing: 2) {
             VStack(alignment: .leading, spacing: 0) {
               Text("\(entry.courses[0].name)")
+                .lineLimit(1)
                 .font(.headline)
                 .foregroundColor(.primary)
               Text(
@@ -64,6 +65,7 @@ struct CoursesNextUpSmallView: View {
                 Text("\(entry.courses[0].room)")
                   .font(.system(size: 10))
               }
+              .lineLimit(1)
               .padding(.vertical, 2)
               .padding(.horizontal, 5)
               .background(Color.blue.opacity(0.6))
@@ -75,6 +77,7 @@ struct CoursesNextUpSmallView: View {
                 Text("\(entry.courses[0].stdNo)")
                   .font(.system(size: 10))
               }
+              .lineLimit(1)
               .padding(.vertical, 2)
               .padding(.horizontal, 5)
               .background(Color.blue.opacity(0.6))
@@ -94,21 +97,22 @@ struct CoursesNextUpSmallView: View {
 
           // Second Event
           if entry.courses.count > 1 {
-
             let isSameDay = entry.courses[0].weekday == entry.courses[1].weekday
             let secondCourseWeekday = weekdayName(for: entry.courses[1].weekday)
 
             VStack(alignment: .leading, spacing: 2) {
-              if isSameDay {
+              if !isSameDay {
                 Text(secondCourseWeekday)
                   .font(.footnote)
                   .foregroundColor(.secondary)
                   .padding(.leading, -10)
+                  .lineLimit(1)
               }
               VStack(alignment: .leading, spacing: 0) {
                 Text("\(entry.courses[1].name)")
                   .font(.subheadline)
                   .foregroundColor(.primary)
+                  .lineLimit(1)
                 Text(
                   "\(formatTime(entry.courses[1].startTime)) - \(formatTime(entry.courses[1].endTime))"
                 )
