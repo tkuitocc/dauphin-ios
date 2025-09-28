@@ -10,18 +10,18 @@ enum KeyConstants {
             throw NSError(domain: "KeyConstants", code: 404, userInfo: [NSLocalizedDescriptionKey: "api.plist file not found in main bundle."])
         }
 
-        do {
-            let data = try Data(contentsOf: url)
-            let decoder = PropertyListDecoder()
-            let aesDict = try decoder.decode([String: AES].self, from: data)
+    do {
+      let data = try Data(contentsOf: url)
+      let decoder = PropertyListDecoder()
+      let aesDict = try decoder.decode([String: AES].self, from: data)
 
             guard let aes = aesDict["AES"] else {
                 logger.error("'AES' key not found in plist")
                 throw NSError(domain: "KeyConstants", code: 404, userInfo: [NSLocalizedDescriptionKey: "'AES' key not found in plist."])
             }
 
-            APIKeys.storage["AES256IV"] = aes.IV
-            APIKeys.storage["AES256KEY"] = aes.KEY
+      APIKeys.storage["AES256IV"] = aes.iv
+      APIKeys.storage["AES256KEY"] = aes.key
 
 
             // 將 API keys 儲存到 Keychain（假設 KeychainManager 已實作）
@@ -35,8 +35,8 @@ enum KeyConstants {
         }
     }
 
-    enum APIKeys {
-        static fileprivate(set) var storage = [String: String]()
+  enum APIKeys {
+    fileprivate(set) static var storage = [String: String]()
 
         static var AES256IV: String {
             if let value = storage["AES256IV"] {

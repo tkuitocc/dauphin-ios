@@ -6,6 +6,7 @@
 //
 
 import Code39
+import Code39
 import SwiftUI
 
 struct LibraryView: View {
@@ -47,5 +48,6 @@ struct LibraryView: View {
 }
 
 #Preview {
+  LibraryView(authViewModel: AuthViewModel())
   LibraryView(authViewModel: AuthViewModel())
 }

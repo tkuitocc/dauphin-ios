@@ -2,6 +2,7 @@ import Combine
 import OSLog
 import Reachability
 import SwiftUI
+import os
 
 // MARK: - ViewModel for Courses
 @MainActor
@@ -16,7 +17,13 @@ class CourseViewModel: ObservableObject {
   @Published var cacheUpdateMessage: String? = nil
   @Published var isRefreshing = false
 
-  private var reachability: Reachability
+  // MARK: Private State
+
+  private let appGroupDefaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
+  private let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "CourseViewModel")
+
+  private var monitor: NWPathMonitor?
+  private let monitorQueue = DispatchQueue(label: "CourseViewModel.Network")
   private var helper: CustomAES256Helper?
   private var timeoutWorkItem: DispatchWorkItem?
   private var cancellables = Set<AnyCancellable>()
@@ -34,10 +41,13 @@ class CourseViewModel: ObservableObject {
     initializeHelper()
   }
 
+  // Testing initializer
   init(mockData: [Course]) {
-    self.weekCourses = mockData
-    self.reachability = try! Reachability()
+    weekCourses = mockData
+    startNetworkMonitor()
   }
+
+  deinit { monitor?.cancel() }
 
   // MARK: - Helper Initialization
   private func initializeHelper() {
@@ -53,6 +63,15 @@ class CourseViewModel: ObservableObject {
   }
 
   // MARK: - Cache Management
+
+  private var defaults: UserDefaults {
+    guard let d = appGroupDefaults else {
+      logger.error("App Group defaults unavailable. Falling back to .standard.")
+      return .standard
+    }
+    return d
+  }
+
   func loadCoursesFromCache() -> [Course]? {
     // Loading courses from cache
     let decoder = JSONDecoder()
@@ -77,8 +96,7 @@ class CourseViewModel: ObservableObject {
   }
 
   func clearCache() {
-    appGroupDefaults?.removeObject(forKey: Constants.Courses)
-    appGroupDefaults?.synchronize()
+    defaults.removeObject(forKey: Constants.courses)
     weekCourses = []
     isCacheEmpty = true
     errorMessage = "Cache cleared. Please refresh to load courses."
@@ -94,7 +112,6 @@ class CourseViewModel: ObservableObject {
     // Saving courses to cache
     let encoder = JSONEncoder()
     encoder.dateEncodingStrategy = .iso8601
-
     do {
       let data = try encoder.encode(courses)
       appGroupDefaults?.set(data, forKey: Constants.Courses)
@@ -186,6 +203,12 @@ class CourseViewModel: ObservableObject {
         throw URLError(.cannotParseResponse)
       }
 
+      timeoutTask?.cancel()
+      saveCoursesToCache(courses: courses)
+      weekCourses = courses
+      isCacheEmpty = courses.isEmpty
+      errorMessage = nil
+      isLoading = false
     } catch {
       self.isUpdatingCache = false
       self.isRefreshing = false
@@ -269,18 +292,10 @@ class CourseViewModel: ObservableObject {
 
   // MARK: - Helper function to clean HTML tags
   private func cleanHTMLTags(from text: String) -> String {
-    return
-      text
-      .replacingOccurrences(of: "<br/>", with: "\n")
-      .replacingOccurrences(of: "<br>", with: "\n")
-      .replacingOccurrences(of: "</br>", with: "\n")
-      .replacingOccurrences(of: "<BR/>", with: "\n")
-      .replacingOccurrences(of: "<BR>", with: "\n")
-      .replacingOccurrences(of: "\\r\\n", with: "\n")
-      .replacingOccurrences(of: "\r\n", with: "\n")
+    // kept for backward-compat usage; now calls stripHTML
+    stripHTML(text)
   }
 
-  // MARK: - Helper function to trim all string fields in JSON
   private func trimAllStringFields(_ object: Any) -> Any {
     if let dict = object as? [String: Any] {
       var trimmedDict = [String: Any]()
@@ -297,76 +312,83 @@ class CourseViewModel: ObservableObject {
     }
   }
 
-  // MARK: - Parse Course Data
-  private func parseCourseData(apiData: [String: Any]) -> [Course] {
-    var weekCourses = [Course]()
+  // MARK: - Parse Course Data (Decodable path)
 
-    guard let stuelelist = apiData["stuelelist"] as? [[String: Any]] else {
-      Self.logger.error("Failed to parse 'stuelelist' from API data")
-      return weekCourses
+  struct APIResponse: Decodable {
+    let stuelelist: [CourseDTO]
+  }
+
+  struct CourseDTO: Decodable {
+    let week: String
+    let chCosName: String?
+    let note: String?
+    let room: String?
+    let teachName: String?
+    let timePlace: TimePlace?
+
+    enum CodingKeys: String, CodingKey {
+      case week
+      case chCosName = "ch_cos_name"
+      case note
+      case room
+      case teachName = "teach_name"
+      case timePlace = "timePlase"
     }
 
-    for courseData in stuelelist {
-      guard let weekString = courseData["week"] as? String,
-        let weekIndex = Int(weekString),
-        (1...6).contains(weekIndex)
-      else {
-        Self.logger.warning("Invalid or missing 'week' in course data")
-        continue
-      }
+    struct TimePlace: Decodable {
+      let sesses: [String]
+    }
+  }
 
-      // Clean HTML tags from all fields first (fields are already trimmed at JSON level)
-      let rawCourseName = cleanHTMLTags(from: courseData["ch_cos_name"] as? String ?? "Unknown")
-        // Remove all newline characters from the name field
+  private func parseCourseData(from api: APIResponse) -> [Course] {
+    var weekCourses: [Course] = []
+
+    for courseData in api.stuelelist {
+      guard
+        let weekIndex = Int(courseData.week),
+        (1...7).contains(weekIndex)
+      else { continue }
+
+      let rawCourseName = cleanHTMLTags(from: courseData.chCosName ?? "Unknown")
         .replacingOccurrences(of: "\n", with: "")
         .replacingOccurrences(of: "\r", with: "")
-      let noteText = courseData["note"] as? String ?? ""
-      let cleanedNote = cleanHTMLTags(from: noteText)
 
-      // STEP 1: Split the course if "name" contains "," - only keep the first part
       let courseName =
         rawCourseName.contains(",")
-        ? rawCourseName.components(separatedBy: ",").first ?? rawCourseName
+        ? (rawCourseName.components(separatedBy: ",").first ?? rawCourseName)
         : rawCourseName
 
-      // Handle multiple rooms, teachers, and seat numbers - also only keep first
       let room =
-        cleanHTMLTags(from: courseData["room"] as? String ?? "")
+        cleanHTMLTags(from: courseData.room ?? "")
         .components(separatedBy: ",")
         .first ?? ""
 
       let teacher =
-        cleanHTMLTags(from: courseData["teach_name"] as? String ?? "Unknown Teacher")
+        cleanHTMLTags(from: courseData.teachName ?? "Unknown Teacher")
         .components(separatedBy: ",")
         .first ?? "Unknown Teacher"
 
+      // original code called this seat_no; API lacks here in Decodable path
       let seatNo =
-        cleanHTMLTags(from: courseData["seat_no"] as? String ?? "Unknown Seat")
+        cleanHTMLTags(from: "")
         .components(separatedBy: ",")
         .first ?? "Unknown Seat"
 
-      guard let timeSessions = courseData["timePlase"] as? [String: Any],
-        let sesses = timeSessions["sesses"] as? [String],
+      guard
+        let sesses = courseData.timePlace?.sesses,
         let firstSession = sesses.first,
         let lastSession = sesses.last,
         let firstSessionInt = Int(firstSession),
         let lastSessionInt = Int(lastSession),
         let start = sessionToStartTime(session: firstSessionInt),
         let end = sessionToEndTime(session: lastSessionInt)
-      else {
-        Self.logger.warning("Invalid or missing time information for course data")
-        continue
-      }
+      else { continue }
 
       let time = sesses.joined(separator: ", ")
-
-      // Handle empty room
       let finalRoom =
-        (room.isEmpty || room.replacingOccurrences(of: " ", with: "").isEmpty
-          || room.range(of: "^[A-Z]", options: .regularExpression) == nil)
-        ? "Unknown Room" : room
+        room.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "Unknown Room" : room
+      let cleanedNote = cleanHTMLTags(from: courseData.note ?? "")
 
-      // Create single course entry with first part of comma-separated values
       weekCourses.append(
         Course(
           name: courseName,
@@ -382,54 +404,131 @@ class CourseViewModel: ObservableObject {
       )
     }
 
-    // STEP 2: Keep only one course if data is same (remove exact duplicates)
-    // Using Set for O(n) performance instead of O(n²)
-    var seenCourses = Set<Course>()
-    var uniqueCourses: [Course] = []
+    return dedupeAndMerge(weekCourses)
+  }
 
-    for course in weekCourses {
-      if seenCourses.insert(course).inserted {
-        uniqueCourses.append(course)
-      }
+  // MARK: - Parse Course Data (Dictionary fallback path, keeps original keys)
+
+  private func parseCourseDataFromDictionary(apiData: [String: Any]) -> [Course] {
+    var weekCourses: [Course] = []
+
+    guard let stuelelist = apiData["stuelelist"] as? [[String: Any]] else {
+      Self.logger.error("Failed to parse 'stuelelist' from API data")
+      return weekCourses
     }
 
-    // STEP 3: Replace the "(<note-content>)" inside "name"
-    for i in 0..<uniqueCourses.count {
-      var course = uniqueCourses[i]
-      if !course.note.isEmpty {
-        // Since we removed newlines from name but note still has them,
-        // we need to compare with a cleaned version of the note
-        let noteForComparison = course.note
-          .replacingOccurrences(of: "\n", with: "")
-          .replacingOccurrences(of: "\r", with: "")
-        let notePattern = "(" + noteForComparison + ")"
+    for courseData in stuelelist {
+      guard
+        let weekString = courseData["week"] as? String,
+        let weekIndex = Int(weekString),
+        (1...6).contains(weekIndex)
+      else {
+        Self.logger.warning("Invalid or missing 'week' in course data")
+        continue
+      }
 
+      let rawCourseName = cleanHTMLTags(from: (courseData["ch_cos_name"] as? String) ?? "Unknown")
+        .replacingOccurrences(of: "\n", with: "")
+        .replacingOccurrences(of: "\r", with: "")
+
+      let courseName =
+        rawCourseName.contains(",")
+        ? (rawCourseName.components(separatedBy: ",").first ?? rawCourseName)
+        : rawCourseName
+
+      let room =
+        cleanHTMLTags(from: (courseData["room"] as? String) ?? "")
+        .components(separatedBy: ",")
+        .first ?? ""
+
+      let teacher =
+        cleanHTMLTags(from: (courseData["teach_name"] as? String) ?? "Unknown Teacher")
+        .components(separatedBy: ",")
+        .first ?? "Unknown Teacher"
+
+      let seatNo =
+        cleanHTMLTags(from: (courseData["seat_no"] as? String) ?? "Unknown Seat")
+        .components(separatedBy: ",")
+        .first ?? "Unknown Seat"
+
+      guard
+        let timeSessions = courseData["timePlase"] as? [String: Any],
+        let sesses = timeSessions["sesses"] as? [String],
+        let firstSession = sesses.first,
+        let lastSession = sesses.last,
+        let firstSessionInt = Int(firstSession),
+        let lastSessionInt = Int(lastSession),
+        let start = sessionToStartTime(session: firstSessionInt),
+        let end = sessionToEndTime(session: lastSessionInt)
+      else {
+        Self.logger.warning("Invalid or missing time information for course data")
+        continue
+      }
+
+      let time = sesses.joined(separator: ", ")
+      let finalRoom =
+        room.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "Unknown Room" : room
+      let cleanedNote = cleanHTMLTags(from: (courseData["note"] as? String) ?? "")
+
+      weekCourses.append(
+        Course(
+          name: courseName,
+          room: finalRoom,
+          teacher: teacher,
+          time: time,
+          startTime: start,
+          endTime: end,
+          stdNo: seatNo,
+          weekday: weekIndex,
+          note: cleanedNote
+        )
+      )
+    }
+
+    return dedupeAndMerge(weekCourses)
+  }
+
+  // MARK: - De-duplication and Merge
+
+  private func dedupeAndMerge(_ input: [Course]) -> [Course] {
+    // STEP 2: remove exact duplicates (assumes Course: Hashable)
+    var seen = Set<Course>()
+    var unique: [Course] = []
+    for c in input {
+      if seen.insert(c).inserted { unique.append(c) }
+    }
+
+    // STEP 3: strip "(note)" from name if present
+    for i in 0..<unique.count {
+      var course = unique[i]
+      if !course.note.isEmpty {
+        let cleaned = course.note.replacingOccurrences(of: "\n", with: "")
+          .replacingOccurrences(of: "\r", with: "")
+        let notePattern = "(" + cleaned + ")"
         if course.name.contains(notePattern) {
           course.name = course.name.replacingOccurrences(of: notePattern, with: "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
         }
-        uniqueCourses[i] = course
       }
+      unique[i] = course
     }
 
-    // STEP 4: Merge course data if all fields except teacher are same
-    var mergedCourses: [Course] = []
-    for course in uniqueCourses {
-      if let existingIndex = mergedCourses.firstIndex(where: { existingCourse in
-        existingCourse.name == course.name && existingCourse.room == course.room
-          && existingCourse.time == course.time && existingCourse.stdNo == course.stdNo
-          && existingCourse.weekday == course.weekday
-          && existingCourse.startTime == course.startTime
-          && existingCourse.endTime == course.endTime && existingCourse.note == course.note
+    // STEP 4: merge when all except teacher are same; teacher去重
+    var merged: [Course] = []
+    for course in unique {
+      if let idx = merged.firstIndex(where: { e in
+        e.name == course.name && e.room == course.room && e.time == course.time
+          && e.stdNo == course.stdNo && e.weekday == course.weekday
+          && e.startTime == course.startTime && e.endTime == course.endTime && e.note == course.note
       }) {
-        // Merge teachers if different
-        var mergedCourse = mergedCourses[existingIndex]
-        if !mergedCourse.teacher.contains(course.teacher) {
-          mergedCourse.teacher += ", " + course.teacher
-        }
-        mergedCourses[existingIndex] = mergedCourse
+        var m = merged[idx]
+        var teachers = Set(
+          m.teacher.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) })
+        teachers.insert(course.teacher)
+        m.teacher = teachers.sorted().joined(separator: ", ")
+        merged[idx] = m
       } else {
-        mergedCourses.append(course)
+        merged.append(course)
       }
     }
 
@@ -437,33 +536,33 @@ class CourseViewModel: ObservableObject {
     return mergedCourses
   }
 
-  // MARK: - Time Helpers
-  private func sessionToStartTime(session: Int) -> Date? {
-    let sessionTimes = [
-      1: 8, 2: 9, 3: 10, 4: 11, 5: 12, 6: 13,
-      7: 14, 8: 15, 9: 16, 10: 17, 11: 18,
-      12: 19, 13: 20, 14: 21,
-    ]
+  // MARK: - Time Helpers (reference hour/minute only; no hardcoded date)
 
-    guard let hour = sessionTimes[session] else { return nil }
-    let components = DateComponents(year: 1989, month: 6, day: 4, hour: hour, minute: 10)
-    return Calendar.current.date(from: components)
+  private func sessionToStartTime(session: Int) -> Date? {
+    let startHour = [
+      1: 8, 2: 9, 3: 10, 4: 11, 5: 12, 6: 13, 7: 14, 8: 15, 9: 16, 10: 17, 11: 18, 12: 19, 13: 20,
+      14: 21,
+    ][session]
+    guard let hour = startHour else { return nil }
+    var comps = DateComponents()
+    comps.hour = hour
+    comps.minute = 10
+    return Calendar.current.date(from: comps)
   }
 
   private func sessionToEndTime(session: Int) -> Date? {
-    let sessionTimes = [
-      1: 9, 2: 10, 3: 11, 4: 12, 5: 13, 6: 14,
-      7: 15, 8: 16, 9: 17, 10: 18, 11: 19,
-      12: 20, 13: 21, 14: 22,
-    ]
-
-    guard let hour = sessionTimes[session] else { return nil }
-    let components = DateComponents(year: 1989, month: 6, day: 4, hour: hour, minute: 0)
-    return Calendar.current.date(from: components)
+    let endHour = [
+      1: 9, 2: 10, 3: 11, 4: 12, 5: 13, 6: 14, 7: 15, 8: 16, 9: 17, 10: 18, 11: 19, 12: 20, 13: 21,
+      14: 22,
+    ][session]
+    guard let hour = endHour else { return nil }
+    var comps = DateComponents()
+    comps.hour = hour
+    comps.minute = 0
+    return Calendar.current.date(from: comps)
   }
 }
 
 // MARK: - Custom Errors
-enum EncryptionError: Error {
-  case failed
-}
+
+enum EncryptionError: Error { case failed }

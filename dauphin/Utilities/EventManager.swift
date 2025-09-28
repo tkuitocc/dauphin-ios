@@ -9,8 +9,10 @@ import EventKit
 import OSLog
 
 class EventManager {
-    private static let logger = Logger(subsystem: "com.dauphin.app", category: "EventManager")
-    let eventStore = EKEventStore()
+  let eventStore = EKEventStore()
+  private let logger = Logger(
+    subsystem: "group.cantpr09ram.dauphin", category: "EventManager"
+  )
 
     /// Request access and add an event in one step
     func requestAccessAndAddEvent(event: CalendarEvent) {
@@ -46,21 +48,21 @@ class EventManager {
         let calendars = eventStore.calendars(for: .event)
         Self.logger.debug("Available calendars: \(calendars.count)")
 
-        let calendar = selectModifiableCalendar(from: calendars) ?? createLocalCalendar()
+    let calendar = selectModifiableCalendar(from: calendars) ?? createLocalCalendar()
 
         guard let calendar = calendar else {
             Self.logger.error("No modifiable calendar found")
             return
         }
 
-        let calendarEvent = EKEvent(eventStore: eventStore)
-        calendarEvent.title = event.event
-        calendarEvent.startDate = event.startDate
-        calendarEvent.endDate = event.endDate
-        calendarEvent.calendar = calendar
-        if event.startDate == event.endDate {
-            calendarEvent.isAllDay = true
-        }
+    let calendarEvent = EKEvent(eventStore: eventStore)
+    calendarEvent.title = event.event
+    calendarEvent.startDate = event.startDate
+    calendarEvent.endDate = event.endDate
+    calendarEvent.calendar = calendar
+    if event.startDate == event.endDate {
+      calendarEvent.isAllDay = true
+    }
 
         do {
             try eventStore.save(calendarEvent, span: .thisEvent)
@@ -70,20 +72,22 @@ class EventManager {
         }
     }
 
-    /// Helper function to select a modifiable calendar
-    private func selectModifiableCalendar(from calendars: [EKCalendar]) -> EKCalendar? {
-        // Prioritize the default calendar
-        if let defaultCalendar = eventStore.defaultCalendarForNewEvents {
-            return defaultCalendar
-        }
-        // Fallback to a local or CalDAV calendar
-        return calendars.first(where: { $0.allowsContentModifications && ($0.type == .local || $0.type == .calDAV) })
+  /// Helper function to select a modifiable calendar
+  private func selectModifiableCalendar(from calendars: [EKCalendar]) -> EKCalendar? {
+    // Prioritize the default calendar
+    if let defaultCalendar = eventStore.defaultCalendarForNewEvents {
+      return defaultCalendar
     }
+    // Fallback to a local or CalDAV calendar
+    return calendars.first(where: {
+      $0.allowsContentModifications && ($0.type == .local || $0.type == .calDAV)
+    })
+  }
 
-    /// Create a new local calendar if no modifiable calendar is found
-    private func createLocalCalendar() -> EKCalendar? {
-        let newCalendar = EKCalendar(for: .event, eventStore: eventStore)
-        newCalendar.title = "My Custom Calendar"
+  /// Create a new local calendar if no modifiable calendar is found
+  private func createLocalCalendar() -> EKCalendar? {
+    let newCalendar = EKCalendar(for: .event, eventStore: eventStore)
+    newCalendar.title = "My Custom Calendar"
 
         // Use a local source if available
         if let localSource = eventStore.sources.first(where: { $0.sourceType == .local }) {

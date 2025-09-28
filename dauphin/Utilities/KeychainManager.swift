@@ -9,22 +9,22 @@ import Foundation
 import KeychainSwift
 
 struct KeychainManager {
-    static let shared = KeychainManager()
-    private let keychain: KeychainSwift
+  static let shared = KeychainManager()
+  private let keychain: KeychainSwift
 
-    private init() {
-        keychain = KeychainSwift()
-    }
+  private init() {
+    keychain = KeychainSwift()
+  }
 
-    func save(_ value: String, forKey key: String) {
-        keychain.set(value, forKey: key)
-    }
+  func save(_ value: String, forKey key: String) {
+    keychain.set(value, forKey: key)
+  }
 
-    func get(forKey key: String) -> String? {
-        return keychain.get(key)
-    }
+  func get(forKey key: String) -> String? {
+    return keychain.get(key)
+  }
 
-    func delete(forKey key: String) {
-        keychain.delete(key)
-    }
+  func delete(forKey key: String) {
+    keychain.delete(key)
+  }
 }

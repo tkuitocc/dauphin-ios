@@ -1,5 +1,5 @@
 //
-//  NextUpViewSmall.swift
+//  NextUpSmallView.swift
 //  CoursesWidgetExtension
 //
 //  Created by \u8b19 on 11/29/24.

@@ -1,10 +1,4 @@
-//
-//  LibSSoLoginView.swift
-//  campuspass_ios
-//
-//  Created by \u8b19 on 11/17/24.
-//
-
+import OSLog
 import SwiftUI
 import WebKit
 import OSLog
@@ -13,12 +7,12 @@ struct LibSSOLoginView: UIViewRepresentable {
     private static let logger = Logger(subsystem: "com.dauphin.app", category: "LibSSOLogin")
     @ObservedObject var viewModel: AuthViewModel
 
-    class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
-        var parent: LibSSOLoginView
+  class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
+    var parent: LibSSOLoginView
 
-        init(parent: LibSSOLoginView) {
-            self.parent = parent
-        }
+    init(parent: LibSSOLoginView) {
+      self.parent = parent
+    }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             // Web page loaded
@@ -56,29 +50,29 @@ struct LibSSOLoginView: UIViewRepresentable {
         }
     }
 
-    func makeCoordinator() -> Coordinator {
-        Coordinator(parent: self)
+  func makeCoordinator() -> Coordinator {
+    Coordinator(parent: self)
+  }
+
+  func makeUIView(context: Context) -> WKWebView {
+    let contentController = WKUserContentController()
+    contentController.add(context.coordinator, name: "ExtObj")
+
+    let config = WKWebViewConfiguration()
+    config.userContentController = contentController
+
+    let webView = WKWebView(frame: .zero, configuration: config)
+    webView.navigationDelegate = context.coordinator
+
+    if let url = URL(string: "https://sso.tku.edu.tw/ilife/CoWork/AndroidSsoLogin.cshtml") {
+      let request = URLRequest(url: url)
+      webView.load(request)
     }
 
-    func makeUIView(context: Context) -> WKWebView {
-        let contentController = WKUserContentController()
-        contentController.add(context.coordinator, name: "ExtObj")
+    return webView
+  }
 
-        let config = WKWebViewConfiguration()
-        config.userContentController = contentController
-
-        let webView = WKWebView(frame: .zero, configuration: config)
-        webView.navigationDelegate = context.coordinator
-
-        if let url = URL(string: "https://sso.tku.edu.tw/ilife/CoWork/AndroidSsoLogin.cshtml") {
-            let request = URLRequest(url: url)
-            webView.load(request)
-        }
-
-        return webView
-    }
-
-    func updateUIView(_ uiView: WKWebView, context: Context) {}
+  func updateUIView(_: WKWebView, context _: Context) {}
 
     private func handleToken(_ token: String) {
         guard !token.isEmpty else {

@@ -2,6 +2,7 @@ import OSLog
 import SwiftUI
 import WebKit
 import WidgetKit
+import os
 
 @MainActor
 class AuthViewModel: ObservableObject {
