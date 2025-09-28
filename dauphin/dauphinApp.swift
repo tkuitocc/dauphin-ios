@@ -3,7 +3,7 @@ import OSLog
 
 @main
 struct MyApp: App {
-    private static let logger = Logger(subsystem: "com.dauphin.app", category: "App")
+    private static let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "App")
     @State private var isLoaded = false
     @State private var errorMessage: String?
 

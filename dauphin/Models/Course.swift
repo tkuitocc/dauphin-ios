@@ -3,7 +3,7 @@ import OSLog
 
 enum CourseLogger {
   static let logger = Logger(
-    subsystem: "com.dauphin.app", category: "Course"
+    subsystem: "group.cantpr09ram.dauphin", category: "Course"
   )
 }
 

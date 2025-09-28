@@ -3,7 +3,7 @@ import SwiftUI
 import WebKit
 
 struct LibSSOLoginView: UIViewRepresentable {
-    private static let logger = Logger(subsystem: "com.dauphin.app", category: "LibSSOLogin")
+    private static let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "LibSSOLogin")
     @ObservedObject var viewModel: AuthViewModel
 
   class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {

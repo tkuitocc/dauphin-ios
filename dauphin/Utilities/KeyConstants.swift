@@ -2,7 +2,7 @@ import Foundation
 import OSLog
 
 enum KeyConstants {
-    private static let logger = Logger(subsystem: "com.dauphin.app", category: "KeyConstants")
+    private static let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "KeyConstants")
 
     static func loadAPIKeys() async throws {
         guard let url = Bundle.main.url(forResource: "api", withExtension: "plist") else {

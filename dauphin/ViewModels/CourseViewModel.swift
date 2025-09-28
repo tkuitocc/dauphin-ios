@@ -7,7 +7,7 @@ import os
 // MARK: - ViewModel for Courses
 @MainActor
 class CourseViewModel: ObservableObject {
-  private static let logger = Logger(subsystem: "com.dauphin.app", category: "CourseViewModel")
+  private static let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "CourseViewModel")
   private let appGroupDefaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
 
   @Published var weekCourses: [Course] = []

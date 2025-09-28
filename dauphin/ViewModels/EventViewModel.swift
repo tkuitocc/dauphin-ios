@@ -9,7 +9,7 @@ import SwiftUI
 import OSLog
 
 class EventViewModel: ObservableObject {
-    private static let logger = Logger(subsystem: "com.dauphin.app", category: "EventViewModel")
+    private static let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "EventViewModel")
     @Published var events: [CalendarEvent] = []
 
   func loadXMLData(withQuery query: [String: String]) {

@@ -11,7 +11,7 @@ import OSLog
 class EventManager {
   let eventStore = EKEventStore()
   private static let logger = Logger(
-    subsystem: "com.dauphin.app", category: "EventManager"
+    subsystem: "group.cantpr09ram.dauphin", category: "EventManager"
   )
 
     /// Request access and add an event in one step
