@@ -13,5 +13,4 @@ Dauphin is an iOS app for Tamkang University students, providing easy access to 
 
 ## Acknowledgments
 
-- Tamkang University for providing API access
 - All contributors and testers
