@@ -218,6 +218,55 @@ class CourseViewModel: ObservableObject {
     return encoded
   }
 
+
+  // MARK: - UI Updates
+  private func setCacheTimeoutFallback(using cachedCourses: [Course]) {
+    let workItem = DispatchWorkItem { [weak self] in
+      Task { @MainActor in
+        Self.logger.notice("Network timeout: Falling back to cached data")
+        self?.errorMessage = "Fetching data took too long. Using cached data."
+        if let courses = cachedCourses as [Course]? {
+          self?.weekCourses = courses
+        }
+      }
+    }
+    timeoutWorkItem = workItem
+    DispatchQueue.global().asyncAfter(deadline: .now() + 2, execute: workItem)
+  }
+
+  private func updateUI(error: String, courses: [Course]? = nil) {
+    // Error already captured in errorMessage
+    self.errorMessage = error
+    if let courses = courses {
+      self.weekCourses = courses
+    }
+  }
+
+  private func updateUI(courses: [Course]) {
+    self.weekCourses = courses
+    self.errorMessage = nil
+  }
+
+  // MARK: - Reachability Configuration
+  private func configureReachability() {
+    reachability.whenReachable = { reachability in
+      DispatchQueue.main.async {
+        if reachability.connection == .wifi {
+          // Network reachable via WiFi
+        } else {
+          // Network reachable via Cellular
+        }
+        self.errorMessage = nil
+      }
+    }
+
+    reachability.whenUnreachable = { _ in
+      DispatchQueue.main.async {
+        self.errorMessage = "No internet connection. Please check your network."
+      }
+    }
+  }
+
   // MARK: - Helper function to clean HTML tags
   private func cleanHTMLTags(from text: String) -> String {
     return
@@ -411,54 +460,6 @@ class CourseViewModel: ObservableObject {
     guard let hour = sessionTimes[session] else { return nil }
     let components = DateComponents(year: 1989, month: 6, day: 4, hour: hour, minute: 0)
     return Calendar.current.date(from: components)
-  }
-
-  // MARK: - UI Updates
-  private func setCacheTimeoutFallback(using cachedCourses: [Course]) {
-    let workItem = DispatchWorkItem { [weak self] in
-      Task { @MainActor in
-        Self.logger.notice("Network timeout: Falling back to cached data")
-        self?.errorMessage = "Fetching data took too long. Using cached data."
-        if let courses = cachedCourses as [Course]? {
-          self?.weekCourses = courses
-        }
-      }
-    }
-    timeoutWorkItem = workItem
-    DispatchQueue.global().asyncAfter(deadline: .now() + 2, execute: workItem)
-  }
-
-  private func updateUI(error: String, courses: [Course]? = nil) {
-    // Error already captured in errorMessage
-    self.errorMessage = error
-    if let courses = courses {
-      self.weekCourses = courses
-    }
-  }
-
-  private func updateUI(courses: [Course]) {
-    self.weekCourses = courses
-    self.errorMessage = nil
-  }
-
-  // MARK: - Reachability Configuration
-  private func configureReachability() {
-    reachability.whenReachable = { reachability in
-      DispatchQueue.main.async {
-        if reachability.connection == .wifi {
-          // Network reachable via WiFi
-        } else {
-          // Network reachable via Cellular
-        }
-        self.errorMessage = nil
-      }
-    }
-
-    reachability.whenUnreachable = { _ in
-      DispatchQueue.main.async {
-        self.errorMessage = "No internet connection. Please check your network."
-      }
-    }
   }
 }
 
