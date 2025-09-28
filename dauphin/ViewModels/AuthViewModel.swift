@@ -35,10 +35,10 @@ class AuthViewModel: ObservableObject {
 
     self.appGroupDefaults?.set(token, forKey: Constants.ssoTokenKey)
     self.appGroupDefaults?.synchronize()
-    Self.logger.info("Saved ssoStuNo to App Group")
+    AuthViewModel.logger.info("Saved ssoStuNo to App Group")
     // Update Widget timelines
     WidgetCenter.shared.reloadAllTimelines()
-    Self.logger.debug("Widget timelines reloaded")
+    AuthViewModel.logger.debug("Widget timelines reloaded")
 
     // Fetch courses
     self.fetchCourses(token: token)
@@ -56,7 +56,7 @@ class AuthViewModel: ObservableObject {
     // Clear token and courses from App Group defaults
     appGroupDefaults?.removeObject(forKey: Constants.ssoTokenKey)
     appGroupDefaults?.removeObject(forKey: Constants.courses)
-    Self.logger.info("Cleared user data from App Group")
+    AuthViewModel.logger.info("Cleared user data from App Group")
 
     // Reset course view model initialization flag for fresh session
     courseViewModel.resetInitializationFlag()
@@ -67,11 +67,11 @@ class AuthViewModel: ObservableObject {
     // Update authentication state
     self.isLoggedIn = false
     self.ssoStuNo = ""
-    Self.logger.info("User logged out and state reset")
+    AuthViewModel.logger.info("User logged out and state reset")
 
     // Reload widget timelines after logout
     WidgetCenter.shared.reloadAllTimelines()
-    Self.logger.debug("Widget timelines reloaded after logout")
+    AuthViewModel.logger.debug("Widget timelines reloaded after logout")
   }
 
   // MARK: - Clear Website Data
@@ -80,7 +80,7 @@ class AuthViewModel: ObservableObject {
     dataStore.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
       records.forEach { record in
         dataStore.removeData(ofTypes: record.dataTypes, for: [record]) {
-          Self.logger.debug("Cleared website data record: \(record.displayName)")
+          AuthViewModel.logger.debug("Cleared website data record: \(record.displayName)")
         }
       }
     }

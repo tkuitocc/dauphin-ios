@@ -50,10 +50,10 @@ class CourseViewModel: ObservableObject {
       DispatchQueue.main.async {
         self.isNetworkAvailable = (path.status == .satisfied)
         if path.status == .satisfied {
-          Self.logger.debug("Network is available")
+          CourseViewModel.logger.debug("Network is available")
           self.errorMessage = nil
         } else {
-          Self.logger.debug("Network is unavailable")
+          CourseViewModel.logger.debug("Network is unavailable")
           self.errorMessage = "No internet connection. Please check your network."
         }
       }
@@ -67,10 +67,10 @@ class CourseViewModel: ObservableObject {
       let iv = KeychainManager.shared.get(forKey: "AES256IV")
     {
       helper = CustomAES256Helper(key: key, iv: iv)
-      Self.logger.debug("Successfully initialized AES256 helper")
+      CourseViewModel.logger.debug("Successfully initialized AES256 helper")
     } else {
       self.errorMessage = "Failed to retrieve AES256 key or IV from Keychain."
-      Self.logger.error("Failed to retrieve AES256 key or IV from Keychain")
+      CourseViewModel.logger.error("Failed to retrieve AES256 key or IV from Keychain")
     }
   }
 
@@ -78,7 +78,7 @@ class CourseViewModel: ObservableObject {
 
   private var defaults: UserDefaults {
     guard let d = appGroupDefaults else {
-      Self.logger.error("App Group defaults unavailable. Falling back to .standard.")
+      CourseViewModel.logger.error("App Group defaults unavailable. Falling back to .standard.")
       return .standard
     }
     return d
@@ -90,18 +90,18 @@ class CourseViewModel: ObservableObject {
     decoder.dateDecodingStrategy = .iso8601
 
     guard let data = appGroupDefaults?.data(forKey: Constants.courses) else {
-      Self.logger.debug("No cached data found for courses")
+      CourseViewModel.logger.debug("No cached data found for courses")
       isCacheEmpty = true
       return nil
     }
 
     do {
       let courses = try decoder.decode([Course].self, from: data)
-      Self.logger.debug("Successfully loaded courses from cache")
+      CourseViewModel.logger.debug("Successfully loaded courses from cache")
       isCacheEmpty = courses.isEmpty
       return courses
     } catch {
-      Self.logger.error("Failed to decode cached courses: \(error.localizedDescription)")
+      CourseViewModel.logger.error("Failed to decode cached courses: \(error.localizedDescription)")
       isCacheEmpty = true
       return nil
     }
@@ -117,7 +117,7 @@ class CourseViewModel: ObservableObject {
   func resetInitializationFlag() {
     // Reset the initialization flag on logout
     Self.hasPerformedInitialLoad = false
-    Self.logger.debug("Reset initialization flag for fresh session")
+    CourseViewModel.logger.debug("Reset initialization flag for fresh session")
   }
 
   func saveCoursesToCache(courses: [Course]) {
@@ -127,9 +127,9 @@ class CourseViewModel: ObservableObject {
     do {
       let data = try encoder.encode(courses)
       appGroupDefaults?.set(data, forKey: Constants.courses)
-      Self.logger.debug("Courses saved to cache successfully")
+      CourseViewModel.logger.debug("Courses saved to cache successfully")
     } catch {
-      Self.logger.error("Failed to encode and save courses: \(error.localizedDescription)")
+      CourseViewModel.logger.error("Failed to encode and save courses: \(error.localizedDescription)")
     }
   }
 
@@ -188,7 +188,7 @@ class CourseViewModel: ObservableObject {
       guard let httpResponse = response as? HTTPURLResponse, 200...299 ~= httpResponse.statusCode
       else {
         if let httpResponse = response as? HTTPURLResponse {
-          Self.logger.error("Network request failed with status code: \(httpResponse.statusCode)")
+          CourseViewModel.logger.error("Network request failed with status code: \(httpResponse.statusCode)")
         }
         throw URLError(.badServerResponse)
       }
@@ -235,7 +235,7 @@ class CourseViewModel: ObservableObject {
     -> String
   {
     guard let encrypted = helper.encrypt(data: "20220901200540356," + stdNo) else {
-      Self.logger.fault(
+      CourseViewModel.logger.fault(
         "Failed to encrypt authentication data for student: \(stdNo, privacy: .private)")
       throw EncryptionError.failed
     }
@@ -251,7 +251,7 @@ class CourseViewModel: ObservableObject {
   private func setCacheTimeoutFallback(using cachedCourses: [Course]) {
     let workItem = DispatchWorkItem { [weak self] in
       Task { @MainActor in
-        Self.logger.notice("Network timeout: Falling back to cached data")
+        CourseViewModel.logger.notice("Network timeout: Falling back to cached data")
         self?.errorMessage = "Fetching data took too long. Using cached data."
         if let courses = cachedCourses as [Course]? {
           self?.weekCourses = courses
@@ -402,7 +402,7 @@ class CourseViewModel: ObservableObject {
     var weekCourses: [Course] = []
 
     guard let stuelelist = apiData["stuelelist"] as? [[String: Any]] else {
-      Self.logger.error("Failed to parse 'stuelelist' from API data")
+      CourseViewModel.logger.error("Failed to parse 'stuelelist' from API data")
       return weekCourses
     }
 
@@ -412,7 +412,7 @@ class CourseViewModel: ObservableObject {
         let weekIndex = Int(weekString),
         (1...6).contains(weekIndex)
       else {
-        Self.logger.warning("Invalid or missing 'week' in course data")
+        CourseViewModel.logger.warning("Invalid or missing 'week' in course data")
         continue
       }
 
@@ -450,7 +450,7 @@ class CourseViewModel: ObservableObject {
         let start = sessionToStartTime(session: firstSessionInt),
         let end = sessionToEndTime(session: lastSessionInt)
       else {
-        Self.logger.warning("Invalid or missing time information for course data")
+        CourseViewModel.logger.warning("Invalid or missing time information for course data")
         continue
       }
 
@@ -521,7 +521,7 @@ class CourseViewModel: ObservableObject {
       }
     }
 
-    Self.logger.info("Successfully parsed \(merged.count) courses")
+    CourseViewModel.logger.info("Successfully parsed \(merged.count) courses")
     return merged
   }
 

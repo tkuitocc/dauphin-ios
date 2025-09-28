@@ -18,7 +18,7 @@ class EventViewModel: ObservableObject {
     components?.queryItems = query.map { URLQueryItem(name: $0.key, value: $0.value) }
 
         guard let url = components?.url else {
-            Self.logger.error("Failed to create URL from components")
+            EventViewModel.logger.error("Failed to create URL from components")
             return
         }
 
@@ -37,7 +37,7 @@ class EventViewModel: ObservableObject {
                     }
                 }
             } else if let error = error {
-                Self.logger.error("Error loading XML data: \(error.localizedDescription)")
+                EventViewModel.logger.error("Error loading XML data: \(error.localizedDescription)")
             }
         }
         task.resume()

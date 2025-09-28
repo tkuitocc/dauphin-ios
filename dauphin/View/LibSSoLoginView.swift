@@ -1,7 +1,6 @@
 import OSLog
 import SwiftUI
 import WebKit
-import OSLog
 
 struct LibSSOLoginView: UIViewRepresentable {
     private static let logger = Logger(subsystem: "com.dauphin.app", category: "LibSSOLogin")
@@ -76,7 +75,7 @@ struct LibSSOLoginView: UIViewRepresentable {
 
     private func handleToken(_ token: String) {
         guard !token.isEmpty else {
-            Self.logger.error("Invalid authentication token received")
+            LibSSOLoginView.logger.error("Invalid authentication token received")
             return
         }
 
