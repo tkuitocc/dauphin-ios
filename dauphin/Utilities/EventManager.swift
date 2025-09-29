@@ -10,56 +10,50 @@ import OSLog
 
 class EventManager {
   let eventStore = EKEventStore()
-  private let logger = Logger(
+  private static let logger = Logger(
     subsystem: "group.cantpr09ram.dauphin", category: "EventManager"
   )
 
-  /// Request access and add an event in one step
-  func requestAccessAndAddEvent(event: CalendarEvent) {
-    if #available(iOS 17.0, *) {
-      eventStore.requestWriteOnlyAccessToEvents { [weak self] granted, error in
-        guard let self = self else { return }
-        DispatchQueue.main.async {
-          if granted {
-            self.logger.info("Access granted")
-            self.addEvent(event: event)
-          } else {
-            self.logger.error(
-              "Access denied: \(String(describing: error), privacy: .public)"
-            )
-          }
+    /// Request access and add an event in one step
+    func requestAccessAndAddEvent(event: CalendarEvent) {
+        if #available(iOS 17.0, *) {
+            eventStore.requestWriteOnlyAccessToEvents { [weak self] granted, error in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    if granted {
+                        EventManager.logger.info("Calendar access granted")
+                        self.addEvent(event: event)
+                    } else {
+                        EventManager.logger.error("Calendar access denied: \(error?.localizedDescription ?? "Unknown error")")
+                    }
+                }
+            }
+        } else {
+            eventStore.requestAccess(to: .event) { [weak self] granted, error in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    if granted {
+                        EventManager.logger.info("Calendar access granted")
+                        self.addEvent(event: event)
+                    } else {
+                        EventManager.logger.error("Calendar access denied: \(error?.localizedDescription ?? "Unknown error")")
+                    }
+                }
+            }
         }
-      }
-    } else {
-      eventStore.requestAccess(to: .event) { [weak self] granted, error in
-        guard let self = self else { return }
-        DispatchQueue.main.async {
-          if granted {
-            self.logger.info("Access granted")
-            self.addEvent(event: event)
-          } else {
-            self.logger.error(
-              "Access denied: \(String(describing: error), privacy: .public)"
-            )
-          }
-        }
-      }
     }
-  }
 
-  /// Add an event to the calendar
-  private func addEvent(event: CalendarEvent) {
-    let calendars = eventStore.calendars(for: .event)
-    logger.debug(
-      "Available Calendars: \(calendars.map { $0.title }, privacy: .public)"
-    )
+    /// Add an event to the calendar
+    private func addEvent(event: CalendarEvent) {
+        let calendars = eventStore.calendars(for: .event)
+        EventManager.logger.debug("Available calendars: \(calendars.count)")
 
     let calendar = selectModifiableCalendar(from: calendars) ?? createLocalCalendar()
 
-    guard let calendar = calendar else {
-      logger.error("No modifiable calendar found.")
-      return
-    }
+        guard let calendar = calendar else {
+            EventManager.logger.error("No modifiable calendar found")
+            return
+        }
 
     let calendarEvent = EKEvent(eventStore: eventStore)
     calendarEvent.title = event.event
@@ -70,13 +64,13 @@ class EventManager {
       calendarEvent.isAllDay = true
     }
 
-    do {
-      try eventStore.save(calendarEvent, span: .thisEvent)
-      logger.info("Event added successfully!")
-    } catch {
-      logger.error("Failed to save event: \(String(describing: error), privacy: .public)")
+        do {
+            try eventStore.save(calendarEvent, span: .thisEvent)
+            EventManager.logger.info("Event added successfully: \(event.event)")
+        } catch {
+            EventManager.logger.error("Failed to save event: \(error.localizedDescription)")
+        }
     }
-  }
 
   /// Helper function to select a modifiable calendar
   private func selectModifiableCalendar(from calendars: [EKCalendar]) -> EKCalendar? {
@@ -95,21 +89,21 @@ class EventManager {
     let newCalendar = EKCalendar(for: .event, eventStore: eventStore)
     newCalendar.title = "My Custom Calendar"
 
-    // Use a local source if available
-    if let localSource = eventStore.sources.first(where: { $0.sourceType == .local }) {
-      newCalendar.source = localSource
-    } else {
-      logger.error("No local source available")
-      return nil
-    }
+        // Use a local source if available
+        if let localSource = eventStore.sources.first(where: { $0.sourceType == .local }) {
+            newCalendar.source = localSource
+        } else {
+            EventManager.logger.error("No local calendar source available")
+            return nil
+        }
 
-    do {
-      try eventStore.saveCalendar(newCalendar, commit: true)
-      logger.info("Custom calendar created successfully!")
-      return newCalendar
-    } catch {
-      logger.error("Failed to create calendar: \(String(describing: error), privacy: .public)")
-      return nil
+        do {
+            try eventStore.saveCalendar(newCalendar, commit: true)
+            EventManager.logger.info("Custom calendar created successfully")
+            return newCalendar
+        } catch {
+            EventManager.logger.error("Failed to create calendar: \(error.localizedDescription)")
+            return nil
+        }
     }
-  }
 }

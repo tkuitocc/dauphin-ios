@@ -2,13 +2,9 @@ import OSLog
 import SwiftUI
 import WebKit
 
-private let ssoLogger = Logger(
-  subsystem: "group.cantpr09ram.dauphin",
-  category: "LibSSOLoginView"
-)
-
 struct LibSSOLoginView: UIViewRepresentable {
-  @ObservedObject var viewModel: AuthViewModel
+    private static let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "LibSSOLogin")
+    @ObservedObject var viewModel: AuthViewModel
 
   class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
     var parent: LibSSOLoginView
@@ -17,47 +13,41 @@ struct LibSSOLoginView: UIViewRepresentable {
       self.parent = parent
     }
 
-    func webView(_ webView: WKWebView, didFinish _: WKNavigation!) {
-      ssoLogger.info("網頁加載完成")
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-        let javascript = """
-              try {
-                  var token = getSsoLoginToken();
-                  window.webkit.messageHandlers.ExtObj.postMessage(token);
-              } catch(e) {
-                  console.error('Error:', e);
-                  window.webkit.messageHandlers.ExtObj.postMessage('error:' + e.message);
-              }
-          """
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            // Web page loaded
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                let javascript = """
+                    try {
+                        var token = getSsoLoginToken();
+                        window.webkit.messageHandlers.ExtObj.postMessage(token);
+                    } catch(e) {
+                        console.error('Error:', e);
+                        window.webkit.messageHandlers.ExtObj.postMessage('error:' + e.message);
+                    }
+                """
 
-        webView.evaluateJavaScript(javascript) { _, error in
-          if let error = error {
-            ssoLogger.error(
-              "JavaScript 執行錯誤: \(error.localizedDescription, privacy: .public)"
-            )
-          } else {
-            ssoLogger.info("JavaScript 執行成功")
-          }
+                webView.evaluateJavaScript(javascript) { (result, error) in
+                    if let error = error {
+                        LibSSOLoginView.logger.error("JavaScript execution error: \(error.localizedDescription)")
+                    }
+                }
+            }
         }
-      }
-    }
 
-    func userContentController(_: WKUserContentController, didReceive message: WKScriptMessage) {
-      ssoLogger.debug(
-        "收到 JavaScript 訊息: \(String(describing: message.body), privacy: .public)"
-      )
-      if message.name == "ExtObj" {
-        if let token = message.body as? String {
-          if token.starts(with: "error:") {
-            ssoLogger.error("JavaScript 錯誤: \(token, privacy: .public)")
-          } else {
-            ssoLogger.info("成功獲取 token: \(token, privacy: .public)")
-            parent.handleToken(token)
-          }
+        func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+            // Received JavaScript message
+            if message.name == "ExtObj" {
+                if let token = message.body as? String {
+                    if token.starts(with: "error:") {
+                        LibSSOLoginView.logger.error("JavaScript token retrieval failed: \(token)")
+                    } else {
+                        LibSSOLoginView.logger.info("Authentication token received successfully")
+                        parent.handleToken(token)
+                    }
+                }
+            }
         }
-      }
     }
-  }
 
   func makeCoordinator() -> Coordinator {
     Coordinator(parent: self)
@@ -83,13 +73,13 @@ struct LibSSOLoginView: UIViewRepresentable {
 
   func updateUIView(_: WKWebView, context _: Context) {}
 
-  private func handleToken(_ token: String) {
-    guard !token.isEmpty else {
-      ssoLogger.error("Token 無效")
-      return
-    }
+    private func handleToken(_ token: String) {
+        guard !token.isEmpty else {
+            LibSSOLoginView.logger.error("Invalid authentication token received")
+            return
+        }
 
-    ssoLogger.info("處理有效的 token")
-    viewModel.login(with: token)
-  }
+        // Processing valid authentication token
+        viewModel.login(with: token)
+    }
 }

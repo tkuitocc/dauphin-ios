@@ -6,46 +6,42 @@
 //
 import OSLog
 import SwiftUI
+import OSLog
 
 class EventViewModel: ObservableObject {
-  @Published var events: [CalendarEvent] = []
-  private let logger = Logger(
-    subsystem: "group.cantpr09ram.dauphin",
-    category: "EventViewModel"
-  )
+    private static let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "EventViewModel")
+    @Published var events: [CalendarEvent] = []
 
   func loadXMLData(withQuery query: [String: String]) {
     // Base URL
     var components = URLComponents(string: "https://ilifeapi.az.tku.edu.tw/data/xml_cal.ashx?")
     components?.queryItems = query.map { URLQueryItem(name: $0.key, value: $0.value) }
 
-    guard let url = components?.url else {
-      logger.error("Failed to create URL")
-      return
-    }
-
-    let task = URLSession.shared.dataTask(with: url) { data, _, error in
-      if let data = data {
-        // Print original data
-        if let dataString = String(data: data, encoding: .utf8) {
-          self.logger.debug("Original XML Data: \(dataString, privacy: .public)")
+        guard let url = components?.url else {
+            EventViewModel.logger.error("Failed to create URL from components")
+            return
         }
+
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            if let data = data {
+                // Print original data
+                // XML data received successfully
 
         let parser = XMLParser(data: data)
         let delegate = XMLParserDelegateImplementation()
         parser.delegate = delegate
 
-        if parser.parse() {
-          DispatchQueue.main.async {
-            self.events = delegate.events
-          }
+                if parser.parse() {
+                    DispatchQueue.main.async {
+                        self.events = delegate.events
+                    }
+                }
+            } else if let error = error {
+                EventViewModel.logger.error("Error loading XML data: \(error.localizedDescription)")
+            }
         }
-      } else if let error = error {
-        self.logger.error("Error loading data: \(String(describing: error), privacy: .public)")
-      }
+        task.resume()
     }
-    task.resume()
-  }
 }
 
 class XMLParserDelegateImplementation: NSObject, XMLParserDelegate {

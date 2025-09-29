@@ -20,7 +20,7 @@ struct CoursesNextUpSmallView: View {
   // Helper function to convert weekday index to name
   func weekdayName(for weekday: Int) -> String {
     let formatter = DateFormatter()
-    formatter.locale = Locale(identifier: "en_US")  // Change locale if needed
+    formatter.locale = Locale(identifier: "en_US")
     formatter.dateFormat = "EEEE"
     let date = Calendar.current.date(bySetting: .weekday, value: weekday + 1, of: Date())!
     return formatter.string(from: date)
@@ -43,46 +43,48 @@ struct CoursesNextUpSmallView: View {
             Color(UIColor.systemBackground)
           }
       } else {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 6) {
           // First Event
-          VStack(alignment: .leading, spacing: 4) {
-            HStack {
+          VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 0) {
               Text("\(entry.courses[0].name)")
+                .lineLimit(1)
                 .font(.headline)
-              Spacer()
+                .foregroundColor(.primary)
+              Text(
+                "\(formatTime(entry.courses[0].startTime)) - \(formatTime(entry.courses[0].endTime))"
+              )
+              .font(.footnote)
+              .foregroundColor(.secondary)
             }
-            Text(
-              "\(formatTime(entry.courses[0].startTime)) - \(formatTime(entry.courses[0].endTime))"
-            )
-            .font(.footnote)
 
-            HStack {
-              HStack(spacing: 0) {
+            HStack(spacing: 3) {
+              HStack(spacing: 2) {
                 Image(systemName: "location.circle.fill")
                   .font(.system(size: 8))
-                Text(": \(entry.courses[0].room)")
+                Text("\(entry.courses[0].room)")
                   .font(.system(size: 10))
-                  .foregroundColor(.primary)
               }
+              .lineLimit(1)
               .padding(.vertical, 2)
               .padding(.horizontal, 5)
-              .background(Color.blue.opacity(0.8))
+              .background(Color.blue.opacity(0.6))
               .cornerRadius(4)
 
-              HStack(spacing: 0) {
-                Image(systemName: "graduationcap")
+              HStack(spacing: 2) {
+                Image(systemName: "number.circle.fill")
                   .font(.system(size: 8))
-                Text(": \(entry.courses[0].stdNo)")
+                Text("\(entry.courses[0].stdNo)")
                   .font(.system(size: 10))
-                  .foregroundColor(.primary)
               }
+              .lineLimit(1)
               .padding(.vertical, 2)
               .padding(.horizontal, 5)
-              .background(Color.blue)
+              .background(Color.blue.opacity(0.6))
               .cornerRadius(4)
             }
           }
-          .padding(.leading, 4)
+          .padding(.bottom, 3)
           .overlay(
             Capsule()
               .fill(Color.blue)
@@ -91,45 +93,47 @@ struct CoursesNextUpSmallView: View {
             alignment: .leading
           )
 
+          Divider().padding(.leading, -8)
+
           // Second Event
           if entry.courses.count > 1 {
             let isSameDay = entry.courses[0].weekday == entry.courses[1].weekday
             let secondCourseWeekday = weekdayName(for: entry.courses[1].weekday)
 
-            if isSameDay {
-              Text("")
-            } else {
-              Text(secondCourseWeekday)
-                .font(.footnote)
-                .padding(.leading, -8)
-            }
-            VStack(alignment: .leading, spacing: 4) {
-              VStack {
+            VStack(alignment: .leading, spacing: 2) {
+              if !isSameDay {
+                Text(secondCourseWeekday)
+                  .font(.footnote)
+                  .foregroundColor(.secondary)
+                  .padding(.leading, -10)
+                  .lineLimit(1)
+              }
+              VStack(alignment: .leading, spacing: 0) {
                 Text("\(entry.courses[1].name)")
                   .font(.subheadline)
-                Spacer()
+                  .foregroundColor(.primary)
+                  .lineLimit(1)
+                Text(
+                  "\(formatTime(entry.courses[1].startTime)) - \(formatTime(entry.courses[1].endTime))"
+                )
+                .font(.caption)
+                .foregroundColor(.secondary)
               }
-              Text(
-                "\(formatTime(entry.courses[1].startTime)) - \(formatTime(entry.courses[1].endTime))"
+              .padding(.bottom, 2)
+              .overlay(
+                Capsule()
+                  .fill(isSameDay ? Color.blue : Color.orange)
+                  .frame(width: 4)
+                  .padding(.leading, -8),
+                alignment: .leading
               )
-              .font(.footnote)
-              .foregroundColor(.gray)
+              if !isSameDay {
+                Spacer(minLength: 0)
+              }
             }
-            .padding(.leading, 4)
-            .overlay(
-              Capsule()
-                .fill(isSameDay ? Color.blue : Color.orange)
-                .frame(width: 4)
-                .padding(.leading, -8),
-              alignment: .leading
-            )
-          } else {
-            Spacer()
           }
-        }
-        .containerBackground(for: .widget) {
-          Color(UIColor.systemBackground)
-        }
+
+        }.padding([.leading], 6)
       }
     }
   }
@@ -138,7 +142,7 @@ struct CoursesNextUpSmallView: View {
 #Preview(as: .systemSmall) {
   CoursesNextUpWidget()
 } timeline: {
-  SimpleEntry(date: Date(), ssoStuNo: "111111111", courses: mockData, today: mockData.count)
+  SimpleEntry(date: Date(), ssoStuNo: "123456789", courses: mockData, today: mockData.count)
 
-  SimpleEntry(date: Date(), ssoStuNo: "111111111", courses: [mockData[0]], today: mockData.count)
+  SimpleEntry(date: Date(), ssoStuNo: "123456789", courses: [mockData[0]], today: mockData.count)
 }

@@ -57,9 +57,9 @@ struct CourseDetailView: View {
             Divider()
             detailRow(icon: "location.circle.fill", title: "Location", content: course.room)
             Divider()
-            detailRow(icon: "person.fill", title: "Instructor", content: course.teacher)
-            Divider()
             detailRow(icon: "number.circle.fill", title: "Seat Number", content: course.stdNo)
+            Divider()
+            detailRow(icon: "person.fill", title: "Instructor", content: course.teacher)
 
             // Note section (only show if note is not empty)
             if hasNote {

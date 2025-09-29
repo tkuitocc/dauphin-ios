@@ -1,9 +1,11 @@
 import Foundation
 import OSLog
 
-private let courseLogger = Logger(
-  subsystem: "group.cantpr09ram.dauphin", category: "CourseUtilities"
-)
+enum CourseLogger {
+  static let logger = Logger(
+    subsystem: "group.cantpr09ram.dauphin", category: "Course"
+  )
+}
 
 struct Course: Identifiable, Hashable, Codable {
   var id = UUID()
@@ -24,7 +26,7 @@ func getNextUpCourses(from weeklySchedule: [Course]) -> [Course] {
 
   let todayWeekday = calendar.component(.weekday, from: now) - 1
   // log
-  courseLogger.debug("Today weekday index: \(todayWeekday)")
+  CourseLogger.logger.debug("Today weekday index: \(todayWeekday)")
   let sortedCourses = weeklySchedule.sorted { course1, course2 in
     if course1.weekday != course2.weekday {
       return course1.weekday < course2.weekday

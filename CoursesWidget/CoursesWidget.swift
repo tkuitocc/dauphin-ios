@@ -14,10 +14,9 @@ import os
 // struct Course: Codable, Hashable { let name: String; let room: String; let teacher: String; let time: String; let startTime: Date; let endTime: Date; let stdNo: String; let weekday: Int; let note: String }
 // enum Constants { static let Courses = "Courses"; static let ssoTokenKey = "SSO_STU_NO" }
 
-private let coursesWidgetLogger = Logger(
-  subsystem: "group.cantpr09ram.dauphin", category: "CoursesWidget")
-
 struct Provider: TimelineProvider {
+  private static let logger = Logger(
+    subsystem: "group.cantpr09ram.dauphin", category: "CoursesWidget")
 
   // MARK: - Placeholder
 
@@ -67,22 +66,22 @@ struct Provider: TimelineProvider {
   /// 嚴格：沒有就回傳 nil；不回傳「尚未登入」假字串避免誤判已登入
   private func getSsoStuNo() -> String? {
     guard let defaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin") else {
-      coursesWidgetLogger.error("App Group defaults unavailable.")
+      Provider.logger.error("App Group defaults unavailable.")
       return nil
     }
     guard let value = defaults.string(forKey: Constants.ssoTokenKey),
       !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     else {
-      coursesWidgetLogger.info("ssoStuNo not found.")
+      Provider.logger.info("ssoStuNo not found.")
       return nil
     }
-    coursesWidgetLogger.info("Retrieved ssoStuNo.")
+    Provider.logger.info("Retrieved ssoStuNo.")
     return value
   }
 
   private func loadCoursesFromCache() -> [Course]? {
     guard let defaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin") else {
-      coursesWidgetLogger.error("App Group defaults unavailable.")
+      Provider.logger.error("App Group defaults unavailable.")
       return nil
     }
     guard let data = defaults.data(forKey: Constants.courses) else {
@@ -93,7 +92,7 @@ struct Provider: TimelineProvider {
     do {
       return try decoder.decode([Course].self, from: data)
     } catch {
-      coursesWidgetLogger.error(
+      Provider.logger.error(
         "Failed to decode cached courses: \(String(describing: error), privacy: .public)")
       return nil
     }

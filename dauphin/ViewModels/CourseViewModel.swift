@@ -1,58 +1,76 @@
-import Foundation
+import Combine
 import Network
+import OSLog
 import SwiftUI
 import os
 
-// MARK: - ViewModel for Courses (modernized, same logic)
-
+// MARK: - ViewModel for Courses
 @MainActor
-final class CourseViewModel: ObservableObject {
-
-  // MARK: Published State
+class CourseViewModel: ObservableObject {
+  private static let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "CourseViewModel")
+  private let appGroupDefaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
 
   @Published var weekCourses: [Course] = []
-  @Published var isLoading = false
-  @Published var errorMessage: String?
+  @Published var errorMessage: String? = nil
   @Published var isCacheEmpty = false
+  @Published var isUpdatingCache = false
+  @Published var cacheUpdateMessage: String? = nil
+  @Published var isRefreshing = false
 
   // MARK: Private State
 
-  private let appGroupDefaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
-  private let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "CourseViewModel")
-
-  private var monitor: NWPathMonitor?
+  private var monitor: NWPathMonitor
   private let monitorQueue = DispatchQueue(label: "CourseViewModel.Network")
+  private var isNetworkAvailable = true
   private var helper: CustomAES256Helper?
-  private var helperReady = false
-  private var timeoutTask: Task<Void, Never>?
-
-  // MARK: Init
+  private var timeoutWorkItem: DispatchWorkItem?
+  private var cancellables = Set<AnyCancellable>()
+  static var hasPerformedInitialLoad = false
 
   init() {
+    monitor = NWPathMonitor()
     startNetworkMonitor()
-    Task { await initializeHelper() }
+    initializeHelper()
   }
 
   // Testing initializer
   init(mockData: [Course]) {
     weekCourses = mockData
+    monitor = NWPathMonitor()
     startNetworkMonitor()
   }
 
-  deinit { monitor?.cancel() }
+  deinit {
+    monitor.cancel()
+  }
+
+  private func startNetworkMonitor() {
+    monitor.pathUpdateHandler = { [weak self] path in
+      guard let self = self else { return }
+      DispatchQueue.main.async {
+        self.isNetworkAvailable = (path.status == .satisfied)
+        if path.status == .satisfied {
+          CourseViewModel.logger.debug("Network is available")
+          self.errorMessage = nil
+        } else {
+          CourseViewModel.logger.debug("Network is unavailable")
+          self.errorMessage = "No internet connection. Please check your network."
+        }
+      }
+    }
+    monitor.start(queue: monitorQueue)
+  }
 
   // MARK: - Helper Initialization
-
-  private func initializeHelper() async {
+  private func initializeHelper() {
     if let key = KeychainManager.shared.get(forKey: "AES256KEY"),
       let iv = KeychainManager.shared.get(forKey: "AES256IV")
     {
       helper = CustomAES256Helper(key: key, iv: iv)
-      helperReady = true
-      logger.info("Initialized AES256 helper.")
+      CourseViewModel.logger.debug("Successfully initialized AES256 helper")
     } else {
-      errorMessage = "Failed to retrieve AES256 key or IV from Keychain."
-      logger.error("Key/IV retrieval failed.")
+      self.errorMessage = "Failed to retrieve AES256 key or IV from Keychain."
+      CourseViewModel.logger.error("Failed to retrieve AES256 key or IV from Keychain")
     }
   }
 
@@ -60,29 +78,30 @@ final class CourseViewModel: ObservableObject {
 
   private var defaults: UserDefaults {
     guard let d = appGroupDefaults else {
-      logger.error("App Group defaults unavailable. Falling back to .standard.")
+      CourseViewModel.logger.error("App Group defaults unavailable. Falling back to .standard.")
       return .standard
     }
     return d
   }
 
   func loadCoursesFromCache() -> [Course]? {
-    logger.info("Load courses from cache.")
+    // Loading courses from cache
     let decoder = JSONDecoder()
     decoder.dateDecodingStrategy = .iso8601
 
-    guard let data = defaults.data(forKey: Constants.courses) else {
-      logger.info("No cached data for key \(Constants.courses, privacy: .public).")
+    guard let data = appGroupDefaults?.data(forKey: Constants.courses) else {
+      CourseViewModel.logger.debug("No cached data found for courses")
       isCacheEmpty = true
       return nil
     }
 
     do {
       let courses = try decoder.decode([Course].self, from: data)
+      CourseViewModel.logger.debug("Successfully loaded courses from cache")
       isCacheEmpty = courses.isEmpty
       return courses
     } catch {
-      logger.error("Decode cached courses failed: \(String(describing: error), privacy: .public)")
+      CourseViewModel.logger.error("Failed to decode cached courses: \(error.localizedDescription)")
       isCacheEmpty = true
       return nil
     }
@@ -95,78 +114,120 @@ final class CourseViewModel: ObservableObject {
     errorMessage = "Cache cleared. Please refresh to load courses."
   }
 
+  func resetInitializationFlag() {
+    // Reset the initialization flag on logout
+    Self.hasPerformedInitialLoad = false
+    CourseViewModel.logger.debug("Reset initialization flag for fresh session")
+  }
+
   func saveCoursesToCache(courses: [Course]) {
-    logger.info("Saving courses to cache.")
+    // Saving courses to cache
     let encoder = JSONEncoder()
     encoder.dateEncodingStrategy = .iso8601
     do {
       let data = try encoder.encode(courses)
-      defaults.set(data, forKey: Constants.courses)
+      appGroupDefaults?.set(data, forKey: Constants.courses)
+      CourseViewModel.logger.debug("Courses saved to cache successfully")
     } catch {
-      logger.error("Encode+save courses failed: \(String(describing: error), privacy: .public)")
+      CourseViewModel.logger.error("Failed to encode and save courses: \(error.localizedDescription)")
     }
   }
 
   // MARK: - Fetch Courses
+  func fetchCourses(with stdNo: String, forceRefresh: Bool = false, isFirstLogin: Bool = false) async {
+    // Fetching courses from API
+    timeoutWorkItem?.cancel()
 
-  func fetchCourses(with stdNo: String) async {
-    isLoading = true
-    timeoutTask?.cancel()
-
-    if let cached = loadCoursesFromCache() {
-      setCacheTimeoutFallback(using: cached)
+    // Set refreshing state for pull-to-refresh
+    if forceRefresh {
+      self.isRefreshing = true
     }
 
-    if !helperReady { await initializeHelper() }
-    guard let helper else {
-      endWith(error: "Encryption helper not initialized.")
+    // Load and display cached data immediately
+    if let cachedCourses = loadCoursesFromCache(), !cachedCourses.isEmpty {
+      self.weekCourses = cachedCourses
+      self.isCacheEmpty = false
+      self.errorMessage = nil
+    }
+
+    // Only fetch from network on app launch, manual refresh, or first login
+    guard !Self.hasPerformedInitialLoad || forceRefresh || isFirstLogin else {
+      // Already loaded once this session, just show cached data
+      self.isRefreshing = false
       return
     }
 
-    // network check
-    let hasNetwork = monitor?.currentPath.status == .satisfied
-    if !hasNetwork {
-      if let cached = loadCoursesFromCache(), !cached.isEmpty {
-        weekCourses = cached
-        endWith(error: "No internet connection. Showing cached data.", loading: false)
-      } else {
-        endWith(error: "No internet connection and no cached data available.", loading: false)
+    guard let helper = helper else {
+      self.errorMessage = "Encryption helper not initialized."
+      self.isRefreshing = false
+      return
+    }
+
+    // Check network availability
+    guard isNetworkAvailable else {
+      if weekCourses.isEmpty {
+        self.errorMessage = "No internet connection and no cached data available."
       }
+      self.isRefreshing = false
+      // If we have cached data, it's already displayed
       return
     }
+
+    // Network is available - update cache in background (only on first load)
+    Self.hasPerformedInitialLoad = true
+
+    self.isUpdatingCache = true
+    self.cacheUpdateMessage = "Updating course data..."
 
     do {
       let encryptedQuery = try await createEncryptedQuery(for: stdNo, helper: helper)
-
-      var comps = URLComponents(string: "https://ilifeapi.az.tku.edu.tw/api/ilifeStuClassApi")!
-      comps.queryItems = [URLQueryItem(name: "q", value: encryptedQuery)]
-      guard let url = comps.url else { throw URLError(.badURL) }
+      let url = URL(
+        string: "https://ilifeapi.az.tku.edu.tw/api/ilifeStuClassApi?q=\(encryptedQuery)")!
 
       let (data, response) = try await URLSession.shared.data(from: url)
-      guard let http = response as? HTTPURLResponse, 200...299 ~= http.statusCode else {
+      guard let httpResponse = response as? HTTPURLResponse, 200...299 ~= httpResponse.statusCode
+      else {
+        if let httpResponse = response as? HTTPURLResponse {
+          CourseViewModel.logger.error("Network request failed with status code: \(httpResponse.statusCode)")
+        }
         throw URLError(.badServerResponse)
       }
 
-      // Prefer Decodable; fall back to JSONSerialization if needed
-      let courses: [Course]
-      if let decoded = try? JSONDecoder().decode(APIResponse.self, from: data) {
-        courses = parseCourseData(from: decoded)
-      } else if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
-        let trimmed = trimAllStringFields(json) as? [String: Any] ?? json
-        courses = parseCourseDataFromDictionary(apiData: trimmed)
+      // Use parseCourseData to process API response
+      if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+        // Trim all string fields in the JSON response
+        let trimmedJson = trimAllStringFields(json) as? [String: Any] ?? json
+        let courses = parseCourseDataFromDictionary(apiData: trimmedJson)
+
+        saveCoursesToCache(courses: courses)
+        self.weekCourses = courses
+        self.isCacheEmpty = courses.isEmpty
+        self.errorMessage = nil
+        self.isUpdatingCache = false
+        self.isRefreshing = false
+        self.cacheUpdateMessage = forceRefresh ? "Refreshed successfully" : "Course data updated"
+
+        // Hide the message after 2 seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+          self.cacheUpdateMessage = nil
+        }
       } else {
         throw URLError(.cannotParseResponse)
       }
-
-      timeoutTask?.cancel()
-      saveCoursesToCache(courses: courses)
-      weekCourses = courses
-      isCacheEmpty = courses.isEmpty
-      errorMessage = nil
-      isLoading = false
     } catch {
-      timeoutTask?.cancel()
-      endWith(error: "Failed to fetch courses: \(error.localizedDescription)")
+      self.isUpdatingCache = false
+      self.isRefreshing = false
+      self.cacheUpdateMessage = nil
+      // Only show error if we don't have cached data
+      if self.weekCourses.isEmpty {
+        self.errorMessage = "Failed to fetch courses: \(error.localizedDescription)"
+      } else if forceRefresh {
+        // Show brief error notification for refresh failures
+        self.cacheUpdateMessage = "Refresh failed"
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+          self.cacheUpdateMessage = nil
+        }
+      }
     }
   }
 
@@ -174,6 +235,8 @@ final class CourseViewModel: ObservableObject {
     -> String
   {
     guard let encrypted = helper.encrypt(data: "20220901200540356," + stdNo) else {
+      CourseViewModel.logger.fault(
+        "Failed to encrypt authentication data for student: \(stdNo, privacy: .private)")
       throw EncryptionError.failed
     }
     guard let encoded = encrypted.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
@@ -183,24 +246,38 @@ final class CourseViewModel: ObservableObject {
     return encoded
   }
 
-  // MARK: - HTML / Trimming Helpers
 
-  private func stripHTML(_ text: String) -> String {
-    guard let data = text.data(using: .utf8) else { return text }
-    if let attr = try? NSAttributedString(
-      data: data,
-      options: [
-        .documentType: NSAttributedString.DocumentType.html,
-        .characterEncoding: String.Encoding.utf8.rawValue,
-      ],
-      documentAttributes: nil
-    ) {
-      return attr.string
-        .replacingOccurrences(of: "\r\n", with: "\n")
-        .replacingOccurrences(of: "\\r\\n", with: "\n")
-        .trimmingCharacters(in: .whitespacesAndNewlines)
+  // MARK: - UI Updates
+  private func setCacheTimeoutFallback(using cachedCourses: [Course]) {
+    let workItem = DispatchWorkItem { [weak self] in
+      Task { @MainActor in
+        CourseViewModel.logger.notice("Network timeout: Falling back to cached data")
+        self?.errorMessage = "Fetching data took too long. Using cached data."
+        if let courses = cachedCourses as [Course]? {
+          self?.weekCourses = courses
+        }
+      }
     }
-    return text
+    timeoutWorkItem = workItem
+    DispatchQueue.global().asyncAfter(deadline: .now() + 2, execute: workItem)
+  }
+
+  private func updateUI(error: String, courses: [Course]? = nil) {
+    // Error already captured in errorMessage
+    self.errorMessage = error
+    if let courses = courses {
+      self.weekCourses = courses
+    }
+  }
+
+  private func updateUI(courses: [Course]) {
+    self.weekCourses = courses
+    self.errorMessage = nil
+  }
+
+  // MARK: - Helper function to clean HTML tags
+  private func stripHTML(_ text: String) -> String {
+    return text.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression)
   }
 
   private func cleanHTMLTags(from text: String) -> String {
@@ -325,7 +402,7 @@ final class CourseViewModel: ObservableObject {
     var weekCourses: [Course] = []
 
     guard let stuelelist = apiData["stuelelist"] as? [[String: Any]] else {
-      logger.error("Failed to parse 'stuelelist'.")
+      CourseViewModel.logger.error("Failed to parse 'stuelelist' from API data")
       return weekCourses
     }
 
@@ -333,8 +410,11 @@ final class CourseViewModel: ObservableObject {
       guard
         let weekString = courseData["week"] as? String,
         let weekIndex = Int(weekString),
-        (1...7).contains(weekIndex)
-      else { continue }
+        (1...6).contains(weekIndex)
+      else {
+        CourseViewModel.logger.warning("Invalid or missing 'week' in course data")
+        continue
+      }
 
       let rawCourseName = cleanHTMLTags(from: (courseData["ch_cos_name"] as? String) ?? "Unknown")
         .replacingOccurrences(of: "\n", with: "")
@@ -370,6 +450,7 @@ final class CourseViewModel: ObservableObject {
         let start = sessionToStartTime(session: firstSessionInt),
         let end = sessionToEndTime(session: lastSessionInt)
       else {
+        CourseViewModel.logger.warning("Invalid or missing time information for course data")
         continue
       }
 
@@ -440,7 +521,7 @@ final class CourseViewModel: ObservableObject {
       }
     }
 
-    logger.info("Parsed \(merged.count) courses.")
+    CourseViewModel.logger.info("Successfully parsed \(merged.count) courses")
     return merged
   }
 
@@ -468,44 +549,6 @@ final class CourseViewModel: ObservableObject {
     comps.hour = hour
     comps.minute = 0
     return Calendar.current.date(from: comps)
-  }
-
-  // MARK: - UI Updates
-
-  private func setCacheTimeoutFallback(using cached: [Course]) {
-    timeoutTask?.cancel()
-    timeoutTask = Task { [weak self] in
-      try? await Task.sleep(nanoseconds: 2_000_000_000)
-      guard let self, !Task.isCancelled else { return }
-      self.weekCourses = cached
-      self.errorMessage = "Fetching data took too long. Using cached data."
-      self.isLoading = false
-    }
-  }
-
-  private func endWith(error: String, loading: Bool = false) {
-    logger.debug("Error: \(error, privacy: .public)")
-    errorMessage = error
-    isLoading = loading
-  }
-
-  // MARK: - Network
-
-  private func startNetworkMonitor() {
-    let m = NWPathMonitor()
-    m.pathUpdateHandler = { [weak self] path in
-      Task { @MainActor in
-        if path.status == .satisfied {
-          self?.logger.info("Network reachable.")
-          self?.errorMessage = nil
-        } else {
-          self?.logger.info("Network unreachable.")
-          self?.errorMessage = "No internet connection. Please check your network."
-        }
-      }
-    }
-    monitor = m
-    m.start(queue: monitorQueue)
   }
 }
 

@@ -3,14 +3,13 @@ import OSLog
 import SwiftUI
 import WidgetKit
 
-private let stdIDLogger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "StdID")
-
 struct SimpleEntry: TimelineEntry {
   let date: Date
   let ssoStuNo: String
 }
 
 struct Provider: TimelineProvider {
+  private static let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "StdID")
   func placeholder(in _: Context) -> SimpleEntry {
     SimpleEntry(date: .now, ssoStuNo: "")
   }
@@ -26,7 +25,7 @@ struct Provider: TimelineProvider {
   func getTimeline(in _: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
     let now = Date()
     let stuNo = fetchSsoStuNo()
-    stdIDLogger.info("fetchSsoStuNo() → \(stuNo, privacy: .public)")
+    Provider.logger.info("fetchSsoStuNo() → \(stuNo, privacy: .public)")
     let entry = SimpleEntry(date: now, ssoStuNo: stuNo)
 
     let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: now)!
@@ -38,10 +37,10 @@ struct Provider: TimelineProvider {
     let defaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
     defaults?.synchronize()
     if let value = defaults?.string(forKey: Constants.ssoTokenKey) {
-      stdIDLogger.info("Retrieved ssoStuNo: \(value, privacy: .public)")
+      Provider.logger.info("Retrieved ssoStuNo: \(value, privacy: .public)")
       return value
     } else {
-      stdIDLogger.info("ssoStuNo not found, returning default value.")
+      Provider.logger.info("ssoStuNo not found, returning default value.")
       return ""
     }
   }

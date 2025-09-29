@@ -33,6 +33,13 @@ struct AboutUsView: View {
             .foregroundColor(.secondary)
             .accessibilityIdentifier("about_version_value")
         }
+        HStack {
+          Text("Give us a star on GitHub!")
+          Spacer()
+          Link(destination: URL(string: "https://github.com/tkuitocc/dauphin")!) {
+            Text("TKUITOCC/Dauphin")
+          }
+        }
       }
       Section(header: Text("Third-Party Packages")) {
         ForEach(packages, id: \.0) { package in
