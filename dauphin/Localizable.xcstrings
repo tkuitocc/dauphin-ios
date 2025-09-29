@@ -51,6 +51,7 @@
       }
     },
     "%@ ~ %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -151,6 +152,7 @@
       }
     },
     "Browse" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -288,6 +290,9 @@
     "Done" : {
 
     },
+    "Enjoy your free day!" : {
+
+    },
     "First" : {
       "localizations" : {
         "zh-Hant" : {
@@ -298,7 +303,14 @@
         }
       }
     },
+    "Give us a star on GitHub!" : {
+
+    },
+    "Hey, %@" : {
+
+    },
     "Hey, %@." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -335,6 +347,7 @@
       }
     },
     "Loading courses..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -391,7 +404,11 @@
     "Logout" : {
 
     },
+    "No courses for %@" : {
+
+    },
     "No courses for %@." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -488,6 +505,9 @@
         }
       }
     },
+    "Student ID: %@" : {
+
+    },
     "Third-Party Packages" : {
       "localizations" : {
         "en" : {
@@ -505,6 +525,9 @@
       }
     },
     "This will remove all cached course data. You'll need to refresh to reload your courses." : {
+
+    },
+    "TKUITOCC/Dauphin" : {
 
     },
     "Version" : {
