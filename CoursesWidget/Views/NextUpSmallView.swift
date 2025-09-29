@@ -28,22 +28,34 @@ struct CoursesNextUpSmallView: View {
 
   var body: some View {
     if entry.ssoStuNo.isEmpty {
-      Text("尚未登入")
-        .font(.headline)
-        .padding()
-        .containerBackground(for: .widget) {
+      VStack(spacing: 8) {
+        Image(systemName: "person.text.rectangle.trianglebadge.exclamationmark.fill")
+          .font(.system(size: 60, weight: .semibold))
+
+        Text("尚未登入")
+          .font(.caption)
+          .fontWeight(.medium)
+      }
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
+      .containerBackground(for: .widget) {
           Color(UIColor.systemBackground)
-        }
+      }
     } else {
       if entry.courses.isEmpty {
-        Text("下週見")
-          .font(.caption2)
-          .padding()
-          .containerBackground(for: .widget) {
+        VStack(spacing: 8) {
+          Image(systemName: "figure.wave")
+            .font(.system(size: 60, weight: .semibold))
+
+          Text("下週見")
+            .font(.caption)
+            .fontWeight(.medium)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .containerBackground(for: .widget) {
             Color(UIColor.systemBackground)
-          }
+        }
       } else {
-        VStack(alignment: .leading, spacing: 6) {
+          VStack(alignment: .leading, spacing: 6) {
           // First Event
           VStack(alignment: .leading, spacing: 2) {
             VStack(alignment: .leading, spacing: 0) {
@@ -66,20 +78,18 @@ struct CoursesNextUpSmallView: View {
                   .font(.system(size: 10))
               }
               .lineLimit(1)
-              .padding(.vertical, 2)
-              .padding(.horizontal, 5)
+              .padding([.vertical, .horizontal], 5)
               .background(Color.blue.opacity(0.6))
               .cornerRadius(4)
 
               HStack(spacing: 2) {
-                Image(systemName: "number.circle.fill")
+                Image(systemName: "graduationcap")
                   .font(.system(size: 8))
                 Text("\(entry.courses[0].stdNo)")
                   .font(.system(size: 10))
               }
               .lineLimit(1)
-              .padding(.vertical, 2)
-              .padding(.horizontal, 5)
+              .padding([.vertical, .horizontal], 5)
               .background(Color.blue.opacity(0.6))
               .cornerRadius(4)
             }
@@ -103,10 +113,14 @@ struct CoursesNextUpSmallView: View {
             VStack(alignment: .leading, spacing: 2) {
               if !isSameDay {
                 Text(secondCourseWeekday)
-                  .font(.footnote)
+                  .font(.callout)
                   .foregroundColor(.secondary)
                   .padding(.leading, -10)
-                  .lineLimit(1)
+              } else {
+                Text("Ti")
+                  .font(.callout)
+                  .foregroundColor(.secondary)
+                  .padding(.leading, -10)
               }
               VStack(alignment: .leading, spacing: 0) {
                 Text("\(entry.courses[1].name)")
@@ -128,12 +142,16 @@ struct CoursesNextUpSmallView: View {
                 alignment: .leading
               )
               if !isSameDay {
-                Spacer(minLength: 0)
+                Spacer()
               }
             }
           }
 
-        }.padding([.leading], 6)
+        }
+        .padding([.leading], 6)
+        .containerBackground(for: .widget) {
+          Color(UIColor.systemBackground)
+        }
       }
     }
   }
@@ -144,5 +162,27 @@ struct CoursesNextUpSmallView: View {
 } timeline: {
   SimpleEntry(date: Date(), ssoStuNo: "123456789", courses: mockData, today: mockData.count)
 
+  SimpleEntry(
+    date: Date(),
+    ssoStuNo: "123456789",
+    courses: getUpcomingCourses(
+      from: mockData,
+      currentDate: Calendar.current.date(from: DateComponents(year: 2025, month: 9, day: 29, hour: 21, minute: 0))!
+    ),
+    today: mockData.count
+  )
+
   SimpleEntry(date: Date(), ssoStuNo: "123456789", courses: [mockData[0]], today: mockData.count)
+    
+  SimpleEntry(date: Date(), ssoStuNo: "", courses: mockData, today: mockData.count)
+    
+  SimpleEntry(
+  date: Date(), 
+  ssoStuNo: "123456789", 
+  courses: getUpcomingCourses(
+    from: mockData,
+    currentDate: Calendar.current.date(from: DateComponents(year: 2025, month: 9, day: 27, hour: 22, minute: 0))!
+  ),
+  today: mockData.count
+  )
 }

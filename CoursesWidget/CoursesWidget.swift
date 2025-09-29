@@ -9,11 +9,6 @@ import SwiftUI
 import WidgetKit
 import os
 
-// 假定外部型別
-// struct SimpleEntry: TimelineEntry { let date: Date; let ssoStuNo: String; let courses: [Course]; let today: Int }
-// struct Course: Codable, Hashable { let name: String; let room: String; let teacher: String; let time: String; let startTime: Date; let endTime: Date; let stdNo: String; let weekday: Int; let note: String }
-// enum Constants { static let Courses = "Courses"; static let ssoTokenKey = "SSO_STU_NO" }
-
 struct Provider: TimelineProvider {
   private static let logger = Logger(
     subsystem: "group.cantpr09ram.dauphin", category: "CoursesWidget")
@@ -33,7 +28,7 @@ struct Provider: TimelineProvider {
       let cached = loadCoursesFromCache() ?? []
       let todayCount = countCoursesToday(cached, date: now)
       let entry = SimpleEntry(
-        date: now, ssoStuNo: stdNo, courses: nextUp(from: cached, date: now), today: todayCount)
+        date: now, ssoStuNo: stdNo, courses: getUpcomingCourses(from: cached, currentDate: now), today: todayCount)
       completion(entry)
     } else {
       completion(SimpleEntry(date: now, ssoStuNo: "尚未登入", courses: [], today: 0))
@@ -54,7 +49,7 @@ struct Provider: TimelineProvider {
       let cached = loadCoursesFromCache() ?? []
       let todayCount = countCoursesToday(cached, date: now)
       entry = SimpleEntry(
-        date: now, ssoStuNo: stdNo, courses: nextUp(from: cached, date: now), today: todayCount)
+        date: now, ssoStuNo: stdNo, courses: getUpcomingCourses(from: cached, currentDate: now), today: todayCount)
     }
 
     let timeline = Timeline(entries: [entry], policy: .after(refresh))
@@ -96,37 +91,6 @@ struct Provider: TimelineProvider {
         "Failed to decode cached courses: \(String(describing: error), privacy: .public)")
       return nil
     }
-  }
-
-  /// 取今天課程數；支援 Sunday=1 轉為 7 的校務週次常見格式
-  private func countCoursesToday(_ courses: [Course], date: Date) -> Int {
-    let sysWeekday = Calendar.current.component(.weekday, from: date)  // 1=Sun...7=Sat
-    let schoolWeekday = mapSystemWeekdayToSchool(sysWeekday)
-    return courses.filter { $0.weekday == schoolWeekday }.count
-  }
-
-  /// 取接下來要上的 N 筆課程；若無 `getNextUpCourses`，提供最簡降序邏輯
-  private func nextUp(from courses: [Course], date: Date, limit: Int = 3) -> [Course] {
-    // 先篩選今天，依 startTime 升冪，過去時間剔除
-    let sysWeekday = Calendar.current.component(.weekday, from: date)
-    let schoolWeekday = mapSystemWeekdayToSchool(sysWeekday)
-    let todayCourses = courses.filter { $0.weekday == schoolWeekday }
-      .sorted { $0.startTime < $1.startTime }
-      .filter { $0.endTime > date }  // 尚未結束
-    if todayCourses.isEmpty {
-      // 若今天無，回傳最近未來一天的前幾筆
-      return courses.sorted { ($0.weekday, $0.startTime) < ($1.weekday, $1.startTime) }.prefix(
-        limit
-      ).map { $0 }
-    }
-    return Array(todayCourses.prefix(limit))
-  }
-
-  /// 轉換 Apple 週次到學校常見格式：Sun(1)->7, Mon(2)->1, ... Sat(7)->6
-  private func mapSystemWeekdayToSchool(_ w: Int) -> Int {
-    // 學校週次若已採用 Sun=1 的話，請直接 `return w`
-    // 常見「Mon=1...Sun=7」則：
-    return w == 1 ? 7 : (w - 1)
   }
 }
 struct CoursesNextUpWidgetEntryView: View {

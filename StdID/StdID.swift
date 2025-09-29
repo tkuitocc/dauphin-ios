@@ -55,10 +55,19 @@ struct StdIDEntryView: View {
         Code39View(entry.ssoStuNo)
           .frame(width: 296, height: 96)
           .padding(.init(top: 5, leading: 20, bottom: 5, trailing: 20))
-          .background(Color.white)
         Text("\(entry.ssoStuNo)")
       } else {
-        Text("You need to login with SSO")
+        VStack(spacing: 8) {
+          Image(systemName: "person.text.rectangle.trianglebadge.exclamationmark.fill")
+            .font(.system(size: 60, weight: .semibold))
+          Text("尚未登入")
+            .font(.caption)
+            .fontWeight(.medium)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .containerBackground(for: .widget) {
+          Color(UIColor.systemBackground)
+        }
       }
     }
     .padding(12)
@@ -88,4 +97,6 @@ struct StdID: Widget {
   StdID()
 } timeline: {
   SimpleEntry(date: .now, ssoStuNo: "A12345678")
+    
+  SimpleEntry(date: .now, ssoStuNo: "")
 }

@@ -13,20 +13,32 @@ struct CoursesNextUpViewLockScreenView: View {
   var entry: Provider.Entry
   var body: some View {
     if entry.ssoStuNo.isEmpty {
-      Text(entry.ssoStuNo.isEmpty ? "尚未登入" : entry.ssoStuNo)
-        .font(.headline)
-        .padding()
-        .containerBackground(for: .widget) {
+      HStack(spacing: 10) {
+        Image(systemName: "person.text.rectangle.trianglebadge.exclamationmark.fill")
+          .font(.system(size: 40, weight: .semibold))
+
+        Text("尚未登入")
+          .font(.caption)
+          .fontWeight(.medium)
+      }
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
+      .containerBackground(for: .widget) {
           Color(UIColor.systemBackground)
-        }
+      }
     } else {
       if entry.courses.isEmpty {
-        Text("下週見")
-          .font(.caption2)
-          .padding()
-          .containerBackground(for: .widget) {
+        HStack(spacing: 10) {
+          Image(systemName: "figure.wave")
+            .font(.system(size: 40, weight: .semibold))
+
+          Text("下週見")
+            .font(.caption)
+            .fontWeight(.medium)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .containerBackground(for: .widget) {
             Color(UIColor.systemBackground)
-          }
+        }
       } else {
         HStack(alignment: .top) {
           Rectangle()
@@ -90,5 +102,18 @@ struct CoursesNextUpViewLockScreenView: View {
 #Preview(as: .accessoryRectangular) {
   CoursesNextUpWidget()
 } timeline: {
-  SimpleEntry(date: Date(), ssoStuNo: "111111111", courses: mockData, today: mockData.count)
+  SimpleEntry(date: Date(), ssoStuNo: "123456789", courses: mockData, today: mockData.count)
+    
+  SimpleEntry(date: Date(), ssoStuNo: "", courses: mockData, today: mockData.count)
+    
+  SimpleEntry(
+  date: Date(), 
+  ssoStuNo: "123456789", 
+  courses: getUpcomingCourses(
+    from: mockData,
+    currentDate: Calendar.current.date(from: DateComponents(year: 2025, month: 9, day: 27, hour: 22, minute: 0))!
+  ),
+  today: mockData.count
+  )
+    
 }

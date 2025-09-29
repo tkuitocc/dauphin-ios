@@ -20,47 +20,6 @@ struct Course: Identifiable, Hashable, Codable {
   var note: String = ""
 }
 
-func getNextUpCourses(from weeklySchedule: [Course]) -> [Course] {
-  let calendar = Calendar.current
-  let now = Date()
-
-  let todayWeekday = calendar.component(.weekday, from: now) - 1
-  // log
-  CourseLogger.logger.debug("Today weekday index: \(todayWeekday)")
-  let sortedCourses = weeklySchedule.sorted { course1, course2 in
-    if course1.weekday != course2.weekday {
-      return course1.weekday < course2.weekday
-    } else {
-      let (endHour1, endMinute1) = getCourseEndHourMinute(course1)
-      let (endHour2, endMinute2) = getCourseEndHourMinute(course2)
-
-      let endDate1 = calendar.date(bySettingHour: endHour1, minute: endMinute1, second: 0, of: now)!
-      let endDate2 = calendar.date(bySettingHour: endHour2, minute: endMinute2, second: 0, of: now)!
-
-      return endDate1 < endDate2
-    }
-  }
-
-  if todayWeekday == 7 {
-    return sortedCourses
-  }
-
-  let upcomingCourses = sortedCourses.filter { course in
-    if course.weekday < todayWeekday {
-      return false
-    } else if course.weekday == todayWeekday {
-      let (endHour, endMinute) = getCourseEndHourMinute(course)
-      let courseEndDate = calendar.date(
-        bySettingHour: endHour, minute: endMinute, second: 0, of: now)!
-      let timeDifference = courseEndDate.timeIntervalSince(now)
-      return timeDifference > 20 * 60
-    } else {
-      return true
-    }
-  }
-  return upcomingCourses
-}
-
 func getCourseStartHourMinute(_ course: Course) -> (hour: Int, minute: Int) {
   let calendar = Calendar.current
   let startHour = calendar.component(.hour, from: course.startTime)
@@ -90,4 +49,68 @@ func formatTime(_ date: Date?) -> String {
   let formatter = DateFormatter()
   formatter.dateFormat = "HH:mm"
   return formatter.string(from: date)
+}
+
+func countCoursesToday(_ courses: [Course], date: Date) -> Int {
+  let sysWeekday = Calendar.current.component(.weekday, from: date)  // 1=Sun...7=Sat
+  let schoolWeekday = mapSystemWeekdayToSchool(sysWeekday)
+  return courses.filter { $0.weekday == schoolWeekday }.count
+}
+
+func getUpcomingCourses(from weeklySchedule: [Course], currentDate: Date) -> [Course] {
+    let calendar = Calendar.current
+
+    let todayWeekdayIndex = calendar.component(.weekday, from: currentDate) - 1
+    
+    let sortedSchedule = weeklySchedule.sorted { firstCourse, secondCourse in
+        if firstCourse.weekday != secondCourse.weekday {
+            return firstCourse.weekday < secondCourse.weekday
+        } else {
+            let (firstEndHour, firstEndMinute) = getCourseEndHourMinute(firstCourse)
+            let (secondEndHour, secondEndMinute) = getCourseEndHourMinute(secondCourse)
+
+            let firstCourseEndDate = calendar.date(
+                bySettingHour: firstEndHour,
+                minute: firstEndMinute,
+                second: 0,
+                of: currentDate
+            )!
+            let secondCourseEndDate = calendar.date(
+                bySettingHour: secondEndHour,
+                minute: secondEndMinute,
+                second: 0,
+                of: currentDate
+            )!
+
+            return firstCourseEndDate < secondCourseEndDate
+        }
+    }
+
+    if todayWeekdayIndex == 7 {
+        return sortedSchedule
+    }
+
+    let upcomingCourses = sortedSchedule.filter { course in
+        if course.weekday < todayWeekdayIndex {
+            return false
+        } else if course.weekday == todayWeekdayIndex {
+            let (endHour, endMinute) = getCourseEndHourMinute(course)
+            let courseEndDate = calendar.date(
+                bySettingHour: endHour,
+                minute: endMinute,
+                second: 0,
+                of: currentDate
+            )!
+            let timeUntilCourseEnds = courseEndDate.timeIntervalSince(currentDate)
+            return timeUntilCourseEnds > 20 * 60
+        } else {
+            return true
+        }
+    }
+
+    return upcomingCourses
+}
+
+func mapSystemWeekdayToSchool(_ w: Int) -> Int {
+  return w == 1 ? 7 : (w - 1)
 }
