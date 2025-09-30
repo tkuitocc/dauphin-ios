@@ -66,7 +66,7 @@ struct CoursesNextUpViewLockScreenView: View {
                   .font(.system(size: 12))
               }
 
-            Spacer(minLength: 20)
+              Spacer(minLength: 20)
 
               HStack(spacing: 0) {
                 Image(systemName: "graduationcap")

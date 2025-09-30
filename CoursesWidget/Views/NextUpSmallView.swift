@@ -117,10 +117,7 @@ struct CoursesNextUpSmallView: View {
                   .foregroundColor(.secondary)
                   .padding(.leading, -10)
               } else {
-                Text("Ti")
-                  .font(.callout)
-                  .foregroundColor(.secondary)
-                  .padding(.leading, -10)
+                Color.clear.frame(height: 16)
               }
               VStack(alignment: .leading, spacing: 0) {
                 Text("\(entry.courses[1].name)")
@@ -141,10 +138,9 @@ struct CoursesNextUpSmallView: View {
                   .padding(.leading, -8),
                 alignment: .leading
               )
-              if !isSameDay {
-                Spacer()
-              }
             }
+          } else {
+            Spacer()
           }
 
         }
