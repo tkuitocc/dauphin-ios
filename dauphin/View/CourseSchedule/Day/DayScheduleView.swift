@@ -1,49 +1,11 @@
-//  DayScheduleView.swift
-//  campuspass_ios
-//
-//  Created by \u8b19 on 11/17/24.
-//
-
 import SwiftUI
 
 struct DayScheduleView: View {
   @ObservedObject var courseViewModel: CourseViewModel
   @ObservedObject var authViewModel: AuthViewModel
   @State private var selectedDateIndex: Int = 0
-  @State private var dates: [DateItem] = generateDates(includeSaturday: false)
   @State private var showBarcode = false
   @State private var selectedCourse: Course? = nil
-  static func generateDates(includeSaturday: Bool = false) -> [DateItem] {
-    let calendar = Calendar.current
-    let today = Date()
-    let weekdayFormatter = DateFormatter()
-    weekdayFormatter.dateFormat = "EEE"
-
-    // Calculate the start of the week (Monday)
-    let weekday = calendar.component(.weekday, from: today)
-    let daysFromMonday = (weekday == 1 ? 6 : weekday - 2) // Adjust for Monday start
-    guard let startOfWeek = calendar.date(byAdding: .day, value: -daysFromMonday, to: today) else {
-      return []
-    }
-
-    // Generate dates for Monday to Friday
-    var dateItems = (0 ..< 5).map { offset in
-      let date = calendar.date(byAdding: .day, value: offset, to: startOfWeek)!
-      let day = calendar.component(.day, from: date)
-      let weekday = weekdayFormatter.string(from: date)
-      return DateItem(day: day, weekday: weekday, isSelected: false)
-    }
-
-    // Add Saturday if needed
-    if includeSaturday {
-      if let saturday = calendar.date(byAdding: .day, value: 5, to: startOfWeek) {
-        let day = calendar.component(.day, from: saturday)
-        let weekday = weekdayFormatter.string(from: saturday)
-        dateItems.append(DateItem(day: day, weekday: weekday, isSelected: false))
-      }
-    }
-    return dateItems
-  }
 
   private func getFormattedDate() -> String {
     let formatter = DateFormatter()
@@ -90,11 +52,7 @@ struct DayScheduleView: View {
           .padding(.horizontal)
 
         // Date Selector
-        DateSelectorView(selectedDateIndex: $selectedDateIndex, dates: dates)
-          .onAppear {
-            let hasSaturdayCourses = courseViewModel.weekCourses.contains { $0.weekday == 6 } // Assuming 6 = Saturday
-            dates = Self.generateDates(includeSaturday: hasSaturdayCourses)
-          }
+        DateSelectorView(selectedIndex: $selectedDateIndex)
       }
 
       // Courses List
@@ -112,7 +70,7 @@ struct DayScheduleView: View {
               .font(.system(size: 60))
               .foregroundColor(.secondary)
 
-            Text("No courses for \(dates[selectedDateIndex].weekday)")
+            Text("No courses for Today")
               .font(.headline)
               .foregroundColor(.primary)
 
@@ -154,7 +112,7 @@ struct DayScheduleView: View {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
               if value.translation.width < -50 {
                 // Swipe left - next day
-                selectedDateIndex = min(selectedDateIndex + 1, dates.count - 1)
+                selectedDateIndex = min(selectedDateIndex + 1, 7)
               } else if value.translation.width > 50 {
                 // Swipe right - previous day
                 selectedDateIndex = max(selectedDateIndex - 1, 0)

@@ -1,15 +1,8 @@
-//
-//  DateItem.swift
-//  dauphin
-//
-//  Model for date selection in CourseScheduleByDayView
-//
+import SwiftUI
 
-import Foundation
-
-struct DateItem: Identifiable {
+struct DateItem: Identifiable, Hashable {
   let id = UUID()
+  let date: Date
+  /// 1 = Monday ... 7 = Sunday
   let day: Int
-  let weekday: String
-  let isSelected: Bool
 }
