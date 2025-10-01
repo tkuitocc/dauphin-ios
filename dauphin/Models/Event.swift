@@ -1,7 +1,7 @@
 import Foundation
 
-struct CalendarEvent: Identifiable {
-  var id = UUID()
+struct CalendarEvent: Identifiable, Hashable {
+  let id: UUID = .init()
   let week: String
   let startDate: Date
   let endDate: Date

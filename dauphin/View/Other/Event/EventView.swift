@@ -1,115 +1,82 @@
-//
-//  EventView.swift
-//  dauphin
-//
-//  Created by \u8b19 on 12/18/24.
-//
-
-import OSLog
 import SwiftUI
-
-private let eventViewLogger = Logger(
-  subsystem: "group.cantpr09ram.dauphin", category: "EventView"
-)
+import EventKit
 
 struct EventView: View {
   @StateObject private var viewModel = EventViewModel()
   private let eventManager = EventManager()
-  @State private var toggleState = true
+
+  @State private var term = ( [8,9,10,11,12, 1].contains(Calendar.current.component(.month, from: Date())) ? 1 : 2 )
+
+
   @State private var hasCheckedFirstEvent = false
 
+  struct EditItem: Identifiable { let id = UUID(); let ekEvent: EKEvent }
+  @State private var editorItem: EditItem?
+
   var body: some View {
-    List(viewModel.events) { event in
-      HStack {
-        VStack(alignment: .leading) {
-          Text(event.event)
-            .font(.headline)
-          HStack {
-            if event.startDate == event.endDate {
-              Text("\(event.startDate, formatter: dateFormatter)")
-                .font(.footnote)
-            } else {
-              Text(
-                "\(event.startDate, formatter: dateFormatter) - \(event.endDate, formatter: dateFormatter)"
-              )
-              .font(.footnote)
+    List {
+      ForEach(viewModel.events, id: \.id) { (event: CalendarEvent) in
+        HStack {
+          VStack(alignment: .leading) {
+            Text(event.event).font(.headline)
+            Text(dateRangeText(event)).font(.footnote)
+          }
+          Spacer()
+          Button {
+            Task {
+              if await eventManager.requestWriteAccess() {
+                editorItem = EditItem(ekEvent: eventManager.makeEKEvent(from: event))
+              }
             }
-          }
-        }
-        Spacer()
-        Button(action: {
-          eventManager.requestAccessAndAddEvent(event: event)
-        }) {
-          HStack {
+          } label: {
             Image(systemName: "calendar.badge.plus")
-              .font(.system(size: 16))
-              .foregroundColor(.blue)
+              .imageScale(.medium)
+              .padding(8)
+              .background(Color.blue.opacity(0.1))
+              .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
           }
-          .padding(8)
-          .background(Color.blue.opacity(0.1))
-          .cornerRadius(8)
         }
-      }.padding(2)
+        .padding(.vertical, 2)
+      }
     }
+    .navigationTitle("校務行事曆")
     .toolbar {
       ToolbarItem(placement: .navigationBarTrailing) {
-        Picker("Semester", selection: $toggleState) {
-          Text("First").tag(true)
-          Text("Second").tag(false)
+          Button { term = term == 1 ? 2 : 1 } label: {
+            Image(systemName: term == 1 ? "chevron.down" : "chevron.up")
+          }
         }
-        .pickerStyle(SegmentedPickerStyle())
-        .frame(width: 140)
-        .onChange(of: toggleState) { newValue in
-          let queryParameters: [String: String] = newValue ? ["t": "1"] : ["t": "2"]
-          viewModel.loadXMLData(withQuery: queryParameters)
-          viewModel.objectWillChange.send()
-        }
+    }
+    .sheet(item: $editorItem) { item in
+      EventEditSheet(eventStore: eventManager.eventStore, event: item.ekEvent) { vc, _ in
+        vc.dismiss(animated: true)
       }
     }
-    .onAppear {
-      // First, load first semester to check the date
-      if !hasCheckedFirstEvent {
-        let queryParameters = [
-          "t": "1"
-        ]
-        viewModel.loadXMLData(withQuery: queryParameters)
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-          if let firstEvent = viewModel.events.first {
-            let month = Calendar.current.component(.month, from: firstEvent.startDate)
-
-            // First semester starts after July (month > 7)
-            // Second semester starts after January (month > 1 and month <= 7)
-            if month > 7 {
-              toggleState = true
-            } else {
-              toggleState = false
-              let queryParameters = [
-                "t": "2"
-              ]
-              viewModel.loadXMLData(withQuery: queryParameters)
-            }
-          } else {
-            toggleState = false
-            let queryParameters = [
-              "t": "1"
-            ]
-            viewModel.loadXMLData(withQuery: queryParameters)
-          }
-          hasCheckedFirstEvent = true
-        }
-      }
+    .task(id: term) {
+      await viewModel.loadXMLData(withQuery: ["t": "\(term)"])
+    }
+    .refreshable {
+      await viewModel.loadXMLData(withQuery: ["t": "\(term)"])
     }
   }
-}
 
-private var dateFormatter: DateFormatter {
-  let formatter = DateFormatter()
-  formatter.dateFormat = "yyyy M d EEEE"
-  formatter.locale = Locale(identifier: "zh_TW")
-  return formatter
+  private func dateRangeText(_ e: CalendarEvent) -> String {
+    let f = Self.fmt
+    return Calendar.current.isDate(e.startDate, inSameDayAs: e.endDate)
+      ? f.string(from: e.startDate)
+      : "\(f.string(from: e.startDate)) - \(f.string(from: e.endDate))"
+  }
+
+  private static let fmt: DateFormatter = {
+    let f = DateFormatter()
+    f.dateFormat = "yyyy M d EEEE"
+    f.locale = Locale(identifier: "zh_TW")
+    return f
+  }()
 }
 
 #Preview {
-  EventView()
+  NavigationStack {
+    EventView()
+  }
 }

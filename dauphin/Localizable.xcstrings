@@ -294,6 +294,7 @@
 
     },
     "First" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hant" : {
           "stringUnit" : {
@@ -404,9 +405,6 @@
     "Logout" : {
 
     },
-    "No courses for %@" : {
-
-    },
     "No courses for %@." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -423,6 +421,9 @@
           }
         }
       }
+    },
+    "No courses for Today" : {
+
     },
     "Open Source" : {
       "localizations" : {
@@ -451,6 +452,7 @@
       }
     },
     "Second" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hant" : {
           "stringUnit" : {
@@ -464,9 +466,6 @@
 
     },
     "Select an option" : {
-
-    },
-    "Semester" : {
 
     },
     "Setting" : {
@@ -593,6 +592,9 @@
       }
     },
     "Your student ID is %@" : {
+
+    },
+    "校務行事曆" : {
 
     }
   },
