@@ -61,7 +61,7 @@ struct CoursesNextUpSmallView: View {
             VStack(alignment: .leading, spacing: 0) {
               Text("\(entry.courses[0].name)")
                 .lineLimit(1)
-                .font(.headline)
+                .font(.subheadline)
                 .foregroundColor(.primary)
               Text(
                 "\(formatTime(entry.courses[0].startTime)) - \(formatTime(entry.courses[0].endTime))"
@@ -78,18 +78,20 @@ struct CoursesNextUpSmallView: View {
                   .font(.system(size: 10))
               }
               .lineLimit(1)
-              .padding([.vertical, .horizontal], 5)
+              .padding(.vertical, 2)
+              .padding(.horizontal, 5)
               .background(Color.blue.opacity(0.6))
               .cornerRadius(4)
 
-              HStack(spacing: 2) {
+              HStack(spacing: 0) {
                 Image(systemName: "graduationcap")
                   .font(.system(size: 8))
                 Text("\(entry.courses[0].stdNo)")
                   .font(.system(size: 10))
               }
               .lineLimit(1)
-              .padding([.vertical, .horizontal], 5)
+              .padding(.vertical, 2)
+              .padding(.horizontal, 5)
               .background(Color.blue.opacity(0.6))
               .cornerRadius(4)
             }
@@ -113,11 +115,11 @@ struct CoursesNextUpSmallView: View {
             VStack(alignment: .leading, spacing: 2) {
               if !isSameDay {
                 Text(secondCourseWeekday)
-                  .font(.callout)
+                  .font(.caption)
                   .foregroundColor(.secondary)
                   .padding(.leading, -10)
               } else {
-                Color.clear.frame(height: 16)
+                Color.clear.frame(height: 14)
               }
               VStack(alignment: .leading, spacing: 0) {
                 Text("\(entry.courses[1].name)")
@@ -140,9 +142,8 @@ struct CoursesNextUpSmallView: View {
               )
             }
           } else {
-            Spacer()
+            Color.clear.frame(height: 50)
           }
-
         }
         .padding([.leading], 6)
         .containerBackground(for: .widget) {

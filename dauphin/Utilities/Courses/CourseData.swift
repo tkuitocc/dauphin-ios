@@ -2,14 +2,8 @@ import Foundation
 
 let mockData: [Course] = [
   Course(
-    name: "Math", room: "101", teacher: "Dr. Smith", time: "1",
+    name: "Math", room: "", teacher: "Dr. Smith", time: "1",
     startTime: stringToTime("08:10") ?? Date(),
-    endTime: stringToTime("09:00") ?? Date(),
-    stdNo: "69",
-    weekday: 1),
-  Course(
-    name: "Physical Education", room: "Gym", teacher: "Coach Green", time: "8",
-    startTime: stringToTime("9:10") ?? Date(),
     endTime: stringToTime("10:00") ?? Date(),
     stdNo: "69",
     weekday: 1),
@@ -20,13 +14,13 @@ let mockData: [Course] = [
     stdNo: "69",
     weekday: 1),
   Course(
-    name: "Math", room: "101", teacher: "Dr. Smith", time: "1",
+    name: "Math", room: "B101", teacher: "Dr. Smith", time: "1",
     startTime: stringToTime("11:10") ?? Date(),
     endTime: stringToTime("12:00") ?? Date(),
     stdNo: "69",
     weekday: 1),
   Course(
-    name: "Math", room: "101", teacher: "Dr. Smith", time: "1",
+    name: "Math", room: "E101", teacher: "Dr. Smith", time: "1",
     startTime: stringToTime("13:10") ?? Date(),
     endTime: stringToTime("14:00") ?? Date(),
     stdNo: "69",

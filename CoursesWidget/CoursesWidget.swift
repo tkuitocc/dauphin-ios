@@ -20,40 +20,48 @@ struct Provider: TimelineProvider {
   }
 
   // MARK: - Snapshot
-
   func getSnapshot(in _: Context, completion: @escaping (SimpleEntry) -> Void) {
     let now = Date()
-    if let stdNo = getSsoStuNo() {
-      // 若有快取，用快取；否則以空集合回傳
-      let cached = loadCoursesFromCache() ?? []
-      let todayCount = countCoursesToday(cached, date: now)
-      let entry = SimpleEntry(
-        date: now, ssoStuNo: stdNo, courses: getUpcomingCourses(from: cached, currentDate: now), today: todayCount)
-      completion(entry)
-    } else {
-      completion(SimpleEntry(date: now, ssoStuNo: "尚未登入", courses: [], today: 0))
+    guard let stdNo = getSsoStuNo() else {
+      return completion(SimpleEntry(date: now, ssoStuNo: "尚未登入", courses: [], today: 0))
     }
+
+    let cached = loadCoursesFromCache() ?? []
+    let service = DefaultNextUpService()
+    let calendar = Calendar.current
+    let today = ((calendar.component(.weekday, from: now) + 5) % 7) + 1  // 快速轉成 1=Mon…7=Sun
+
+    completion(
+      SimpleEntry(
+        date: now,
+        ssoStuNo: stdNo,
+        courses: service.nextUp(from: cached, now: now),
+        today: cached.filter { $0.weekday == today }.count
+      )
+    )
   }
 
   // MARK: - Timeline
-
   func getTimeline(in _: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
     let now = Date()
-    let refresh =
-      Calendar.current.date(byAdding: .minute, value: 15, to: now) ?? now.addingTimeInterval(900)
+    let refresh = Calendar.current.date(byAdding: .minute, value: 15, to: now) ?? now.addingTimeInterval(900)
 
-    // 預設值，確保一定會 completion
-    var entry = SimpleEntry(date: now, ssoStuNo: "尚未登入", courses: [], today: 0)
-
-    if let stdNo = getSsoStuNo() {
-      let cached = loadCoursesFromCache() ?? []
-      let todayCount = countCoursesToday(cached, date: now)
-      entry = SimpleEntry(
-        date: now, ssoStuNo: stdNo, courses: getUpcomingCourses(from: cached, currentDate: now), today: todayCount)
+    guard let stdNo = getSsoStuNo() else {
+      return completion(Timeline(entries: [SimpleEntry(date: now, ssoStuNo: "尚未登入", courses: [], today: 0)],
+                                policy: .after(refresh)))
     }
 
-    let timeline = Timeline(entries: [entry], policy: .after(refresh))
-    completion(timeline)
+    let cached = loadCoursesFromCache() ?? []
+    let svc = DefaultNextUpService()
+    let today = ((Calendar.current.component(.weekday, from: now) + 5) % 7) + 1 // 1=Mon…7=Sun
+    let entry = SimpleEntry(
+      date: now,
+      ssoStuNo: stdNo,
+      courses: svc.nextUp(from: cached, now: now),
+      today: cached.lazy.filter { $0.weekday == today }.count
+    )
+
+    completion(Timeline(entries: [entry], policy: .after(refresh)))
   }
 
   // MARK: - Helpers

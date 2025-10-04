@@ -1,9 +1,3 @@
-//
-//  NextUpLockScreenView.swift
-//  dauphin
-//
-//  Created by \u8b19 on 11/29/24.
-//
 import SwiftUI
 import WidgetKit
 

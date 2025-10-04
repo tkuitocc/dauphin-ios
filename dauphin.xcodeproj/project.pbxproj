@@ -154,17 +154,22 @@
 			membershipExceptions = (
 				Models/Course.swift,
 				Utilities/Constants.swift,
-				Utilities/CourseData.swift,
-				Utilities/Encrypto.swift,
-				Utilities/KeychainManager.swift,
-				ViewModels/CourseViewModel.swift,
+				Utilities/Courses/CourseAPIClient.swift,
+				Utilities/Courses/CourseCache.swift,
+				Utilities/Courses/CourseData.swift,
+				Utilities/Courses/CourseParser.swift,
+				Utilities/Courses/CourseRepository.swift,
+				Utilities/Courses/NextUpService.swift,
+				Utilities/Courses/ScheduleHelpers.swift,
 			);
 			target = 1857DB2A2E0026AC008EFC8E /* CoursesWidgetExtension Beta */;
 		};
 		1857DB562E002754008EFC8E /* Exceptions for "dauphin" folder in "StdIDExtension Beta" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Models/Course.swift,
 				Utilities/Constants.swift,
+				Utilities/Courses/NextUpService.swift,
 			);
 			target = 1857DB3C2E0026D9008EFC8E /* StdIDExtension Beta */;
 		};
@@ -180,10 +185,13 @@
 			membershipExceptions = (
 				Models/Course.swift,
 				Utilities/Constants.swift,
-				Utilities/CourseData.swift,
-				Utilities/Encrypto.swift,
-				Utilities/KeychainManager.swift,
-				ViewModels/CourseViewModel.swift,
+				Utilities/Courses/CourseAPIClient.swift,
+				Utilities/Courses/CourseCache.swift,
+				Utilities/Courses/CourseData.swift,
+				Utilities/Courses/CourseParser.swift,
+				Utilities/Courses/CourseRepository.swift,
+				Utilities/Courses/NextUpService.swift,
+				Utilities/Courses/ScheduleHelpers.swift,
 			);
 			target = 185C49532CF6DD8400589C39 /* CoursesWidgetExtension */;
 		};
@@ -205,6 +213,20 @@
 			);
 			target = 188CEB902E838D7000CDD450 /* FeaturesTests */;
 		};
+		18E8B64A2E90F557005ADDB3 /* Exceptions for "dauphin" folder in "ModelsTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Models/Course.swift,
+			);
+			target = 188CEB672E8367DE00CDD450 /* ModelsTests */;
+		};
+		18E8B64B2E90F557005ADDB3 /* Exceptions for "dauphin" folder in "FeaturesTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Models/Course.swift,
+			);
+			target = 188CEB902E838D7000CDD450 /* FeaturesTests */;
+		};
 		18E8F2242DB5CC4000B2FB57 /* Exceptions for "StdID" folder in "StdIDExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -215,7 +237,9 @@
 		18E8F2262DB6069800B2FB57 /* Exceptions for "dauphin" folder in "StdIDExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Models/Course.swift,
 				Utilities/Constants.swift,
+				Utilities/Courses/NextUpService.swift,
 			);
 			target = 18E8F2122DB5CC3E00B2FB57 /* StdIDExtension */;
 		};
@@ -249,6 +273,8 @@
 				1857DAF32E001FA0008EFC8E /* Exceptions for "dauphin" folder in "dauphin Beta" target */,
 				1857DB522E00273E008EFC8E /* Exceptions for "dauphin" folder in "CoursesWidgetExtension Beta" target */,
 				1857DB562E002754008EFC8E /* Exceptions for "dauphin" folder in "StdIDExtension Beta" target */,
+				18E8B64A2E90F557005ADDB3 /* Exceptions for "dauphin" folder in "ModelsTests" target */,
+				18E8B64B2E90F557005ADDB3 /* Exceptions for "dauphin" folder in "FeaturesTests" target */,
 			);
 			path = dauphin;
 			sourceTree = "<group>";
@@ -887,7 +913,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = CoursesWidgetExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "$(PROJECT_DIR)/CoursesWidget/CoursesWidgetExtension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -920,7 +946,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = CoursesWidgetExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "$(PROJECT_DIR)/CoursesWidget/CoursesWidgetExtension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -954,7 +980,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = StdIDExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "$(PROJECT_DIR)/StdID/StdIDExtension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -987,7 +1013,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = StdIDExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "$(PROJECT_DIR)/StdID/StdIDExtension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
