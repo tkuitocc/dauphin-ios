@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct InrtoScreen: View {
+struct IntroScreen: View {
   // Visibility Status
   @AppStorage("isFirstTime") private var isFirstTime: Bool = true
   var body: some View {
@@ -85,7 +85,7 @@ struct InrtoScreen: View {
       .padding(.horizontal, 15)
 
       Spacer(minLength: 10)
-      Text("⚠️This app isn’t developed by Tamkang University’s IT Office. Use at your own risk.")
+      Text("⚠️This app isn’t developed by Tamkang University Office of Information Services. Use at your own risk.")
         .font(.system(size: 8))
 
       Button(
@@ -107,5 +107,5 @@ struct InrtoScreen: View {
 }
 
 #Preview {
-  InrtoScreen()
+  IntroScreen()
 }

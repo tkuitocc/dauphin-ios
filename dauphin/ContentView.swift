@@ -29,7 +29,7 @@ struct ContentView: View {
       .sheet(
         isPresented: $isFirstTime,
         content: {
-          InrtoScreen()
+          IntroScreen()
             .interactiveDismissDisabled()
         })
 
@@ -51,7 +51,7 @@ struct ContentView: View {
       .sheet(
         isPresented: $isFirstTime,
         content: {
-          InrtoScreen()
+          IntroScreen()
             .interactiveDismissDisabled()
         })
     }
