@@ -69,7 +69,7 @@ struct OtherView: View {
             Label("Library", systemImage: "books.vertical.fill")
           }
 
-          NavigationLink(destination: WifiView()) {
+          NavigationLink(destination: MapView()) {
             Label("Campus Map", systemImage: "map.fill")
           }
         }

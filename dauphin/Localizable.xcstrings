@@ -287,9 +287,6 @@
         }
       }
     },
-    "Done" : {
-
-    },
     "Enjoy your free day!" : {
 
     },
@@ -303,9 +300,6 @@
           }
         }
       }
-    },
-    "Give us a star on GitHub!" : {
-
     },
     "Hey, %@" : {
 
@@ -425,6 +419,15 @@
     "No courses for Today" : {
 
     },
+    "Open in Apple Maps" : {
+
+    },
+    "Open in Google Maps" : {
+
+    },
+    "Open in Maps" : {
+
+    },
     "Open Source" : {
       "localizations" : {
         "zh-Hant" : {
@@ -524,9 +527,6 @@
       }
     },
     "This will remove all cached course data. You'll need to refresh to reload your courses." : {
-
-    },
-    "TKUITOCC/Dauphin" : {
 
     },
     "Version" : {

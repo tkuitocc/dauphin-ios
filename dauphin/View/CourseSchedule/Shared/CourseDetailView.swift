@@ -20,24 +20,19 @@ struct CourseDetailView: View {
   init(course: Course) {
     self.course = course
 
-    // Pre-compute day of week
     let days = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     dayOfWeek = days[min(max(course.weekday, 0), days.count - 1)]
 
-    // Pre-compute time range with cached formatter
     let formatter = CourseDetailView.timeFormatter
     let start = formatter.string(from: course.startTime)
     let end = formatter.string(from: course.endTime)
     timeRange = "\(start) - \(end)"
 
-    // Pre-compute color
     courseColor = CourseColors.color(for: course.name)
 
-    // Pre-compute note check
     hasNote = !course.note.isEmpty
   }
 
-  // Shared formatter to avoid recreation
   private static let timeFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateFormat = "HH:mm"
@@ -47,83 +42,61 @@ struct CourseDetailView: View {
   var body: some View {
     NavigationView {
       ScrollView {
-        VStack(spacing: 0) {
-          // Header with color
-          headerView
+        VStack(alignment: .leading, spacing: 10) {
+            detailRow(title: "Time", content: timeRange, subcontent: dayOfWeek)
+            Divider()
+            detailRow(title: "Location", content: course.room)
+            Divider()
+            detailRow(title: "Seat Number", content: course.stdNo)
+            Divider()
+            detailRow(title: "Instructor", content: course.teacher)
 
-          // Course details
-          VStack(alignment: .leading, spacing: 20) {
-            detailRow(icon: "clock.fill", title: "Time", content: timeRange, subcontent: dayOfWeek)
-            Divider()
-            detailRow(icon: "location.circle.fill", title: "Location", content: course.room)
-            Divider()
-            detailRow(icon: "number.circle.fill", title: "Seat Number", content: course.stdNo)
-            Divider()
-            detailRow(icon: "person.fill", title: "Instructor", content: course.teacher)
-
-            // Note section (only show if note is not empty)
             if hasNote {
-              Divider()
-              detailRow(icon: "note.text", title: "Note", content: course.note, isNote: true)
+                Divider()
+                detailRow(title: "Note", content: course.note, isNote: true)
             }
-          }
-          .padding(24)
-          .background(Color(UIColor.systemBackground))
+          let code = course.room.range(of: #"^[A-Za-z]+"#, options: .regularExpression)
+              .map { String(course.room[$0]).uppercased() } ?? "X"
+
+          LandmarkView(coordinate: Letter2Coordinate(for: code))
+
         }
+        .padding(24)
+        
       }
-      .navigationBarTitleDisplayMode(.inline)
+      .navigationTitle(course.name)
+      .navigationBarTitleDisplayMode(.large)
       .toolbar {
         ToolbarItem(placement: .navigationBarTrailing) {
-          Button("Done") {
-            dismiss()
+          Button {
+              dismiss()
+          } label: {
+              Image(systemName: "xmark")
           }
-          .fontWeight(.medium)
         }
       }
     }
   }
-
-  // Extract header as ViewBuilder for better performance
-  @ViewBuilder
-  private var headerView: some View {
-    Text(course.name)
-      .font(.title2)
-      .fontWeight(.bold)
-      .foregroundColor(.white)
-      .multilineTextAlignment(.center)
-      .padding(.horizontal)
-      .frame(maxWidth: .infinity)
-      .padding(.vertical, 32)
-      .background(courseColor)
-  }
-
-  // Reusable detail row component to reduce code duplication
+ 
   @ViewBuilder
   private func detailRow(
-    icon: String, title: String, content: String, subcontent: String? = nil, isNote: Bool = false
+    title: String, content: String, subcontent: String? = nil, isNote: Bool = false
   ) -> some View {
-    HStack(spacing: 16) {
-      Image(systemName: icon)
-        .font(.system(size: 22))
-        .foregroundColor(courseColor)
-        .frame(width: 30)
-
+    HStack(spacing: 4) {
       VStack(alignment: .leading, spacing: 4) {
         Text(title)
           .font(.caption)
           .foregroundColor(Color(UIColor.secondaryLabel))
-        Text(content)
-          .font(.system(size: isNote ? 14 : 16, weight: isNote ? .regular : .medium))
-          .foregroundColor(Color(UIColor.label))
-          .fixedSize(horizontal: false, vertical: isNote)
         if let subcontent = subcontent {
           Text(subcontent)
             .font(.system(size: 14))
             .foregroundColor(Color(UIColor.secondaryLabel))
         }
+        Text(content)
+          .font(.system(size: isNote ? 14 : 16, weight: isNote ? .regular : .medium))
+          .foregroundColor(Color(UIColor.label))
+          .fixedSize(horizontal: false, vertical: isNote)
       }
-
-      Spacer()
     }
   }
 }

@@ -3,7 +3,7 @@ import SwiftUI
 struct DayScheduleView: View {
   @ObservedObject var courseViewModel: CourseViewModel
   @ObservedObject var authViewModel: AuthViewModel
-  @State private var selectedDateIndex: Int = 0
+  @State private var selectedDateIndex: Int = 0  // 0...7 per your logic
   @State private var showBarcode = false
   @State private var selectedCourse: Course? = nil
 
@@ -84,7 +84,8 @@ struct DayScheduleView: View {
           .padding()
         } else {
           LazyVStack(spacing: 12) {
-            ForEach(Array(todaysCourses.enumerated()), id: \.element.id) { index, course in
+            ForEach(todaysCourses.indices, id: \.self) { index in
+              let course = todaysCourses[index]
               CourseCardView(
                 courseName: course.name,
                 roomNumber: course.room,
@@ -96,7 +97,10 @@ struct DayScheduleView: View {
               )
               .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
               .scaleEffect(1.0)
-              .animation(.spring(response: 0.3, dampingFraction: 0.7), value: index)
+              .animation(
+                .spring(response: 0.3, dampingFraction: 0.7),
+                value: index
+              )
               .onTapGesture {
                 selectedCourse = course
               }
@@ -104,6 +108,7 @@ struct DayScheduleView: View {
           }
           .padding(.horizontal)
           .padding(.vertical, 12)
+
         }
       }
       .gesture(
@@ -122,7 +127,6 @@ struct DayScheduleView: View {
       )
       .scrollIndicators(.hidden)
     }
-    .background(Color(UIColor.systemGroupedBackground))
     .sheet(item: $selectedCourse) { course in
       CourseDetailView(course: course)
         .presentationDragIndicator(.visible)
@@ -133,6 +137,7 @@ struct DayScheduleView: View {
 
 #Preview {
   DayScheduleView(
-    courseViewModel: CourseViewModel(mockData: mockData), authViewModel: AuthViewModel()
+    courseViewModel: CourseViewModel(mockData: mockData),
+    authViewModel: AuthViewModel()
   )
 }
