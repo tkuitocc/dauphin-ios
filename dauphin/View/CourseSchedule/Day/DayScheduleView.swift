@@ -24,25 +24,6 @@ struct DayScheduleView: View {
 
           Spacer()
 
-          Button(action: {
-            showBarcode = true
-          }) {
-            HStack(spacing: 4) {
-              Image(systemName: "books.vertical.fill")
-                .font(.system(size: 10))
-                .foregroundColor(.accentColor)
-              Text("Library")
-                .font(.system(size: 12, weight: .medium))
-                .foregroundColor(.accentColor)
-            }
-          }
-          .buttonStyle(.borderless)
-          .controlSize(.small)
-          .sheet(isPresented: $showBarcode) {
-            LibraryView(authViewModel: authViewModel)
-              .presentationDragIndicator(.visible)
-              .padding()
-          }
         }
         .padding(.horizontal)
 
@@ -50,11 +31,11 @@ struct DayScheduleView: View {
           .font(.subheadline)
           .foregroundColor(.secondary)
           .padding(.horizontal)
-
-        // Date Selector
-        DateSelectorView(selectedIndex: $selectedDateIndex)
       }
 
+      // Date Selector
+      DateSelectorView(selectedIndex: $selectedDateIndex)
+      
       // Courses List
       ScrollView {
         let todaysCourses = courseViewModel.weekCourses.filter {

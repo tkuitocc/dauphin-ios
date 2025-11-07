@@ -1,9 +1,4 @@
-//
-//  CourseCardView.swift
-//  campuspass_ios
-//
-//  Created by \u8b19 on 11/17/24.
-//
+// 太複雜，先不要弄
 import SwiftUI
 
 struct CourseCardView: View {
@@ -15,79 +10,6 @@ struct CourseCardView: View {
   let stdNo: String
   let weekday: Int
 
-  @Environment(\.colorScheme) var colorScheme
-  @State private var isOngoing = false
-  @State private var currentTime = Date()
-  let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
-
-  // MARK: - Mock Date for Testing
-
-  // October 3, 2025 at 1:30 PM (Friday)
-  private let useMockDate = false
-  private var mockDate: Date {
-    let calendar = Calendar.current
-    var components = DateComponents()
-    components.year = 2025
-    components.month = 10
-    components.day = 3
-    components.hour = 13
-    components.minute = 30
-    components.second = 0
-    return calendar.date(from: components) ?? Date()
-  }
-
-  private func getCurrentDate() -> Date {
-    return useMockDate ? mockDate : Date()
-  }
-
-  private var timeColor: Color {
-    if isOngoing {
-      return .green
-    } else {
-      let calendar = Calendar.current
-      let now = getCurrentDate()
-      let currentWeekday = calendar.component(.weekday, from: now)
-      let courseWeekdayIOS = weekday == 7 ? 1 : weekday + 1
-
-      // Check if course is today
-      if currentWeekday == courseWeekdayIOS {
-        // Same day - check time
-        let currentHour = calendar.component(.hour, from: now)
-        let currentMinute = calendar.component(.minute, from: now)
-        let currentTimeInMinutes = currentHour * 60 + currentMinute
-
-        let startHour = calendar.component(.hour, from: StartTime)
-        let startMinute = calendar.component(.minute, from: StartTime)
-        let startTimeInMinutes = startHour * 60 + startMinute
-
-        if currentTimeInMinutes < startTimeInMinutes {
-          return .accentColor // Upcoming today
-        } else {
-          return .secondary // Already passed today
-        }
-      } else {
-        // Different day - check if it's a past or future day
-        // Course weekday: 1 = Monday, 2 = Tuesday, ..., 6 = Saturday, 7 = Sunday
-        // We need to determine if the course day is before or after today
-
-        // Convert both to a comparable format (1-7 where 1 = Monday)
-        let todayAsMondayBased = currentWeekday == 1 ? 7 : currentWeekday - 1 // Convert iOS Sunday=1 to Monday-based
-
-        if weekday < todayAsMondayBased {
-          return .secondary // Past day
-        } else {
-          return .accentColor // Future day
-        }
-      }
-    }
-  }
-
-  private var cardBackground: Color {
-    colorScheme == .dark
-      ? Color(UIColor.secondarySystemGroupedBackground)
-      : Color(UIColor.systemBackground)
-  }
-
   var body: some View {
     VStack(alignment: .leading, spacing: 10) {
       HStack {
@@ -98,18 +20,11 @@ struct CourseCardView: View {
           Text("\(formatTime(StartTime)) - \(formatTime(EndTime))")
             .font(.system(size: 11, weight: .medium))
         }
-        .foregroundColor(timeColor)
         .padding(.horizontal, 6)
         .padding(.vertical, 4)
-        .background(timeColor.opacity(0.15))
         .clipShape(Capsule())
 
         Spacer()
-
-        // Status Indicator
-        if isOngoing {
-          OngoingStatusIndicator()
-        }
       }
 
       // Course Name
@@ -140,7 +55,7 @@ struct CourseCardView: View {
 
           // Student Number Badge
           HStack(spacing: 4) {
-            Image(systemName: "number.circle.fill")
+            Image(systemName: "graduationcap.fill")
               .font(.system(size: 12))
               .foregroundColor(.orange)
             Text(stdNo)
@@ -155,33 +70,21 @@ struct CourseCardView: View {
           )
 
           Spacer()
-        }
-
-        // Teacher Info
-        HStack(spacing: 4) {
-          Image(systemName: "person.fill")
-            .font(.system(size: 14))
-            .foregroundColor(.secondary)
-          Text(teacherName)
-            .font(.system(size: 14, weight: .regular))
-            .foregroundColor(.secondary)
-            .lineLimit(1)
+          
+          // Teacher Info
+          HStack(spacing: 4) {
+            Image(systemName: "person.fill")
+              .font(.system(size: 14))
+              .foregroundColor(.secondary)
+            Text(teacherName)
+              .font(.system(size: 14, weight: .regular))
+              .foregroundColor(.secondary)
+              .lineLimit(1)
+          }
         }
       }
     }
     .padding(15)
-    .background(
-      RoundedRectangle(cornerRadius: 16)
-        .fill(cardBackground)
-        .shadow(
-          color: colorScheme == .dark
-            ? Color.black.opacity(0.3)
-            : Color.black.opacity(0.08),
-          radius: 8,
-          x: 0,
-          y: 0
-        )
-    )
     .overlay(
       RoundedRectangle(cornerRadius: 16)
         .strokeBorder(
@@ -196,52 +99,15 @@ struct CourseCardView: View {
           lineWidth: 1
         )
     )
-    .onAppear {
-      updateOngoingStatus()
-    }
-    .onReceive(timer) { _ in
-      updateOngoingStatus()
-    }
-  }
-
-  private func updateOngoingStatus() {
-    currentTime = getCurrentDate()
-
-    let calendar = Calendar.current
-    let now = getCurrentDate()
-
-    let currentWeekday = calendar.component(.weekday, from: now)
-
-    let courseWeekdayIOS = weekday == 7 ? 1 : weekday + 1
-
-    // If not today, not ongoing
-    if currentWeekday != courseWeekdayIOS {
-      isOngoing = false
-      return
-    }
-
-    // Check time if it's the right day
-    let currentHour = calendar.component(.hour, from: now)
-    let currentMinute = calendar.component(.minute, from: now)
-    let currentTimeInMinutes = currentHour * 60 + currentMinute
-
-    let startHour = calendar.component(.hour, from: StartTime)
-    let startMinute = calendar.component(.minute, from: StartTime)
-    let startTimeInMinutes = startHour * 60 + startMinute
-
-    let endHour = calendar.component(.hour, from: EndTime)
-    let endMinute = calendar.component(.minute, from: EndTime)
-    let endTimeInMinutes = endHour * 60 + endMinute
-
-    // Check if current time is between start and end times
-    isOngoing =
-      currentTimeInMinutes >= startTimeInMinutes && currentTimeInMinutes <= endTimeInMinutes
   }
 }
 
 #Preview {
   CourseCardView(
-    courseName: "計算機組織", roomNumber: "E305", teacherName: "我", StartTime: stringToTime("8:10")!,
+    courseName: "計算機組織",
+    roomNumber: "E305",
+    teacherName: "我",
+    StartTime: stringToTime("8:10")!,
     EndTime: stringToTime("9:00")!,
     stdNo: "178",
     weekday: 1
