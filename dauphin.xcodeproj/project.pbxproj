@@ -120,6 +120,7 @@
 		182948842CEA34D200D0F31C /* Exceptions for "dauphin" folder in "dauphin" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				AppIconDev.icon,
 				Info.plist,
 			);
 			target = 18B368182CE5FA110027FEBE /* dauphin */;
@@ -128,6 +129,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				api.example.plist,
+				AppIcon.icon,
 				Assets.xcassets,
 				Info.plist,
 				"Preview Content/Preview Assets.xcassets",
