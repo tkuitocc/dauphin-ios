@@ -42,7 +42,7 @@ struct OtherView: View {
           case .library:
             LibraryView(authViewModel: authViewModel)
           case .map:
-            WifiView()
+            MapView()
           case .none:
             VStack(spacing: 20) {
               Image(systemName: "square.grid.2x2")
