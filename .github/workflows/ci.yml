@@ -27,7 +27,7 @@ jobs:
 
   build:
     name: build
-    runs-on: macos-latest-large
+    runs-on: macos-latest
     needs: swift_format
     steps:
       - uses: actions/checkout@v4
