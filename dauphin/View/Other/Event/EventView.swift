@@ -23,18 +23,21 @@ struct EventView: View {
           }
           Spacer()
           Button {
-            Task {
-              if await eventManager.requestWriteAccess() {
-                editorItem = EditItem(ekEvent: eventManager.makeEKEvent(from: event))
+              Task {
+                if await eventManager.requestWriteAccess() {
+                  editorItem = EditItem(ekEvent: eventManager.makeEKEvent(from: event))
+                }
               }
+            } label: {
+              Label("Add to Calendar", systemImage: "calendar.badge.plus")
+                .labelStyle(.iconOnly)
+                .font(.system(size: 16, weight: .semibold))
+                .padding(10)
+                .background(
+                  RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .fill(Color.blue.opacity(0.15))
+                )
             }
-          } label: {
-            Image(systemName: "calendar.badge.plus")
-              .imageScale(.medium)
-              .padding(8)
-              .background(Color.blue.opacity(0.1))
-              .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-          }
         }
         .padding(.vertical, 2)
       }
