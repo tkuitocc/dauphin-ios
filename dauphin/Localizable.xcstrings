@@ -135,6 +135,9 @@
         }
       }
     },
+    "Add to Calendar" : {
+
+    },
     "App Information" : {
       "localizations" : {
         "en" : {
@@ -384,6 +387,9 @@
           }
         }
       }
+    },
+    "Locations" : {
+
     },
     "Log out" : {
       "extractionState" : "stale",
