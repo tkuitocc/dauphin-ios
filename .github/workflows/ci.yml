@@ -46,5 +46,23 @@ jobs:
           xcrun simctl list runtimes
           xcodebuild -project dauphin.xcodeproj \
             -scheme "dauphin" -configuration Debug \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.5' \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.2' \
             clean build
+
+  test:
+    name: test
+    runs-on: macos-14
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '16.2'
+
+      - name: Run Tests
+        run: |
+          xcodebuild test \
+            -project dauphin.xcodeproj \
+            -scheme "dauphin" \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.2'
