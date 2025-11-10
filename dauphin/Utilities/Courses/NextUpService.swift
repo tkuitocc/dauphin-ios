@@ -5,6 +5,8 @@ protocol NextUpService {
 }
 
 struct DefaultNextUpService: NextUpService {
+  private let upcomingThreshold: TimeInterval = 20 * 60  // 20 分鐘
+
   func nextUp(from weekly: [Course], now: Date) -> [Course] {
     let cal = Calendar.current
     // Calendar.weekday: 1=Sun...7=Sat → 轉 1=Mon...7=Sun
@@ -25,15 +27,27 @@ struct DefaultNextUpService: NextUpService {
       return s1 < s2
     }
 
-    // 過濾掉今天之前；今天只保留距離開始 > 20 分鐘者；未來天全保留
-    return sorted.filter { c in
+    let upcoming = sorted.filter { c in
       if c.weekday < today { return false }
       if c.weekday > today { return true }
-      let sh = cal.component(.hour, from: c.startTime)
-      let sm = cal.component(.minute, from: c.startTime)
-      guard let start = cal.date(bySettingHour: sh, minute: sm, second: 0, of: now) else { return false }
-      return start.timeIntervalSince(now) > 0
+      guard let end = alignedEndDate(for: c, calendar: cal, reference: now) else { return false }
+      return end.timeIntervalSince(now) > upcomingThreshold
     }
+
+    if !upcoming.isEmpty { return upcoming }
+
+    // 星期日 12:00 後若沒有課，預先顯示下週一課程
+    if today == 7, cal.component(.hour, from: now) >= 12 {
+      return sorted.filter { $0.weekday == 1 }
+    }
+
+    return upcoming
+  }
+
+  private func alignedEndDate(for course: Course, calendar: Calendar, reference: Date) -> Date? {
+    let hour = calendar.component(.hour, from: course.endTime)
+    let minute = calendar.component(.minute, from: course.endTime)
+    return calendar.date(bySettingHour: hour, minute: minute, second: 0, of: reference)
   }
 }
 

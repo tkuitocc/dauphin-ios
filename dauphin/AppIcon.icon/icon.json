@@ -39,6 +39,7 @@
               }
             }
           ],
+          "glass" : false,
           "image-name" : "1_eyes.svg",
           "name" : "1_eyes"
         }

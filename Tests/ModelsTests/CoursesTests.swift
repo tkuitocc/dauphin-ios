@@ -65,16 +65,16 @@ struct CourseScheduleTests {
 
   // MARK: - Core behavior
 
-  @Test("同日課程：結束時間 <= 20 分鐘內者剔除 / Today courses ending ≤ 20min from now are filtered out")
+  @Test("結束前 20 分鐘內的課程剔除 / Today courses ending within 20 minutes are filtered out")
   func filterTodayCoursesWithin20Minutes() {
     let today = todayWeekdayZeroBased()
 
     // A 將在 10 分鐘後結束 → 應被過濾
     let courseA = makeCourse(
-      name: "A", weekday: today, startOffsetFromNow: -50, endOffsetFromNow: 10)
+      name: "A", weekday: today, startOffsetFromNow: -40, endOffsetFromNow: 10)
     // B 將在 25 分鐘後結束 → 應被保留
     let courseB = makeCourse(
-      name: "B", weekday: today, startOffsetFromNow: -10, endOffsetFromNow: 25)
+      name: "B", weekday: today, startOffsetFromNow: -35, endOffsetFromNow: 25)
 
     let result = getNextUpCourses(from: [courseA, courseB])
     #expect(result.map { $0.name } == ["B"])
@@ -168,5 +168,40 @@ struct CourseScheduleTests {
     let today = cal.component(.weekday, from: Date()) - 1
     #expect((0...6).contains(today))
     #expect(today != 7)  // 驗證既有實作中的 if todayWeekday == 7 分支為死分支
+  }
+
+  @Test("星期日中午後若沒有課則顯示下週一") func sundayNoonShowsNextWeek() {
+    var comps = DateComponents()
+    comps.year = 2025
+    comps.month = 2
+    comps.day = 9  // Sunday
+    comps.hour = 13
+    comps.minute = 0
+    let calendar = Calendar.current
+    let sundayAfterNoon = calendar.date(from: comps)!
+
+    func course(
+      name: String, weekday: Int, hour: Int, minute: Int
+    ) -> Course {
+      let start = calendar.date(from: DateComponents(year: 2025, month: 2, day: 9, hour: hour, minute: minute))!
+      let end = calendar.date(byAdding: .minute, value: 50, to: start)!
+      return Course(
+        name: name,
+        room: "R",
+        teacher: "T",
+        time: "",
+        startTime: start,
+        endTime: end,
+        stdNo: "S",
+        weekday: weekday,
+        note: ""
+      )
+    }
+
+    let sundayCourse = course(name: "Sun", weekday: 7, hour: 13, minute: 5)
+    let mondayCourse = course(name: "Mon", weekday: 1, hour: 8, minute: 10)
+
+    let result = DefaultNextUpService().nextUp(from: [sundayCourse, mondayCourse], now: sundayAfterNoon)
+    #expect(result.first?.name == "Mon")
   }
 }

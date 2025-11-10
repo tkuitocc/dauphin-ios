@@ -16,14 +16,14 @@ struct Provider: TimelineProvider {
   // MARK: - Placeholder
 
   func placeholder(in _: Context) -> SimpleEntry {
-    SimpleEntry(date: Date(), ssoStuNo: "尚未登入", courses: [], today: 0)
+    SimpleEntry(date: Date(), ssoStuNo: "", courses: [], today: 0)
   }
 
   // MARK: - Snapshot
   func getSnapshot(in _: Context, completion: @escaping (SimpleEntry) -> Void) {
     let now = Date()
     guard let stdNo = getSsoStuNo() else {
-      return completion(SimpleEntry(date: now, ssoStuNo: "尚未登入", courses: [], today: 0))
+      return completion(SimpleEntry(date: now, ssoStuNo: "", courses: [], today: 0))
     }
 
     let cached = loadCoursesFromCache() ?? []
@@ -47,7 +47,7 @@ struct Provider: TimelineProvider {
     let refresh = Calendar.current.date(byAdding: .minute, value: 15, to: now) ?? now.addingTimeInterval(900)
 
     guard let stdNo = getSsoStuNo() else {
-      return completion(Timeline(entries: [SimpleEntry(date: now, ssoStuNo: "尚未登入", courses: [], today: 0)],
+      return completion(Timeline(entries: [SimpleEntry(date: now, ssoStuNo: "", courses: [], today: 0)],
                                 policy: .after(refresh)))
     }
 
@@ -66,7 +66,6 @@ struct Provider: TimelineProvider {
 
   // MARK: - Helpers
 
-  /// 嚴格：沒有就回傳 nil；不回傳「尚未登入」假字串避免誤判已登入
   private func getSsoStuNo() -> String? {
     guard let defaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin") else {
       Provider.logger.error("App Group defaults unavailable.")
