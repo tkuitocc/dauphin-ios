@@ -12,27 +12,22 @@ struct WeekScheduleView: View {
   @State private var selectedCourse: Course?
 
   // Cache computed values
-  private var hasSaturdayCourses: Bool {
-    courseViewModel.weekCourses.contains { $0.weekday == 6 }
+  private var normalizedCurrentWeekday: Int {
+    let sys = Calendar.current.component(.weekday, from: Date())
+    return sys == 1 ? 7 : (sys - 1)
   }
 
-  private var dayCount: Int {
-    hasSaturdayCourses ? 6 : 5
-  }
+  private let displayedWeekdays: [Int] = Array(1...7)
 
-  private var days: [String] {
-    hasSaturdayCourses
-      ? ["Mo", "Tu", "We", "Th", "Fr", "Sa"]
-      : ["Mo", "Tu", "We", "Th", "Fr"]
-  }
+  private let dayLabels: [String] = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
 
   var body: some View {
     GeometryReader { geometry in
       VStack {
-        let dayWidth = (geometry.size.width - 45 - 8) / CGFloat(days.count)
+        let dayWidth = (geometry.size.width - 45 - 8) / CGFloat(displayedWeekdays.count)
         // Pre-group courses by weekday for O(n) performance
         let coursesByDay = Dictionary(grouping: courseViewModel.weekCourses) { $0.weekday }
-        let filteredCourses = (1 ... dayCount).map { day in
+        let filteredCourses = displayedWeekdays.map { day in
           coursesByDay[day] ?? []
         }
 
@@ -41,9 +36,10 @@ struct WeekScheduleView: View {
             .frame(width: 45) // Match time label width
 
           WeekdaysView(
-            days: days,
+            days: dayLabels,
+            weekdays: displayedWeekdays,
             width: dayWidth,
-            currentDay: Calendar.current.component(.weekday, from: Date())
+            currentWeekday: normalizedCurrentWeekday
           )
         }
 

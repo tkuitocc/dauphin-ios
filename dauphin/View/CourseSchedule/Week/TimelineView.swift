@@ -10,14 +10,17 @@ import SwiftUI
 struct TimelineView: View {
   @Binding var courses: [Course]
   var onCourseTap: ((Course) -> Void)?
-  var overlapGap: CGFloat = -4
+  var overlapGap: CGFloat = 2
+  var verticalGap: CGFloat = 2
 
   let start = Calendar.current.date(
-    bySettingHour: 8, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date())
+    bySettingHour: 8, minute: 10, second: 0, of: Calendar.current.startOfDay(for: Date())
   )!
   let end = Calendar.current.date(
     bySettingHour: 22, minute: 0, second: 0, of: Calendar.current.startOfDay(for: Date())
   )!
+
+  private let calendar = Calendar.current
 
   // Calculate overlapping groups and assign columns
   private var positionedCourses: [CoursePosition] {
@@ -104,12 +107,10 @@ struct TimelineView: View {
 
   // Check if two courses overlap
   private func coursesOverlap(_ course1: Course, _ course2: Course) -> Bool {
-    let start1 = adjustedTime(for: course1.startTime)
-    let end1 = adjustedTime(for: course1.endTime)
-    let start2 = adjustedTime(for: course2.startTime)
-    let end2 = adjustedTime(for: course2.endTime)
-
-    // Courses overlap if one starts before the other ends
+    let start1 = normalized(course1.startTime)
+    let end1 = normalized(course1.endTime)
+    let start2 = normalized(course2.startTime)
+    let end2 = normalized(course2.endTime)
     return start1 < end2 && end1 > start2
   }
 
@@ -124,8 +125,8 @@ struct TimelineView: View {
 
         // Courses with overlap handling
         ForEach(positionedCourses, id: \.course.id) { position in
-          let adjustedStartTime = adjustedTime(for: position.course.startTime)
-          let adjustedEndTime = adjustedTime(for: position.course.endTime)
+          let courseStart = normalized(position.course.startTime)
+          let courseEnd = normalized(position.course.endTime)
 
           GeometryReader { geo in
             let totalWidth = geo.size.width
@@ -133,11 +134,14 @@ struct TimelineView: View {
             if position.totalColumns == 1 {
               let courseWidth: CGFloat = totalWidth
               let xOffset: CGFloat = 0
+              let vGap = max(0, verticalGap)
+              let cardHeight = max(0, heightForEvent(courseStart, courseEnd, in: totalHeight) - vGap)
+              let yBase = yPosition(for: courseStart, in: totalHeight) + vGap / 2
 
               CourseView(
                 course: position.course,
-                height: heightForEvent(adjustedStartTime, adjustedEndTime, in: totalHeight),
-                yOffset: yPosition(for: adjustedStartTime, in: totalHeight)
+                height: cardHeight,
+                yOffset: yBase
               )
               .frame(width: courseWidth)
               .offset(x: xOffset)
@@ -145,15 +149,21 @@ struct TimelineView: View {
                 onCourseTap?(position.course)
               }
             } else {
-              let totalGaps = overlapGap * CGFloat(position.totalColumns - 1)
-              let availableWidth = totalWidth - totalGaps
-              let courseWidth: CGFloat = availableWidth / CGFloat(position.totalColumns)
-              let xOffset: CGFloat = (courseWidth + overlapGap) * CGFloat(position.column)
+              let gap = max(0, overlapGap)
+              let totalGaps = gap * CGFloat(position.totalColumns - 1)
+              let availableWidth = max(0, totalWidth - totalGaps)
+              let courseWidth: CGFloat = position.totalColumns > 0
+                ? availableWidth / CGFloat(position.totalColumns)
+                : totalWidth
+              let xOffset: CGFloat = (courseWidth + gap) * CGFloat(position.column)
+              let vGap = max(0, verticalGap)
+              let cardHeight = max(0, heightForEvent(courseStart, courseEnd, in: totalHeight) - vGap)
+              let yBase = yPosition(for: courseStart, in: totalHeight) + vGap / 2
 
               CourseView(
                 course: position.course,
-                height: heightForEvent(adjustedStartTime, adjustedEndTime, in: totalHeight),
-                yOffset: yPosition(for: adjustedStartTime, in: totalHeight)
+                height: cardHeight,
+                yOffset: yBase
               )
               .frame(width: courseWidth)
               .offset(x: xOffset)
@@ -168,13 +178,14 @@ struct TimelineView: View {
     }
   }
 
-  // 調整時間到整點
-  private func adjustedTime(for time: Date) -> Date {
-    let baseDate = Calendar.current.startOfDay(for: Date())
-    let calendar = Calendar.current
+  private func normalized(_ date: Date) -> Date {
+    let components = calendar.dateComponents([.hour, .minute, .second], from: date)
     return calendar.date(
-      bySettingHour: calendar.component(.hour, from: time), minute: 0, second: 0, of: baseDate
-    )!
+      bySettingHour: components.hour ?? 0,
+      minute: components.minute ?? 0,
+      second: components.second ?? 0,
+      of: calendar.startOfDay(for: start)
+    ) ?? date
   }
 
   // 計算課程的高度
@@ -182,14 +193,20 @@ struct TimelineView: View {
     -> CGFloat
   {
     let totalDuration = end.timeIntervalSince(start)
-    let eventDuration = endTime.timeIntervalSince(startTime)
+    guard totalDuration > 0 else { return 0 }
+
+    let clampedStart = max(start, min(end, startTime))
+    let clampedEnd = max(clampedStart, min(end, endTime))
+    let eventDuration = clampedEnd.timeIntervalSince(clampedStart)
     return CGFloat(eventDuration / totalDuration) * totalHeight
   }
 
   // 計算課程的垂直位置
   private func yPosition(for time: Date, in totalHeight: CGFloat) -> CGFloat {
     let totalDuration = end.timeIntervalSince(start)
-    let eventOffset = time.timeIntervalSince(start)
+    guard totalDuration > 0 else { return 0 }
+    let clamped = max(start, min(end, time))
+    let eventOffset = clamped.timeIntervalSince(start)
     let relativePosition = eventOffset / totalDuration
     return CGFloat(relativePosition) * totalHeight
   }
@@ -202,11 +219,8 @@ struct TimelineView: View {
       courses: Binding(
         get: { courseViewModel.weekCourses.filter { $0.weekday == 1 } },
         set: { _ in
-          // Update courseViewModel.weekCourses with the changes from newValue
-          // This may require additional logic to ensure filtered courses are updated correctly
         }
-      ),
-      overlapGap: 4
+      )
     )
   }
 }

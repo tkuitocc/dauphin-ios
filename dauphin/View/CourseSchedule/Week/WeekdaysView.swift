@@ -1,71 +1,67 @@
-//
-//  WeekdaysView.swift
-//  dauphin
-//
-//  Extracted and redesigned weekday selector component
-//
-
 import SwiftUI
 
 struct WeekdaysView: View {
   let days: [String]
+  let weekdays: [Int]
   let width: CGFloat
-  let currentDay: Int
+  let currentWeekday: Int
 
   var body: some View {
     HStack(spacing: 0) {
-      ForEach(0 ..< days.count, id: \.self) { index in
-        let dayIndex = index + 1
-        let date = dateForDay(weekday: dayIndex)
-        let isToday = dayIndex == currentDay - 1
-        let isWeekend = index >= 5
-
-        HStack(spacing: 3) {
-          Text(days[index])
-            .font(.system(size: 10, weight: .medium))
-            .foregroundColor(
-              isToday
-                ? Color.blue
-                : isWeekend ? Color(UIColor.systemRed).opacity(0.6) : Color(UIColor.tertiaryLabel)
-            )
-
-          Text("\(date)")
-            .font(.system(size: 13, weight: isToday ? .semibold : .regular))
-            .foregroundColor(
-              isToday ? Color.blue : Color(UIColor.label).opacity(0.7)
-            )
-        }
-        .frame(height: 20)
-        .frame(width: width, height: 20)
+      ForEach(days.indices, id: \.self) { index in
+        weekdayCell(index: index)
       }
-    }.background(
-      RoundedRectangle(cornerRadius: 8)
-        .fill(Color(UIColor.gray).opacity(0.2))
-    )
+    }
   }
 
   private func dateForDay(weekday: Int) -> Int {
     let calendar = Calendar.current
-    let today = Date()
-    let weekStart = calendar.date(
-      from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: today))!
-    let targetDay = calendar.date(byAdding: .day, value: weekday, to: weekStart)!
+    let today = calendar.startOfDay(for: Date())
+    let weekdayIndex = (calendar.component(.weekday, from: today) + 5) % 7 // Monday = 0
+    let monday = calendar.date(byAdding: .day, value: -weekdayIndex, to: today)!
+    let targetDay = calendar.date(byAdding: .day, value: weekday - 1, to: monday)!
     return calendar.component(.day, from: targetDay)
+  }
+}
+
+private extension WeekdaysView {
+  @ViewBuilder
+  func weekdayCell(index: Int) -> some View {
+    let label = days[index]
+    let weekdayValue = weekdays[index]
+    let date = dateForDay(weekday: weekdayValue)
+    let isToday = weekdayValue == normalizedToday
+
+    HStack(spacing: 3) {
+      Text(label)
+        .font(.system(size: 10, weight: .medium))
+        .foregroundColor( isToday ? Color.blue : Color(UIColor.tertiaryLabel))
+
+      Text("\(date)")
+        .font(.system(size: 13, weight: isToday ? .semibold : .regular))
+        .foregroundColor(
+          isToday ? Color.blue : Color(UIColor.label).opacity(0.7)
+        )
+    }
+    .frame(height: 20)
+    .frame(width: width, height: 20)
+  }
+}
+
+private extension WeekdaysView {
+  var normalizedToday: Int {
+    let sys = Calendar.current.component(.weekday, from: Date())
+    return sys == 1 ? 7 : (sys - 1)
   }
 }
 
 #Preview {
   VStack(spacing: 20) {
     WeekdaysView(
-      days: ["Mo", "Tu", "We", "Th", "Fr"],
-      width: 60,
-      currentDay: 3
-    )
-
-    WeekdaysView(
-      days: ["Mo", "Tu", "We", "Th", "Fr", "Sa"],
+      days: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+      weekdays: Array(1...7),
       width: 55,
-      currentDay: 6
+      currentWeekday: 6
     )
   }
   .padding()
