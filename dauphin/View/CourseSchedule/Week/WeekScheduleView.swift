@@ -1,10 +1,3 @@
-//
-//  WeekScheduleView.swift
-//  dauphin
-//
-//  Created by \u8b19 on 11/19/24.
-//
-
 import SwiftUI
 
 struct WeekScheduleView: View {

@@ -17,27 +17,41 @@ struct CourseView: View {
         VStack(alignment: .leading, spacing: 3) {
           HStack(alignment: .top, spacing: 0) {
             Text(course.name)
-              .font(.system(size: 11, weight: .semibold))
+              .font(.system(size:15, weight: .semibold))
               .foregroundColor(Color(UIColor.label))
               .lineLimit(2)
           }
           
-          HStack(spacing: 3) {
+          HStack(spacing: 2) {
             Image(systemName: "location.circle.fill")
               .font(.system(size: 10))
-              .foregroundColor(Color(UIColor.secondaryLabel))
+              .foregroundColor(.purple)
             Text(course.room)
-              .font(.system(size: 10))
-              .foregroundColor(Color(UIColor.secondaryLabel))
+              .font(.system(size: 10, weight: .medium))
+              .foregroundColor(.primary)
           }
-          HStack(spacing: 3) {
-            Image(systemName: "graduationcap")
+          .padding(.horizontal, 4)
+          .padding(.vertical, 2)
+          .background(
+            RoundedRectangle(cornerRadius: 8)
+              .fill(Color.purple.opacity(0.15))
+          )
+          
+          // Student Number Badge
+          HStack(spacing: 2) {
+            Image(systemName: "graduationcap.fill")
               .font(.system(size: 10))
-              .foregroundColor(Color(UIColor.secondaryLabel))
+              .foregroundColor(.orange)
             Text(course.stdNo)
-              .font(.system(size: 10))
-              .foregroundColor(Color(UIColor.secondaryLabel))
+              .font(.system(size: 10, weight: .medium))
+              .foregroundColor(.primary)
           }
+          .padding(.horizontal, 4)
+          .padding(.vertical, 2)
+          .background(
+            RoundedRectangle(cornerRadius: 8)
+              .fill(Color.orange.opacity(0.15))
+          )
         }
         .padding(8),
         alignment: .topLeading
@@ -55,7 +69,7 @@ struct CourseView: View {
     time: "3, 4",
     startTime: stringToTime("10:10") ?? Date(),
     endTime: stringToTime("12:00") ?? Date(),
-    stdNo: "A12345",
+    stdNo: "067",
     weekday: 2
   )
 

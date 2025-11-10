@@ -1,4 +1,3 @@
-// 太複雜，先不要弄
 import SwiftUI
 
 struct CourseCardView: View {
@@ -11,25 +10,22 @@ struct CourseCardView: View {
   let weekday: Int
 
   var body: some View {
-    VStack(alignment: .leading, spacing: 10) {
+    VStack(alignment: .leading, spacing: 5) {
       HStack {
         // Time Badge
-        HStack(spacing: 4) {
+        HStack() {
           Image(systemName: "clock.fill")
             .font(.system(size: 11))
           Text("\(formatTime(StartTime)) - \(formatTime(EndTime))")
             .font(.system(size: 11, weight: .medium))
         }
-        .padding(.horizontal, 6)
         .padding(.vertical, 4)
         .clipShape(Capsule())
-
-        Spacer()
       }
 
       // Course Name
       Text(courseName)
-        .font(.system(size: 24, weight: .semibold))
+        .font(.system(size: 20, weight: .semibold))
         .foregroundColor(.primary)
         .lineLimit(2)
         .fixedSize(horizontal: false, vertical: true)
@@ -46,7 +42,7 @@ struct CourseCardView: View {
               .font(.system(size: 12, weight: .medium))
               .foregroundColor(.primary)
           }
-          .padding(.horizontal, 8)
+          .padding(.horizontal, 4)
           .padding(.vertical, 6)
           .background(
             RoundedRectangle(cornerRadius: 8)
@@ -62,7 +58,7 @@ struct CourseCardView: View {
               .font(.system(size: 12, weight: .medium))
               .foregroundColor(.primary)
           }
-          .padding(.horizontal, 8)
+          .padding(.horizontal, 4)
           .padding(.vertical, 6)
           .background(
             RoundedRectangle(cornerRadius: 8)
@@ -85,19 +81,13 @@ struct CourseCardView: View {
       }
     }
     .padding(15)
+    .background(
+      RoundedRectangle(cornerRadius: 16)
+        .fill(Color(.systemBackground))
+    )
     .overlay(
       RoundedRectangle(cornerRadius: 16)
-        .strokeBorder(
-          LinearGradient(
-            colors: [
-              Color.gray.opacity(0.1),
-              Color.gray.opacity(0.05),
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-          ),
-          lineWidth: 1
-        )
+        .stroke(Color.gray.opacity(0.3), lineWidth: 1)
     )
   }
 }
