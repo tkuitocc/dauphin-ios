@@ -12,7 +12,6 @@ struct AboutUsView: View {
     ("KeychainSwift", "https://github.com/evgenyneu/keychain-swift"),
     ("Lottie", "https://github.com/airbnb/lottie-ios"),
     ("swiftui-code39", "https://github.com/jiahan-wu/swiftui-code39"),
-    ("Reachability", "https://github.com/ashleymills/Reachability.swift"),
   ]
 
   let usefulLinks = [
