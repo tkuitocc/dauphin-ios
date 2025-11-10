@@ -52,7 +52,7 @@ let letterLocations: [String: L2GData] = [
   ),
     "V":  L2GData(
       name: "視聽教育館",
-      coordinate: CLLocationCoordinate2D(latitude: 25.17503, longitude: 12144943)
+      coordinate: CLLocationCoordinate2D(latitude: 25.17503, longitude: 121.44943)
   ),
     "SG":  L2GData(
       name: "紹謨紀念體育館",
