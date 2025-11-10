@@ -26,9 +26,12 @@ struct CoursesNextUpSmallView: View {
   func weekdayName(for weekday: Int) -> String {
     let formatter = DateFormatter()
     formatter.locale = Locale(identifier: "en_US")
-    let names = formatter.weekdaySymbols ?? ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    let names =
+      formatter.weekdaySymbols ?? [
+        "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
+      ]
     let normalized = max(1, min(weekday, 7))
-    let index = (normalized % 7) // Sunday -> 0, Monday -> 1, ...
+    let index = (normalized % 7)  // Sunday -> 0, Monday -> 1, ...
     return names[index]
   }
 
@@ -44,7 +47,7 @@ struct CoursesNextUpSmallView: View {
       }
       .frame(maxWidth: .infinity, maxHeight: .infinity)
       .containerBackground(for: .widget) {
-          Color(UIColor.systemBackground)
+        Color(UIColor.systemBackground)
       }
     } else {
       if entry.courses.isEmpty {
@@ -58,10 +61,10 @@ struct CoursesNextUpSmallView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .containerBackground(for: .widget) {
-            Color(UIColor.systemBackground)
+          Color(UIColor.systemBackground)
         }
       } else {
-          VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 6) {
           // First Event
           VStack(alignment: .leading, spacing: 2) {
             VStack(alignment: .leading, spacing: 0) {
@@ -172,7 +175,7 @@ struct CoursesNextUpSmallView: View {
                   .font(.caption)
                   .foregroundColor(.secondary)
                   .padding(.leading, -10)
-                
+
                 VStack(alignment: .leading, spacing: 0) {
                   Text("\(entry.courses[1].name)")
                     .font(.subheadline)
@@ -217,22 +220,24 @@ struct CoursesNextUpSmallView: View {
     ssoStuNo: "123456789",
     courses: getUpcomingCourses(
       from: mockData,
-      currentDate: Calendar.current.date(from: DateComponents(year: 2025, month: 9, day: 29, hour: 21, minute: 0))!
+      currentDate: Calendar.current.date(
+        from: DateComponents(year: 2025, month: 9, day: 29, hour: 21, minute: 0))!
     ),
     today: mockData.count
   )
 
   SimpleEntry(date: Date(), ssoStuNo: "123456789", courses: [mockData[0]], today: mockData.count)
-    
+
   SimpleEntry(date: Date(), ssoStuNo: "", courses: mockData, today: mockData.count)
-    
+
   SimpleEntry(
-  date: Date(), 
-  ssoStuNo: "123456789", 
-  courses: getUpcomingCourses(
-    from: mockData,
-    currentDate: Calendar.current.date(from: DateComponents(year: 2025, month: 9, day: 27, hour: 22, minute: 0))!
-  ),
-  today: mockData.count
+    date: Date(),
+    ssoStuNo: "123456789",
+    courses: getUpcomingCourses(
+      from: mockData,
+      currentDate: Calendar.current.date(
+        from: DateComponents(year: 2025, month: 9, day: 27, hour: 22, minute: 0))!
+    ),
+    today: mockData.count
   )
 }

@@ -6,7 +6,6 @@
 //
 
 import Code39
-import Code39
 import SwiftUI
 
 struct LibraryView: View {

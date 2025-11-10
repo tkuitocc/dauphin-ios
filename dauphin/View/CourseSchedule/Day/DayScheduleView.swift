@@ -9,7 +9,7 @@ struct DayScheduleView: View {
 
   private func getFormattedDate() -> String {
     let formatter = DateFormatter()
-    formatter.dateFormat = "MMMM, yyyy" // Month and year format
+    formatter.dateFormat = "MMMM, yyyy"  // Month and year format
     return formatter.string(from: Date())
   }
 
@@ -35,7 +35,7 @@ struct DayScheduleView: View {
 
       // Date Selector
       DateSelectorView(selectedIndex: $selectedDateIndex)
-      
+
       // Courses List
       ScrollView {
         let todaysCourses = courseViewModel.weekCourses.filter {

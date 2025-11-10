@@ -15,7 +15,7 @@ private struct CourseDTO: Decodable {
     case chCosName = "ch_cos_name"
     case note, room
     case teachName = "teach_name"
-    case seatNo   = "seat_no"
+    case seatNo = "seat_no"
     case timePlace = "timePlase"
   }
   struct TimePlace: Decodable { let sesses: [String] }
@@ -41,7 +41,7 @@ struct DefaultCourseParser: CourseParser {
         let f = sesses.first.flatMap(Int.init),
         let l = sesses.last.flatMap(Int.init),
         let start = sessionToStart(f),
-        let end   = sessionToEnd(l)
+        let end = sessionToEnd(l)
       else { continue }
 
       // 所有 unknown → ""
@@ -54,7 +54,8 @@ struct DefaultCourseParser: CourseParser {
       let room = roomRaw.split(separator: ",", maxSplits: 1).first.map(String.init) ?? roomRaw
 
       let teacherRaw = htmlStrip(c.teachName ?? "")
-      let teacher = teacherRaw.split(separator: ",", maxSplits: 1).first.map(String.init) ?? teacherRaw
+      let teacher =
+        teacherRaw.split(separator: ",", maxSplits: 1).first.map(String.init) ?? teacherRaw
 
       let seatRaw = htmlStrip(c.seatNo ?? "")
       let seatNo = seatRaw.split(separator: ",", maxSplits: 1).first.map(String.init) ?? seatRaw
@@ -64,15 +65,16 @@ struct DefaultCourseParser: CourseParser {
       let note = htmlStrip(c.note ?? "")
 
       items.append(
-        Course(name: name,
-               room: finalRoom,
-               teacher: teacher,
-               time: time,
-               startTime: start,
-               endTime: end,
-               stdNo: seatNo,
-               weekday: week,
-               note: note)
+        Course(
+          name: name,
+          room: finalRoom,
+          teacher: teacher,
+          time: time,
+          startTime: start,
+          endTime: end,
+          stdNo: seatNo,
+          weekday: week,
+          note: note)
       )
     }
 
@@ -88,8 +90,8 @@ struct DefaultCourseParser: CourseParser {
     for course in unique {
       if let idx = merged.firstIndex(where: { e in
         e.name == course.name && e.room == course.room && e.time == course.time
-        && e.stdNo == course.stdNo && e.weekday == course.weekday
-        && e.startTime == course.startTime && e.endTime == course.endTime && e.note == course.note
+          && e.stdNo == course.stdNo && e.weekday == course.weekday
+          && e.startTime == course.startTime && e.endTime == course.endTime && e.note == course.note
       }) {
         var m = merged[idx]
         var t = Set(m.teacher.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) })

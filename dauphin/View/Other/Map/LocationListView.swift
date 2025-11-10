@@ -1,5 +1,5 @@
-import SwiftUI
 import MapKit
+import SwiftUI
 
 struct LocationListView: View {
   let locations: [L2GData]
@@ -8,7 +8,7 @@ struct LocationListView: View {
   var body: some View {
     NavigationStack {
       List(locations, id: \.id) { loc in
-        HStack() {
+        HStack {
           Image(systemName: "building.columns.circle.fill")
             .font(.title)
           VStack(alignment: .leading, spacing: 2) {

@@ -6,7 +6,8 @@ import SwiftUI
 @MainActor
 final class CourseViewModel: ObservableObject {
 
-  private static let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "CourseViewModel")
+  private static let logger = Logger(
+    subsystem: "group.cantpr09ram.dauphin", category: "CourseViewModel")
 
   // 對外狀態：維持不變
   @Published var weekCourses: [Course] = []
@@ -37,7 +38,9 @@ final class CourseViewModel: ObservableObject {
     // Cache 與 Parser 預設注入
     let cache = DefaultsCourseCache(suiteName: "group.cantpr09ram.dauphin", key: Constants.courses)
     let parser = DefaultCourseParser(
-      htmlStrip: { text in text.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression) },
+      htmlStrip: { text in
+        text.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression)
+      },
       sessionToStart: sessionToStartTime,
       sessionToEnd: sessionToEndTime
     )
@@ -47,9 +50,8 @@ final class CourseViewModel: ObservableObject {
 
     if let enc = encryptor {
       self.encryptor = enc
-    } else if
-      let key = KeychainManager.shared.get(forKey: "AES256KEY"),
-      let iv  = KeychainManager.shared.get(forKey: "AES256IV")
+    } else if let key = KeychainManager.shared.get(forKey: "AES256KEY"),
+      let iv = KeychainManager.shared.get(forKey: "AES256IV")
     {
       let helper = CustomAES256Helper(key: key, iv: iv)
       self.encryptor = { helper.encrypt(data: $0) }
@@ -109,7 +111,9 @@ final class CourseViewModel: ObservableObject {
   }
 
   // 對外簽名不變
-  func fetchCourses(with stdNo: String, forceRefresh: Bool = false, isFirstLogin: Bool = false) async {
+  func fetchCourses(with stdNo: String, forceRefresh: Bool = false, isFirstLogin: Bool = false)
+    async
+  {
     if forceRefresh { self.isRefreshing = true }
 
     // 先載入快取顯示

@@ -97,6 +97,6 @@ struct StdID: Widget {
   StdID()
 } timeline: {
   SimpleEntry(date: .now, ssoStuNo: "A12345678")
-    
+
   SimpleEntry(date: .now, ssoStuNo: "")
 }

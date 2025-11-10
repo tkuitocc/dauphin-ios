@@ -1,6 +1,6 @@
-import SwiftUI
 import EventKit
 import EventKitUI
+import SwiftUI
 
 /// SwiftUI 包裝 EKEventEditViewController
 struct EventEditSheet: UIViewControllerRepresentable {
@@ -27,8 +27,10 @@ struct EventEditSheet: UIViewControllerRepresentable {
     init(onComplete: @escaping (EKEventEditViewController, EKEventEditViewAction) -> Void) {
       self.onComplete = onComplete
     }
-    func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction) {
-      onComplete(controller, action)   // .saved / .canceled / .deleted
+    func eventEditViewController(
+      _ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction
+    ) {
+      onComplete(controller, action)  // .saved / .canceled / .deleted
     }
   }
 }

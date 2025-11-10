@@ -31,7 +31,7 @@ struct TimelineView: View {
       var added = false
 
       // Try to add to an existing group
-      for i in 0 ..< groups.count {
+      for i in 0..<groups.count {
         let group = groups[i]
         var hasOverlap = false
 
@@ -66,7 +66,7 @@ struct TimelineView: View {
       for course in group {
         var addedToSet = false
 
-        for i in 0 ..< overlapSets.count {
+        for i in 0..<overlapSets.count {
           // Check if this course overlaps with any course in this set
           var overlapsWithAll = false
           for setCourse in overlapSets[i] {
@@ -135,7 +135,8 @@ struct TimelineView: View {
               let courseWidth: CGFloat = totalWidth
               let xOffset: CGFloat = 0
               let vGap = max(0, verticalGap)
-              let cardHeight = max(0, heightForEvent(courseStart, courseEnd, in: totalHeight) - vGap)
+              let cardHeight = max(
+                0, heightForEvent(courseStart, courseEnd, in: totalHeight) - vGap)
               let yBase = yPosition(for: courseStart, in: totalHeight) + vGap / 2
 
               CourseView(
@@ -152,12 +153,14 @@ struct TimelineView: View {
               let gap = max(0, overlapGap)
               let totalGaps = gap * CGFloat(position.totalColumns - 1)
               let availableWidth = max(0, totalWidth - totalGaps)
-              let courseWidth: CGFloat = position.totalColumns > 0
+              let courseWidth: CGFloat =
+                position.totalColumns > 0
                 ? availableWidth / CGFloat(position.totalColumns)
                 : totalWidth
               let xOffset: CGFloat = (courseWidth + gap) * CGFloat(position.column)
               let vGap = max(0, verticalGap)
-              let cardHeight = max(0, heightForEvent(courseStart, courseEnd, in: totalHeight) - vGap)
+              let cardHeight = max(
+                0, heightForEvent(courseStart, courseEnd, in: totalHeight) - vGap)
               let yBase = yPosition(for: courseStart, in: totalHeight) + vGap / 2
 
               CourseView(

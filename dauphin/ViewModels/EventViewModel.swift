@@ -2,8 +2,9 @@ import Foundation
 import OSLog
 
 @MainActor
-final class EventViewModel: ObservableObject{
-  private static let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "EventViewModel")
+final class EventViewModel: ObservableObject {
+  private static let logger = Logger(
+    subsystem: "group.cantpr09ram.dauphin", category: "EventViewModel")
   @Published private(set) var events: [CalendarEvent] = []
 
   func loadXMLData(withQuery query: [String: String]) async {
@@ -32,7 +33,10 @@ final class EventViewModel: ObservableObject{
           } else if let err = parser.parserError {
             cont.resume(throwing: err)
           } else {
-            cont.resume(throwing: NSError(domain: "XMLParser", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unknown parse failure"]))
+            cont.resume(
+              throwing: NSError(
+                domain: "XMLParser", code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "Unknown parse failure"]))
           }
         }
       }
@@ -91,16 +95,20 @@ final class XMLParserDelegateImplementation: NSObject, XMLParserDelegate {
     if let year = fallbackYear, let md = mdFormatter.date(from: str) {
       let comps = cal.dateComponents([.month, .day], from: md)
       var c = DateComponents(calendar: cal, timeZone: TimeZone(secondsFromGMT: 0))
-      c.year = year; c.month = comps.month; c.day = comps.day
+      c.year = year
+      c.month = comps.month
+      c.day = comps.day
       return cal.date(from: c)
     }
     return nil
   }
 
-  func parser(_ parser: XMLParser,
-              didStartElement elementName: String,
-              namespaceURI: String?, qualifiedName qName: String?,
-              attributes attributeDict: [String : String] = [:]) {
+  func parser(
+    _ parser: XMLParser,
+    didStartElement elementName: String,
+    namespaceURI: String?, qualifiedName qName: String?,
+    attributes attributeDict: [String: String] = [:]
+  ) {
     currentElement = elementName
     if elementName == "cal1" || elementName == "cal" {
       weekBuf.removeAll()
@@ -123,11 +131,14 @@ final class XMLParserDelegateImplementation: NSObject, XMLParserDelegate {
     }
   }
 
-  func parser(_ parser: XMLParser,
-              didEndElement elementName: String,
-              namespaceURI: String?, qualifiedName qName: String?) {
+  func parser(
+    _ parser: XMLParser,
+    didEndElement elementName: String,
+    namespaceURI: String?, qualifiedName qName: String?
+  ) {
     if elementName == "日期" {
-      let normalized = dateBuf
+      let normalized =
+        dateBuf
         .replacingOccurrences(of: "～", with: "~")
         .replacingOccurrences(of: "〜", with: "~")
         .replacingOccurrences(of: "\\s*~\\s*", with: "~", options: .regularExpression)
@@ -136,8 +147,12 @@ final class XMLParserDelegateImplementation: NSObject, XMLParserDelegate {
       let parts = normalized.split(separator: "~", maxSplits: 1, omittingEmptySubsequences: true)
       // start
       guard let startStr = parts.first,
-            let start = Self.parseDate(startStr, fallbackYear: Self.cal.component(.year, from: Date()))
-      else { currentStartDate=nil; currentEndDate=nil; return }
+        let start = Self.parseDate(startStr, fallbackYear: Self.cal.component(.year, from: Date()))
+      else {
+        currentStartDate = nil
+        currentEndDate = nil
+        return
+      }
       currentStartDate = start
       // end
       if let endStr = parts.dropFirst().first {
@@ -146,23 +161,26 @@ final class XMLParserDelegateImplementation: NSObject, XMLParserDelegate {
       } else {
         currentEndDate = start
       }
-      
+
       if let s = currentStartDate, let e = currentEndDate, s > e {
-        currentStartDate = e; currentEndDate = s
+        currentStartDate = e
+        currentEndDate = s
       }
     }
 
-    if (elementName == "cal1" || elementName == "cal"),
-       let start = currentStartDate, let end = currentEndDate {
-      events.append(CalendarEvent(
-        week: weekBuf.trimmingCharacters(in: .whitespacesAndNewlines),
-        startDate: start,
-        endDate: end,
-        weekday: weekdayBuf.trimmingCharacters(in: .whitespacesAndNewlines),
-        event: eventBuf.trimmingCharacters(in: .whitespacesAndNewlines)
-      ))
+    if elementName == "cal1" || elementName == "cal",
+      let start = currentStartDate, let end = currentEndDate
+    {
+      events.append(
+        CalendarEvent(
+          week: weekBuf.trimmingCharacters(in: .whitespacesAndNewlines),
+          startDate: start,
+          endDate: end,
+          weekday: weekdayBuf.trimmingCharacters(in: .whitespacesAndNewlines),
+          event: eventBuf.trimmingCharacters(in: .whitespacesAndNewlines)
+        ))
     }
   }
 
-  func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) { }
+  func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {}
 }

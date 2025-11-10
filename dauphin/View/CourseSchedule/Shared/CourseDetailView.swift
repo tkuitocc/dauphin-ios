@@ -43,41 +43,42 @@ struct CourseDetailView: View {
     NavigationView {
       ScrollView {
         VStack(alignment: .leading, spacing: 10) {
-            detailRow(title: "Time", content: timeRange, subcontent: dayOfWeek)
-            Divider()
-            detailRow(title: "Location", content: course.room)
-            Divider()
-            detailRow(title: "Seat Number", content: course.stdNo)
-            Divider()
-            detailRow(title: "Instructor", content: course.teacher)
+          detailRow(title: "Time", content: timeRange, subcontent: dayOfWeek)
+          Divider()
+          detailRow(title: "Location", content: course.room)
+          Divider()
+          detailRow(title: "Seat Number", content: course.stdNo)
+          Divider()
+          detailRow(title: "Instructor", content: course.teacher)
 
-            if hasNote {
-                Divider()
-                detailRow(title: "Note", content: course.note, isNote: true)
-            }
-          let code = course.room.range(of: #"^[A-Za-z]+"#, options: .regularExpression)
-              .map { String(course.room[$0]).uppercased() } ?? "X"
+          if hasNote {
+            Divider()
+            detailRow(title: "Note", content: course.note, isNote: true)
+          }
+          let code =
+            course.room.range(of: #"^[A-Za-z]+"#, options: .regularExpression)
+            .map { String(course.room[$0]).uppercased() } ?? "X"
 
           LandmarkView(coordinate: Letter2Coordinate(for: code))
 
         }
         .padding(24)
-        
+
       }
       .navigationTitle(course.name)
       .navigationBarTitleDisplayMode(.large)
       .toolbar {
         ToolbarItem(placement: .navigationBarTrailing) {
           Button {
-              dismiss()
+            dismiss()
           } label: {
-              Image(systemName: "xmark")
+            Image(systemName: "xmark")
           }
         }
       }
     }
   }
- 
+
   @ViewBuilder
   private func detailRow(
     title: String, content: String, subcontent: String? = nil, isNote: Bool = false

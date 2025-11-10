@@ -13,7 +13,7 @@ struct TimeSlotGrid: View {
 
   var body: some View {
     VStack(spacing: 0) {
-      ForEach(0 ..< numberOfSlots, id: \.self) { _ in
+      ForEach(0..<numberOfSlots, id: \.self) { _ in
         Rectangle()
           .stroke(Color.gray.opacity(0.4), lineWidth: 0.3)
           .frame(height: totalHeight / CGFloat(numberOfSlots))

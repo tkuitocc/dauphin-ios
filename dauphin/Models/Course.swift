@@ -17,7 +17,7 @@ struct Course: Identifiable, Hashable, Codable {
   var startTime: Date
   var endTime: Date
   var stdNo: String
-  var weekday: Int     // 約定：1...7 = 週一...週日
+  var weekday: Int  // 約定：1...7 = 週一...週日
   var note: String = ""
 }
 
@@ -42,7 +42,7 @@ func formatTime(_ date: Date?) -> String {
 public func sessionToStartTime(session: Int) -> Date? {
   let startHour = [
     1: 8, 2: 9, 3: 10, 4: 11, 5: 12, 6: 13, 7: 14, 8: 15,
-    9: 16, 10: 17, 11: 18, 12: 19, 13: 20, 14: 21
+    9: 16, 10: 17, 11: 18, 12: 19, 13: 20, 14: 21,
   ][session]
   guard let hour = startHour else { return nil }
   var comps = DateComponents()
@@ -54,7 +54,7 @@ public func sessionToStartTime(session: Int) -> Date? {
 public func sessionToEndTime(session: Int) -> Date? {
   let endHour = [
     1: 9, 2: 10, 3: 11, 4: 12, 5: 13, 6: 14, 7: 15, 8: 16,
-    9: 17, 10: 18, 11: 19, 12: 20, 13: 21, 14: 22
+    9: 17, 10: 18, 11: 19, 12: 20, 13: 21, 14: 22,
   ][session]
   guard let hour = endHour else { return nil }
   var comps = DateComponents()

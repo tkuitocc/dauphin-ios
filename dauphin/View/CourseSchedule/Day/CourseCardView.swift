@@ -13,7 +13,7 @@ struct CourseCardView: View {
     VStack(alignment: .leading, spacing: 5) {
       HStack {
         // Time Badge
-        HStack() {
+        HStack {
           Image(systemName: "clock.fill")
             .font(.system(size: 11))
           Text("\(formatTime(StartTime)) - \(formatTime(EndTime))")
@@ -66,7 +66,7 @@ struct CourseCardView: View {
           )
 
           Spacer()
-          
+
           // Teacher Info
           HStack(spacing: 4) {
             Image(systemName: "person.fill")

@@ -26,7 +26,7 @@ struct WeekScheduleView: View {
 
         HStack(spacing: 0) {
           Spacer()
-            .frame(width: 45) // Match time label width
+            .frame(width: 45)  // Match time label width
 
           WeekdaysView(
             days: dayLabels,
@@ -40,7 +40,7 @@ struct WeekScheduleView: View {
           HStack(spacing: 0) {
             // Time Labels
             VStack(spacing: 0) {
-              ForEach(8 ... 22, id: \.self) { hour in
+              ForEach(8...22, id: \.self) { hour in
                 Text("\(hour):00")
                   .font(.caption)
                   .foregroundColor(Color(UIColor.secondaryLabel))
@@ -48,7 +48,7 @@ struct WeekScheduleView: View {
                   .offset(y: -40)
               }
             }
-            .frame(width: 45) // Reduced width for tighter layout
+            .frame(width: 45)  // Reduced width for tighter layout
             .background(
               RoundedRectangle(cornerRadius: 8)
                 .fill(Color(UIColor.systemBackground).opacity(0.8))

@@ -17,16 +17,16 @@ struct WeekdaysView: View {
   private func dateForDay(weekday: Int) -> Int {
     let calendar = Calendar.current
     let today = calendar.startOfDay(for: Date())
-    let weekdayIndex = (calendar.component(.weekday, from: today) + 5) % 7 // Monday = 0
+    let weekdayIndex = (calendar.component(.weekday, from: today) + 5) % 7  // Monday = 0
     let monday = calendar.date(byAdding: .day, value: -weekdayIndex, to: today)!
     let targetDay = calendar.date(byAdding: .day, value: weekday - 1, to: monday)!
     return calendar.component(.day, from: targetDay)
   }
 }
 
-private extension WeekdaysView {
+extension WeekdaysView {
   @ViewBuilder
-  func weekdayCell(index: Int) -> some View {
+  fileprivate func weekdayCell(index: Int) -> some View {
     let label = days[index]
     let weekdayValue = weekdays[index]
     let date = dateForDay(weekday: weekdayValue)
@@ -35,7 +35,7 @@ private extension WeekdaysView {
     HStack(spacing: 3) {
       Text(label)
         .font(.system(size: 10, weight: .medium))
-        .foregroundColor( isToday ? Color.blue : Color(UIColor.tertiaryLabel))
+        .foregroundColor(isToday ? Color.blue : Color(UIColor.tertiaryLabel))
 
       Text("\(date)")
         .font(.system(size: 13, weight: isToday ? .semibold : .regular))
@@ -48,8 +48,8 @@ private extension WeekdaysView {
   }
 }
 
-private extension WeekdaysView {
-  var normalizedToday: Int {
+extension WeekdaysView {
+  fileprivate var normalizedToday: Int {
     let sys = Calendar.current.component(.weekday, from: Date())
     return sys == 1 ? 7 : (sys - 1)
   }

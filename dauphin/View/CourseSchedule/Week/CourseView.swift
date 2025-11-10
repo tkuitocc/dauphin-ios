@@ -4,7 +4,7 @@ struct CourseView: View {
   let course: Course
   let height: CGFloat
   let yOffset: CGFloat
-  
+
   var body: some View {
     RoundedRectangle(cornerRadius: 8)
       .fill(Color(UIColor.secondarySystemBackground))
@@ -17,11 +17,11 @@ struct CourseView: View {
         VStack(alignment: .leading, spacing: 3) {
           HStack(alignment: .top, spacing: 0) {
             Text(course.name)
-              .font(.system(size:15, weight: .semibold))
+              .font(.system(size: 15, weight: .semibold))
               .foregroundColor(Color(UIColor.label))
               .lineLimit(2)
           }
-          
+
           HStack(spacing: 2) {
             Image(systemName: "location.circle.fill")
               .font(.system(size: 10))
@@ -36,7 +36,7 @@ struct CourseView: View {
             RoundedRectangle(cornerRadius: 8)
               .fill(Color.purple.opacity(0.15))
           )
-          
+
           // Student Number Badge
           HStack(spacing: 2) {
             Image(systemName: "graduationcap.fill")

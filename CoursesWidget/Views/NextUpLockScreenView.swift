@@ -17,7 +17,7 @@ struct CoursesNextUpViewLockScreenView: View {
       }
       .frame(maxWidth: .infinity, maxHeight: .infinity)
       .containerBackground(for: .widget) {
-          Color(UIColor.systemBackground)
+        Color(UIColor.systemBackground)
       }
     } else {
       if entry.courses.isEmpty {
@@ -31,7 +31,7 @@ struct CoursesNextUpViewLockScreenView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .containerBackground(for: .widget) {
-            Color(UIColor.systemBackground)
+          Color(UIColor.systemBackground)
         }
       } else {
         HStack(alignment: .top) {
@@ -97,17 +97,18 @@ struct CoursesNextUpViewLockScreenView: View {
   CoursesNextUpWidget()
 } timeline: {
   SimpleEntry(date: Date(), ssoStuNo: "123456789", courses: mockData, today: mockData.count)
-    
+
   SimpleEntry(date: Date(), ssoStuNo: "", courses: mockData, today: mockData.count)
-    
+
   SimpleEntry(
-  date: Date(), 
-  ssoStuNo: "123456789", 
-  courses: getUpcomingCourses(
-    from: mockData,
-    currentDate: Calendar.current.date(from: DateComponents(year: 2025, month: 9, day: 27, hour: 22, minute: 0))!
-  ),
-  today: mockData.count
+    date: Date(),
+    ssoStuNo: "123456789",
+    courses: getUpcomingCourses(
+      from: mockData,
+      currentDate: Calendar.current.date(
+        from: DateComponents(year: 2025, month: 9, day: 27, hour: 22, minute: 0))!
+    ),
+    today: mockData.count
   )
-    
+
 }

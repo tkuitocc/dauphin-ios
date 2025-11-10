@@ -28,7 +28,8 @@ final class EventManager {
     ek.startDate = ce.startDate
     ek.endDate = ce.endDate
     ek.isAllDay = Calendar.current.isDate(ce.startDate, inSameDayAs: ce.endDate)
-    ek.calendar = eventStore.defaultCalendarForNewEvents
+    ek.calendar =
+      eventStore.defaultCalendarForNewEvents
       ?? eventStore.calendars(for: .event).first!
     return ek
   }

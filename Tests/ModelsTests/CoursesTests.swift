@@ -183,7 +183,8 @@ struct CourseScheduleTests {
     func course(
       name: String, weekday: Int, hour: Int, minute: Int
     ) -> Course {
-      let start = calendar.date(from: DateComponents(year: 2025, month: 2, day: 9, hour: hour, minute: minute))!
+      let start = calendar.date(
+        from: DateComponents(year: 2025, month: 2, day: 9, hour: hour, minute: minute))!
       let end = calendar.date(byAdding: .minute, value: 50, to: start)!
       return Course(
         name: name,
@@ -201,7 +202,8 @@ struct CourseScheduleTests {
     let sundayCourse = course(name: "Sun", weekday: 7, hour: 13, minute: 5)
     let mondayCourse = course(name: "Mon", weekday: 1, hour: 8, minute: 10)
 
-    let result = DefaultNextUpService().nextUp(from: [sundayCourse, mondayCourse], now: sundayAfterNoon)
+    let result = DefaultNextUpService().nextUp(
+      from: [sundayCourse, mondayCourse], now: sundayAfterNoon)
     #expect(result.first?.name == "Mon")
   }
 }

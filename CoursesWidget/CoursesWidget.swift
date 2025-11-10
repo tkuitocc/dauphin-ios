@@ -44,16 +44,19 @@ struct Provider: TimelineProvider {
   // MARK: - Timeline
   func getTimeline(in _: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
     let now = Date()
-    let refresh = Calendar.current.date(byAdding: .minute, value: 15, to: now) ?? now.addingTimeInterval(900)
+    let refresh =
+      Calendar.current.date(byAdding: .minute, value: 15, to: now) ?? now.addingTimeInterval(900)
 
     guard let stdNo = getSsoStuNo() else {
-      return completion(Timeline(entries: [SimpleEntry(date: now, ssoStuNo: "", courses: [], today: 0)],
-                                policy: .after(refresh)))
+      return completion(
+        Timeline(
+          entries: [SimpleEntry(date: now, ssoStuNo: "", courses: [], today: 0)],
+          policy: .after(refresh)))
     }
 
     let cached = loadCoursesFromCache() ?? []
     let svc = DefaultNextUpService()
-    let today = ((Calendar.current.component(.weekday, from: now) + 5) % 7) + 1 // 1=Mon…7=Sun
+    let today = ((Calendar.current.component(.weekday, from: now) + 5) % 7) + 1  // 1=Mon…7=Sun
     let entry = SimpleEntry(
       date: now,
       ssoStuNo: stdNo,

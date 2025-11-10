@@ -15,21 +15,21 @@ struct LandmarkView: View {
         } label: {
           Map(
             initialPosition: .region(
-                MKCoordinateRegion(
-                    center: coordinate,
-                    span: MKCoordinateSpan(latitudeDelta: 0.001, longitudeDelta: 0.001)
-                )
+              MKCoordinateRegion(
+                center: coordinate,
+                span: MKCoordinateSpan(latitudeDelta: 0.001, longitudeDelta: 0.001)
+              )
             )
-        ) {
+          ) {
             Annotation("", coordinate: coordinate) {
-                Image(systemName: "mappin")
-                    .foregroundStyle(.red)
+              Image(systemName: "mappin")
+                .foregroundStyle(.red)
             }
+          }
+          .aspectRatio(1, contentMode: .fit)
+          .clipShape(RoundedRectangle(cornerRadius: 8))
         }
-        .aspectRatio(1, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-        }
-// 明明有圖資為什麼不給我用？
+        // 明明有圖資為什麼不給我用？
         LookAroundPreview(
           scene: $lookAroundScene,
           allowsNavigation: true,
@@ -62,13 +62,15 @@ struct LandmarkView: View {
         }
       } label: {
         VStack(alignment: .leading) {
-            Label {
-                VStack(alignment: .leading) {
-                    Text("Open in Maps")
-                }
-            } icon: {
-                Image(systemName: "point.topright.arrow.triangle.backward.to.point.bottomleft.scurvepath.fill")
+          Label {
+            VStack(alignment: .leading) {
+              Text("Open in Maps")
             }
+          } icon: {
+            Image(
+              systemName:
+                "point.topright.arrow.triangle.backward.to.point.bottomleft.scurvepath.fill")
+          }
         }
       }
     }
