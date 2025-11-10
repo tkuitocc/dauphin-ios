@@ -31,11 +31,10 @@ jobs:
     needs: swift_format
     steps:
       - uses: actions/checkout@v4
-
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '16.2'
-
+          
+      - name: List available Xcode versions
+        run: ls /Applications | grep Xcode
+        
       - name: Show Xcode
         run: |
           xcodebuild -version
@@ -44,7 +43,10 @@ jobs:
       - name: Build (iOS Simulator)
         run: |
           xcrun simctl list runtimes
-          xcodebuild -project dauphin.xcodeproj \
-            -scheme "dauphin" -configuration Debug \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.2' \
+          xcodebuild \
+            -project dauphin.xcodeproj \
+            -scheme "dauphin" \
+            -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' \
+            -sdk iphonesimulator \
             clean build
