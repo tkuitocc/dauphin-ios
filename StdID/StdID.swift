@@ -72,7 +72,7 @@ struct StdID: Widget {
     StaticConfiguration(kind: kind, provider: Provider()) { entry in
       if #available(iOS 17.0, *) {
         StdIDEntryView(entry: entry)
-          .containerBackground(.fill.tertiary, for: .widget)
+          .containerBackground(.white, for: .widget)
       } else {
         StdIDEntryView(entry: entry)
           .environment(\.colorScheme, .light)
