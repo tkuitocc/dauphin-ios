@@ -197,24 +197,6 @@
 			);
 			target = 185C49532CF6DD8400589C39 /* CoursesWidgetExtension */;
 		};
-		188CEBA32E838D8E00CDD450 /* Exceptions for "Tests" folder in "ModelsTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				FeaturesTests/BasicTests.swift,
-				FeaturesTests/FeaturesTestsLaunchTests.swift,
-			);
-			target = 188CEB672E8367DE00CDD450 /* ModelsTests */;
-		};
-		188CEBA42E838D8E00CDD450 /* Exceptions for "Tests" folder in "FeaturesTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Features.xctestplan,
-				FeaturesTests/BasicTests.swift,
-				FeaturesTests/FeaturesTestsLaunchTests.swift,
-				Models.xctestplan,
-			);
-			target = 188CEB902E838D7000CDD450 /* FeaturesTests */;
-		};
 		18E8B64A2E90F557005ADDB3 /* Exceptions for "dauphin" folder in "ModelsTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -259,10 +241,6 @@
 		};
 		188CEB692E8367DE00CDD450 /* Tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				188CEBA32E838D8E00CDD450 /* Exceptions for "Tests" folder in "ModelsTests" target */,
-				188CEBA42E838D8E00CDD450 /* Exceptions for "Tests" folder in "FeaturesTests" target */,
-			);
 			path = Tests;
 			sourceTree = "<group>";
 		};
