@@ -12,18 +12,27 @@ struct MyApp: App {
       if isLoaded {
         ContentView()  // API 金鑰載入成功後顯示主畫面
       } else {
-        LaunchScreenView()  // 顯示啟動畫面
-          .task {
-            do {
-              try await KeyConstants.loadAPIKeys()
-              isLoaded = true  // 立即切換到 ContentView
-            } catch {
-              errorMessage = error.localizedDescription
-              MyApp.logger.fault(
-                "Failed to load API keys at app launch: \(error.localizedDescription)")
-            }
+        LaunchScreenView(errorMessage: errorMessage, onRetry: {
+          Task { await attemptLoadKeys() }
+        })
+        .task {
+          if errorMessage == nil {
+            await attemptLoadKeys()
           }
+        }
       }
+    }
+  }
+
+  private func attemptLoadKeys() async {
+    do {
+      try await KeyConstants.loadAPIKeys()
+      isLoaded = true  // 立即切換到 ContentView
+      errorMessage = nil
+    } catch {
+      errorMessage = error.localizedDescription
+      MyApp.logger.fault(
+        "Failed to load API keys at app launch: \(error.localizedDescription)")
     }
   }
 }

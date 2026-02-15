@@ -6,6 +6,17 @@ enum KeyConstants {
     subsystem: "group.cantpr09ram.dauphin", category: "KeyConstants")
 
   static func loadAPIKeys() async throws {
+    if let key = KeychainManager.shared.get(forKey: "AES256KEY"),
+      let iv = KeychainManager.shared.get(forKey: "AES256IV"),
+      !key.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+      !iv.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    {
+      APIKeys.storage["AES256KEY"] = key
+      APIKeys.storage["AES256IV"] = iv
+      logger.info("API keys loaded from Keychain")
+      return
+    }
+
     guard let url = Bundle.main.url(forResource: "api", withExtension: "plist") else {
       logger.error("Unable to find 'api.plist' in the main bundle")
       throw NSError(
@@ -25,8 +36,17 @@ enum KeyConstants {
           userInfo: [NSLocalizedDescriptionKey: "'AES' key not found in plist."])
       }
 
-      APIKeys.storage["AES256IV"] = aes.iv
-      APIKeys.storage["AES256KEY"] = aes.key
+      let key = aes.key.trimmingCharacters(in: .whitespacesAndNewlines)
+      let iv = aes.iv.trimmingCharacters(in: .whitespacesAndNewlines)
+      guard !key.isEmpty, !iv.isEmpty else {
+        logger.error("AES key or IV is empty")
+        throw NSError(
+          domain: "KeyConstants", code: 422,
+          userInfo: [NSLocalizedDescriptionKey: "AES key or IV is empty."])
+      }
+
+      APIKeys.storage["AES256IV"] = iv
+      APIKeys.storage["AES256KEY"] = key
 
       // 將 API keys 儲存到 Keychain（假設 KeychainManager 已實作）
       for (key, value) in APIKeys.storage {
@@ -43,21 +63,19 @@ enum KeyConstants {
     fileprivate(set) static var storage = [String: String]()
 
     static var aes256Iv: String {
-      if let value = storage["AES256IV"] {
-        return value
-      } else {
-        logger.warning("'AES256IV' not found in storage. Returning default value")
-        return "NOTHING1"
+      guard let value = storage["AES256IV"] else {
+        logger.error("'AES256IV' not found in storage")
+        preconditionFailure("AES256IV missing from storage")
       }
+      return value
     }
 
     static var aes256Key: String {
-      if let value = storage["AES256KEY"] {
-        return value
-      } else {
-        logger.warning("'AES256KEY' not found in storage. Returning default value")
-        return "NOTHING2"
+      guard let value = storage["AES256KEY"] else {
+        logger.error("'AES256KEY' not found in storage")
+        preconditionFailure("AES256KEY missing from storage")
       }
+      return value
     }
   }
 }

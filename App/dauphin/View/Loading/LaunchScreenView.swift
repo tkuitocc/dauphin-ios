@@ -9,14 +9,37 @@ import Lottie
 import SwiftUI
 
 struct LaunchScreenView: View {
+  let errorMessage: String?
+  let onRetry: (() -> Void)?
+
   var body: some View {
-    VStack {
-      LottieView(animationFileName: "loading", loopMode: .loop)
-        .frame(width: 200, height: 250)
-      Text("Loading...")
-        .font(.callout)
+    VStack(spacing: 16) {
+      if let errorMessage {
+        Image(systemName: "exclamationmark.triangle.fill")
+          .font(.system(size: 48))
+          .foregroundColor(.orange)
+
+        Text("Failed to load keys")
+          .font(.headline)
+
+        Text(errorMessage)
+          .font(.callout)
+          .foregroundColor(.secondary)
+          .multilineTextAlignment(.center)
+
+        Button("Retry") {
+          onRetry?()
+        }
+        .buttonStyle(.borderedProminent)
+      } else {
+        LottieView(animationFileName: "loading", loopMode: .loop)
+          .frame(width: 200, height: 250)
+        Text("Loading...")
+          .font(.callout)
+      }
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .padding(24)
     .background(Color.white)
   }
 }
@@ -38,5 +61,5 @@ struct LottieView: UIViewRepresentable {
 }
 
 #Preview {
-  LaunchScreenView()
+  LaunchScreenView(errorMessage: nil, onRetry: nil)
 }
