@@ -18,8 +18,8 @@ Temporary Items
 .apdisk
 
 # Xcode
-build/
-DerivedData/
+**/build/
+**/DerivedData/
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -68,8 +68,12 @@ fastlane/test_output
 iOSInjectionProject/
 
 # App-specific
-dauphin/APIKEYS.json
-dauphin/api.plist
+app/dauphin/APIKEYS.json
+app/dauphin/api.plist
+apl.plist
 buildServer.json
 CLAUDE.md
 CLAUDE_*.md
+
+# XcodeBuildMCP
+.xcodebuildmcp/
