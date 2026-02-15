@@ -11,8 +11,6 @@ enum KeyConstants {
       !key.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
       !iv.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     {
-      APIKeys.storage["AES256KEY"] = key
-      APIKeys.storage["AES256IV"] = iv
       logger.info("API keys loaded from Keychain")
       return
     }
@@ -45,37 +43,12 @@ enum KeyConstants {
           userInfo: [NSLocalizedDescriptionKey: "AES key or IV is empty."])
       }
 
-      APIKeys.storage["AES256IV"] = iv
-      APIKeys.storage["AES256KEY"] = key
-
-      // 將 API keys 儲存到 Keychain（假設 KeychainManager 已實作）
-      for (key, value) in APIKeys.storage {
-        KeychainManager.shared.save(value, forKey: key)
-      }
+      KeychainManager.shared.save(key, forKey: "AES256KEY")
+      KeychainManager.shared.save(iv, forKey: "AES256IV")
       logger.info("API keys successfully saved to Keychain")
     } catch {
-      logger.error("Failed to load or decode 'APIKEYS.plist': \(error.localizedDescription)")
+      logger.error("Failed to load or decode 'api.plist': \(error.localizedDescription)")
       throw error
-    }
-  }
-
-  enum APIKeys {
-    fileprivate(set) static var storage = [String: String]()
-
-    static var aes256Iv: String {
-      guard let value = storage["AES256IV"] else {
-        logger.error("'AES256IV' not found in storage")
-        preconditionFailure("AES256IV missing from storage")
-      }
-      return value
-    }
-
-    static var aes256Key: String {
-      guard let value = storage["AES256KEY"] else {
-        logger.error("'AES256KEY' not found in storage")
-        preconditionFailure("AES256KEY missing from storage")
-      }
-      return value
     }
   }
 }
