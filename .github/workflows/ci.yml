@@ -1,8 +1,22 @@
 on:
   pull_request:
+    paths:
+      - "dauphin/**"
+      - "CoursesWidget/**"
+      - "Tests/**"
+      - ".swift-format"
+      - "dauphin.xcodeproj/**"
+      - ".github/workflows/ci.yml"
   push:
     branches:
       - dev
+    paths:
+      - "dauphin/**"
+      - "CoursesWidget/**"
+      - "Tests/**"
+      - ".swift-format"
+      - "dauphin.xcodeproj/**"
+      - ".github/workflows/ci.yml"
   workflow_dispatch:
 
 concurrency:
