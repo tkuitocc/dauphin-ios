@@ -82,9 +82,37 @@ struct DefaultCourseParser: CourseParser {
   }
 
   private func dedupeAndMerge(_ input: [Course]) -> [Course] {
-    var seen = Set<Course>()
+    struct CourseKey: Hashable {
+      let name: String
+      let room: String
+      let teacher: String
+      let time: String
+      let startTime: Date
+      let endTime: Date
+      let stdNo: String
+      let weekday: Int
+      let note: String
+
+      init(course: Course) {
+        self.name = course.name
+        self.room = course.room
+        self.teacher = course.teacher
+        self.time = course.time
+        self.startTime = course.startTime
+        self.endTime = course.endTime
+        self.stdNo = course.stdNo
+        self.weekday = course.weekday
+        self.note = course.note
+      }
+    }
+
+    var seen = Set<CourseKey>()
     var unique: [Course] = []
-    for c in input { if seen.insert(c).inserted { unique.append(c) } }
+    for c in input {
+      if seen.insert(CourseKey(course: c)).inserted {
+        unique.append(c)
+      }
+    }
 
     var merged: [Course] = []
     for course in unique {
