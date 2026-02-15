@@ -72,6 +72,10 @@ struct LibSSOLoginView: UIViewRepresentable {
         decisionHandler(.cancel)
       }
     }
+
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+      LibSSOLoginView.logger.error("Web content process terminated")
+    }
   }
 
   func makeCoordinator() -> Coordinator {
@@ -84,6 +88,7 @@ struct LibSSOLoginView: UIViewRepresentable {
 
     let config = WKWebViewConfiguration()
     config.userContentController = contentController
+    config.websiteDataStore = .nonPersistent()
 
     let webView = WKWebView(frame: .zero, configuration: config)
     webView.navigationDelegate = context.coordinator
@@ -96,7 +101,12 @@ struct LibSSOLoginView: UIViewRepresentable {
     return webView
   }
 
-  func updateUIView(_: WKWebView, context _: Context) {}
+  func updateUIView(_ webView: WKWebView, context _: Context) {}
+
+  static func dismantleUIView(_ webView: WKWebView, coordinator _: Coordinator) {
+    webView.configuration.userContentController.removeScriptMessageHandler(
+      forName: "ExtObj")
+  }
 
   private func handleToken(_ token: String) {
     guard !token.isEmpty else {
