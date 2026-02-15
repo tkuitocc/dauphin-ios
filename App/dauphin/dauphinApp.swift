@@ -12,9 +12,12 @@ struct MyApp: App {
       if isLoaded {
         ContentView()  // API 金鑰載入成功後顯示主畫面
       } else {
-        LaunchScreenView(errorMessage: errorMessage, onRetry: {
-          Task { await attemptLoadKeys() }
-        })
+        LaunchScreenView(
+          errorMessage: errorMessage,
+          onRetry: {
+            Task { await attemptLoadKeys() }
+          }
+        )
         .task {
           if errorMessage == nil {
             await attemptLoadKeys()
