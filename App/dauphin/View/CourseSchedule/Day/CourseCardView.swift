@@ -4,8 +4,8 @@ struct CourseCardView: View {
   let courseName: String
   let roomNumber: String
   let teacherName: String
-  let StartTime: Date
-  let EndTime: Date
+  let startTime: Date
+  let endTime: Date
   let stdNo: String
   let weekday: Int
 
@@ -16,7 +16,7 @@ struct CourseCardView: View {
         HStack {
           Image(systemName: "clock.fill")
             .font(.system(size: 11))
-          Text("\(formatTime(StartTime)) - \(formatTime(EndTime))")
+          Text("\(formatTime(startTime)) - \(formatTime(endTime))")
             .font(.system(size: 11, weight: .medium))
         }
         .padding(.vertical, 4)
@@ -97,8 +97,8 @@ struct CourseCardView: View {
     courseName: "計算機組織",
     roomNumber: "E305",
     teacherName: "我",
-    StartTime: stringToTime("8:10")!,
-    EndTime: stringToTime("9:00")!,
+    startTime: stringToTime("8:10")!,
+    endTime: stringToTime("9:00")!,
     stdNo: "178",
     weekday: 1
   )

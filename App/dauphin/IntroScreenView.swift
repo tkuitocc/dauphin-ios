@@ -85,8 +85,10 @@ struct IntroScreen: View {
       .padding(.horizontal, 15)
 
       Spacer(minLength: 10)
-      Text("⚠️This app isn’t developed by Tamkang University Office of Information Services. Use at your own risk.")
-        .font(.system(size: 8))
+      Text(
+        "⚠️This app isn’t developed by Tamkang University Office of Information Services. Use at your own risk."
+      )
+      .font(.system(size: 8))
 
       Button(
         action: {

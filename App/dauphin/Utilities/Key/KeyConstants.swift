@@ -42,7 +42,7 @@ enum KeyConstants {
   enum APIKeys {
     fileprivate(set) static var storage = [String: String]()
 
-    static var AES256IV: String {
+    static var aes256Iv: String {
       if let value = storage["AES256IV"] {
         return value
       } else {
@@ -51,7 +51,7 @@ enum KeyConstants {
       }
     }
 
-    static var AES256KEY: String {
+    static var aes256Key: String {
       if let value = storage["AES256KEY"] {
         return value
       } else {
