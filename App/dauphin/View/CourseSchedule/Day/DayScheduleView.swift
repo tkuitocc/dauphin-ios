@@ -65,14 +65,13 @@ struct DayScheduleView: View {
           .padding()
         } else {
           LazyVStack(spacing: 12) {
-            ForEach(todaysCourses.indices, id: \.self) { index in
-              let course = todaysCourses[index]
+            ForEach(todaysCourses) { course in
               CourseCardView(
                 courseName: course.name,
                 roomNumber: course.room,
                 teacherName: course.teacher,
-                StartTime: course.startTime,
-                EndTime: course.endTime,
+                startTime: course.startTime,
+                endTime: course.endTime,
                 stdNo: course.stdNo,
                 weekday: course.weekday
               )
@@ -80,7 +79,7 @@ struct DayScheduleView: View {
               .scaleEffect(1.0)
               .animation(
                 .spring(response: 0.3, dampingFraction: 0.7),
-                value: index
+                value: course.id
               )
               .onTapGesture {
                 selectedCourse = course
