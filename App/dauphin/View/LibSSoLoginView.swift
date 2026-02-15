@@ -9,6 +9,7 @@ struct LibSSOLoginView: UIViewRepresentable {
 
   class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
     var parent: LibSSOLoginView
+    private let allowedHosts: Set<String> = ["sso.tku.edu.tw"]
 
     init(parent: LibSSOLoginView) {
       self.parent = parent
@@ -49,6 +50,26 @@ struct LibSSOLoginView: UIViewRepresentable {
             parent.handleToken(token)
           }
         }
+      }
+    }
+
+    func webView(
+      _ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
+      decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    ) {
+      guard let url = navigationAction.request.url else {
+        decisionHandler(.cancel)
+        return
+      }
+
+      let isHttps = url.scheme?.lowercased() == "https"
+      let hostAllowed = url.host.map { allowedHosts.contains($0.lowercased()) } ?? false
+
+      if isHttps && hostAllowed {
+        decisionHandler(.allow)
+      } else {
+        LibSSOLoginView.logger.error("Blocked navigation to \(url.absoluteString)")
+        decisionHandler(.cancel)
       }
     }
   }
