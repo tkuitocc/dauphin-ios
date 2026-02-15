@@ -10,9 +10,9 @@
 - Lint:
   `swift-format lint --configuration app/.swift-format --recursive .`
 - Build app:
-  `xcodebuild -project app/dauphin.xcodeproj -scheme "dauphin" -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.0' clean build`
+  `xcodebuild -project app/dauphin.xcodeproj -scheme "dauphin" -configuration Debug -destination 'platform=iOS Simulator,name=iPhone xx,OS=xx.xx' clean build`
 - Run tests:
-  `xcodebuild -project app/dauphin.xcodeproj -scheme "dauphin" -destination 'platform=iOS Simulator,name=iPhone 15' test`
+  `xcodebuild -project app/dauphin.xcodeproj -scheme "dauphin" -destination 'platform=iOS Simulator,name=iPhone xx' test`
 - Install to simulator:
   `xcrun simctl install booted build/Debug-iphonesimulator/dauphin.app`
 
