@@ -80,7 +80,7 @@ struct Provider: TimelineProvider {
       Provider.logger.info("ssoStuNo not found.")
       return nil
     }
-    Provider.logger.info("Retrieved ssoStuNo.")
+    Provider.logger.info("Retrieved ssoStuNo")
     return value
   }
 
@@ -98,7 +98,7 @@ struct Provider: TimelineProvider {
       return try decoder.decode([Course].self, from: data)
     } catch {
       Provider.logger.error(
-        "Failed to decode cached courses: \(String(describing: error), privacy: .public)")
+        "Failed to decode cached courses: \(String(describing: error), privacy: .private)")
       return nil
     }
   }
