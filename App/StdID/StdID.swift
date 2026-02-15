@@ -25,7 +25,7 @@ struct Provider: TimelineProvider {
   func getTimeline(in _: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
     let now = Date()
     let stuNo = fetchSsoStuNo()
-    Provider.logger.info("fetchSsoStuNo() → \(stuNo, privacy: .public)")
+    Provider.logger.info("fetchSsoStuNo() completed")
     let entry = SimpleEntry(date: now, ssoStuNo: stuNo)
 
     let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: now)!
@@ -37,7 +37,7 @@ struct Provider: TimelineProvider {
     let defaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
     defaults?.synchronize()
     if let value = defaults?.string(forKey: Constants.ssoTokenKey) {
-      Provider.logger.info("Retrieved ssoStuNo: \(value, privacy: .public)")
+      Provider.logger.info("Retrieved ssoStuNo")
       return value
     } else {
       Provider.logger.info("ssoStuNo not found, returning default value.")
