@@ -1,0 +1,608 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    ": %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ": %@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ": %@"
+          }
+        }
+      }
+    },
+    "%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
+    },
+    "%@ - %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ - %2$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ - %2$@ "
+          }
+        }
+      }
+    },
+    "%@ ~ %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ ~ %2$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ ~ %2$@"
+          }
+        }
+      }
+    },
+    "%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
+    },
+    "%lld:00" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld:00"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld:00"
+          }
+        }
+      }
+    },
+    "⚠️This app isn’t developed by Tamkang University Office of Information Services. Use at your own risk." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️本程式並非由淡江大學資訊處開發，使用者必須自行承擔造成的所有後果"
+          }
+        }
+      }
+    },
+    "About Us" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About Us"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關於我們"
+          }
+        }
+      }
+    },
+    "Account" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "帳號"
+          }
+        }
+      }
+    },
+    "Add to Calendar" : {
+
+    },
+    "App Information" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Information"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "程式資訊"
+          }
+        }
+      }
+    },
+    "Browse" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Browse"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "瀏覽"
+          }
+        }
+      }
+    },
+    "Cache cleared successfully" : {
+
+    },
+    "calendar" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "calendar"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行事曆"
+          }
+        }
+      }
+    },
+    "Calendar" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行事曆"
+          }
+        }
+      }
+    },
+    "Campus Map" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "校園地圖"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+
+    },
+    "Clear" : {
+
+    },
+    "Clear Cache" : {
+
+    },
+    "Clear cached course data to free up storage" : {
+
+    },
+    "Coming Soon" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coming Soon"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "即將到來"
+          }
+        }
+      }
+    },
+    "Continue" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "繼續"
+          }
+        }
+      }
+    },
+    "Course" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Course"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "課程"
+          }
+        }
+      }
+    },
+    "Data Management" : {
+
+    },
+    "Data Sources and Resources" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data Sources and Resources"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "資料來源與資源"
+          }
+        }
+      }
+    },
+    "Enjoy your free day!" : {
+
+    },
+    "First" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上"
+          }
+        }
+      }
+    },
+    "Hey, %@" : {
+
+    },
+    "Hey, %@." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hey, %@."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "嗨, %@"
+          }
+        }
+      }
+    },
+    "iOS Feature Support" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 功能支援"
+          }
+        }
+      }
+    },
+    "Library" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "圖書館"
+          }
+        }
+      }
+    },
+    "Loading courses..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading courses..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "載入課程"
+          }
+        }
+      }
+    },
+    "Loading..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "載入中…"
+          }
+        }
+      }
+    },
+    "Local First" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本地優先"
+          }
+        }
+      }
+    },
+    "Locations" : {
+
+    },
+    "Log out" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登出"
+          }
+        }
+      }
+    },
+    "Logout" : {
+
+    },
+    "No courses for %@." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No courses for %@."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@沒有課程"
+          }
+        }
+      }
+    },
+    "No courses for Today" : {
+
+    },
+    "Open in Apple Maps" : {
+
+    },
+    "Open in Google Maps" : {
+
+    },
+    "Open in Maps" : {
+
+    },
+    "Open Source" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開放原始碼"
+          }
+        }
+      }
+    },
+    "Other" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "其他"
+          }
+        }
+      }
+    },
+    "Second" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下"
+          }
+        }
+      }
+    },
+    "Select a setting" : {
+
+    },
+    "Select an option" : {
+
+    },
+    "Setting" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setting"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定"
+          }
+        }
+      }
+    },
+    "Settings" : {
+
+    },
+    "stdID:%@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "stdID:%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "學號：%@"
+          }
+        }
+      }
+    },
+    "Student ID: %@" : {
+
+    },
+    "Third-Party Packages" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Third-Party Packages"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三方套件"
+          }
+        }
+      }
+    },
+    "This will remove all cached course data. You'll need to refresh to reload your courses." : {
+
+    },
+    "Version" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本"
+          }
+        }
+      }
+    },
+    "We securely cache some redundant data locally, so you can still access your schedule without connecting to the school's server." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一些重複的資料我們會用安全的方式存在本地端，讓你在連不到學校伺服器也可以知道課表。"
+          }
+        }
+      }
+    },
+    "We support many iOS features like Widgets, and we'll update further as inspiration strikes." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我們支援了很多iOS的功能像Widget，我們心情好的話也會持續更新"
+          }
+        }
+      }
+    },
+    "We're open-sourcing our code. If you're not satisfied with the current version, feel free to fork it on GitHub." : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我們會開放我們的原始碼，如果你對現在的程式感到不滿意歡迎自己到GitHub上改。"
+          }
+        }
+      }
+    },
+    "Welcome to Dauphin" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome to Dauphin"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歡迎使用 Dauphin"
+          }
+        }
+      }
+    },
+    "Your student ID is %@" : {
+
+    },
+    "校務行事曆" : {
+
+    }
+  },
+  "version" : "1.0"
+}
