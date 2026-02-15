@@ -79,7 +79,7 @@ class AuthViewModel: ObservableObject {
   private func clearWebsiteData() {
     let dataStore = WKWebsiteDataStore.default()
     dataStore.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
-      records.forEach { record in
+      for record in records {
         dataStore.removeData(ofTypes: record.dataTypes, for: [record]) {
           AuthViewModel.logger.debug("Cleared website data record: \(record.displayName)")
         }

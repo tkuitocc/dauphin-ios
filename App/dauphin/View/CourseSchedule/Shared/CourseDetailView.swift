@@ -59,7 +59,7 @@ struct CourseDetailView: View {
             course.room.range(of: #"^[A-Za-z]+"#, options: .regularExpression)
             .map { String(course.room[$0]).uppercased() } ?? "X"
 
-          LandmarkView(coordinate: Letter2Coordinate(for: code))
+          LandmarkView(coordinate: letterToCoordinate(for: code))
 
         }
         .padding(24)

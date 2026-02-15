@@ -155,6 +155,6 @@ let letterLocations: [String: L2GData] = [
 
 private let defaultCoord = CLLocationCoordinate2D(latitude: 25.0478, longitude: 121.5170)
 
-func Letter2Coordinate(for letter: String) -> CLLocationCoordinate2D {
+func letterToCoordinate(for letter: String) -> CLLocationCoordinate2D {
   letterLocations[letter]?.coordinate ?? defaultCoord
 }
