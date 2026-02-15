@@ -56,6 +56,7 @@ struct StdIDEntryView: View {
           .frame(width: 296, height: 96)
           .padding(.init(top: 5, leading: 20, bottom: 5, trailing: 20))
         Text("\(entry.ssoStuNo)")
+          .foregroundStyle(.black)
       } else {
         VStack(spacing: 8) {
           Image(systemName: "person.text.rectangle.trianglebadge.exclamationmark.fill")
@@ -65,12 +66,11 @@ struct StdIDEntryView: View {
             .fontWeight(.medium)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .containerBackground(for: .widget) {
-          Color(UIColor.systemBackground)
-        }
       }
     }
     .padding(12)
+    .foregroundStyle(.black)
+    .background(Color.white)
   }
 }
 
@@ -81,7 +81,8 @@ struct StdID: Widget {
     StaticConfiguration(kind: kind, provider: Provider()) { entry in
       if #available(iOS 17.0, *) {
         StdIDEntryView(entry: entry)
-          .containerBackground(.fill.tertiary, for: .widget)
+          .containerBackground(Color.white, for: .widget)
+          .environment(\.colorScheme, .light)
       } else {
         StdIDEntryView(entry: entry)
           .environment(\.colorScheme, .light)
