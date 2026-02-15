@@ -62,8 +62,3 @@ public func sessionToEndTime(session: Int) -> Date? {
   comps.minute = 0
   return Calendar.current.date(from: comps)
 }
-
-// 對外函式名稱與簽名不變；內部使用改良邏輯
-func getNextUpCourses(from weeklySchedule: [Course]) -> [Course] {
-  DefaultNextUpService().nextUp(from: weeklySchedule, now: Date())
-}
