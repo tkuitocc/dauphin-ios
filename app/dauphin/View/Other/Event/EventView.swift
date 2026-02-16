@@ -29,7 +29,10 @@ struct EventView: View {
                     Button {
                         addToCalendarTask?.cancel()
                         addToCalendarTask = Task { @MainActor in
-                            if await eventManager.requestWriteAccess() {
+                            let hasAccess = await eventManager.requestWriteAccess()
+                            guard !Task.isCancelled else { return }
+
+                            if hasAccess {
                                 if let ekEvent = eventManager.makeEKEvent(from: event) {
                                     editorItem = EditItem(ekEvent: ekEvent)
                                 }
