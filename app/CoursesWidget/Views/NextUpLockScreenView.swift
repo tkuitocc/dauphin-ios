@@ -60,17 +60,21 @@ struct CoursesNextUpViewLockScreenView: View {
         }
     }
 
-    func currentDate() -> String {
+    func currentDate() -> String { Self.currentDateFormatter.string(from: Date()) }
+
+    func currentDay() -> String { Self.currentDayFormatter.string(from: Date()) }
+
+    private static let currentDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "MM.dd"
-        return formatter.string(from: Date())
-    }
+        return formatter
+    }()
 
-    func currentDay() -> String {
+    private static let currentDayFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE"
-        return formatter.string(from: Date())
-    }
+        return formatter
+    }()
 }
 
 #Preview(as: .accessoryRectangular) { CoursesNextUpWidget() } timeline: {
