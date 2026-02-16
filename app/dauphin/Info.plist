@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSCalendarUsageDescription</key>
-	<string>Request calendar access to add event</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Request calendar access to add event</string>
 	<key>NSCalendarsFullAccessUsageDescription</key>
