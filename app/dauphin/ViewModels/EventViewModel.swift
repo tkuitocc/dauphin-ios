@@ -45,8 +45,6 @@ import OSLog
                 return delegate.events
             }
 
-            if Task.isCancelled { throw CancellationError() }
-
             if let err = parser.parserError { throw err }
 
             throw NSError(

@@ -28,8 +28,9 @@ struct EventView: View {
                     Button {
                         Task {
                             if await eventManager.requestWriteAccess() {
-                                editorItem = EditItem(
-                                    ekEvent: eventManager.makeEKEvent(from: event))
+                                if let ekEvent = eventManager.makeEKEvent(from: event) {
+                                    editorItem = EditItem(ekEvent: ekEvent)
+                                }
                             }
                         }
                     } label: {

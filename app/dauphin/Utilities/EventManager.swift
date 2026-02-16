@@ -19,17 +19,19 @@ import EventKit
     }
 
     /// 將你的模型轉成 EKEvent，給編輯器預填
-    func makeEKEvent(from ce: CalendarEvent) -> EKEvent {
+    /// Returns nil when no writable calendar is available.
+    func makeEKEvent(from ce: CalendarEvent) -> EKEvent? {
+        guard
+            let calendar = eventStore.defaultCalendarForNewEvents
+                ?? eventStore.calendars(for: .event).first
+        else { return nil }
+
         let ek = EKEvent(eventStore: eventStore)
         ek.title = ce.event
         ek.startDate = ce.startDate
         ek.endDate = ce.endDate
         ek.isAllDay = Calendar.current.isDate(ce.startDate, inSameDayAs: ce.endDate)
-        if let calendar = eventStore.defaultCalendarForNewEvents
-            ?? eventStore.calendars(for: .event).first
-        {
-            ek.calendar = calendar
-        }
+        ek.calendar = calendar
         return ek
     }
 }
