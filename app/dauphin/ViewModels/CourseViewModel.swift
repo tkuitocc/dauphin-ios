@@ -66,8 +66,8 @@ import SwiftUI
 
     private func startNetworkMonitor() {
         monitor.pathUpdateHandler = { [weak self] path in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
                 self.isNetworkAvailable = (path.status == .satisfied)
                 if self.isNetworkAvailable {
                     Self.logger.debug("Network is available")
@@ -147,7 +147,8 @@ import SwiftUI
             self.cacheUpdateMessage =
                 forceRefresh ? "Refreshed successfully" : "Course data updated"
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(nanoseconds: 2_000_000_000)
                 self?.cacheUpdateMessage = nil
             }
         } catch {
@@ -158,7 +159,8 @@ import SwiftUI
                 self.errorMessage = "Failed to fetch courses."
             } else if forceRefresh {
                 self.cacheUpdateMessage = "Refresh failed"
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+                Task { @MainActor [weak self] in
+                    try? await Task.sleep(nanoseconds: 2_000_000_000)
                     self?.cacheUpdateMessage = nil
                 }
             }

@@ -10,12 +10,19 @@ struct LibSSOLoginView: UIViewRepresentable {
     class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         var parent: LibSSOLoginView
         private let allowedHosts: Set<String> = ["sso.tku.edu.tw"]
+        private var evaluateTokenTask: Task<Void, Never>?
 
         init(parent: LibSSOLoginView) { self.parent = parent }
 
+        deinit { evaluateTokenTask?.cancel() }
+
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             // Web page loaded
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            evaluateTokenTask?.cancel()
+            evaluateTokenTask = Task { @MainActor in
+                try? await Task.sleep(nanoseconds: 500_000_000)
+                guard !Task.isCancelled else { return }
+
                 let javascript = """
                         try {
                             var token = getSsoLoginToken();
@@ -26,11 +33,9 @@ struct LibSSOLoginView: UIViewRepresentable {
                         }
                     """
 
-                webView.evaluateJavaScript(javascript) { (result, error) in
-                    if let error = error {
-                        LibSSOLoginView.logger.error(
-                            "JavaScript execution error: \(error.localizedDescription)")
-                    }
+                do { _ = try await webView.evaluateJavaScript(javascript) } catch {
+                    LibSSOLoginView.logger.error(
+                        "JavaScript execution error: \(error.localizedDescription)")
                 }
             }
         }

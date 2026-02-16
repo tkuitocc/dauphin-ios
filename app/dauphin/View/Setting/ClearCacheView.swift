@@ -41,7 +41,8 @@ struct ClearCacheView: View {
 
         withAnimation(.spring()) { cacheCleared = true }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+        Task {
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
             withAnimation { cacheCleared = false }
         }
     }
