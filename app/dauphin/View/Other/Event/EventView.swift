@@ -15,6 +15,7 @@ struct EventView: View {
         let ekEvent: EKEvent
     }
     @State private var editorItem: EditItem?
+    @State private var addToCalendarTask: Task<Void, Never>?
 
     var body: some View {
         List {
@@ -26,7 +27,8 @@ struct EventView: View {
                     }
                     Spacer()
                     Button {
-                        Task {
+                        addToCalendarTask?.cancel()
+                        addToCalendarTask = Task { @MainActor in
                             if await eventManager.requestWriteAccess() {
                                 if let ekEvent = eventManager.makeEKEvent(from: event) {
                                     editorItem = EditItem(ekEvent: ekEvent)
@@ -56,6 +58,9 @@ struct EventView: View {
             }
         }.task(id: term) { await viewModel.loadXMLData(withQuery: ["t": "\(term)"]) }.refreshable {
             await viewModel.loadXMLData(withQuery: ["t": "\(term)"])
+        }.onDisappear {
+            addToCalendarTask?.cancel()
+            addToCalendarTask = nil
         }
     }
 
