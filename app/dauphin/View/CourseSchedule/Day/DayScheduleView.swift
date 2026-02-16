@@ -7,13 +7,10 @@ struct DayScheduleView: View {
     @State private var showBarcode = false
     @State private var selectedCourse: Course? = nil
 
-    private func getFormattedDate() -> String { Self.monthYearFormatter.string(from: Date()) }
+    private func getFormattedDate() -> String { Date.now.formatted(Self.monthYearStyle) }
 
-    private static let monthYearFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM, yyyy"  // Month and year format
-        return formatter
-    }()
+    private static let monthYearStyle = Date.FormatStyle.dateTime.month(.wide).year(.defaultDigits)
+        .locale(.autoupdatingCurrent)
 
     var body: some View {
         VStack(spacing: 0) {

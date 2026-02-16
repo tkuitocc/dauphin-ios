@@ -60,21 +60,16 @@ struct CoursesNextUpViewLockScreenView: View {
         }
     }
 
-    func currentDate() -> String { Self.currentDateFormatter.string(from: Date()) }
+    func currentDate() -> String {
+        let components = Calendar.autoupdatingCurrent.dateComponents([.month, .day], from: Date())
+        let month = components.month ?? 0
+        let day = components.day ?? 0
+        return String(format: "%02d.%02d", month, day)
+    }
 
-    func currentDay() -> String { Self.currentDayFormatter.string(from: Date()) }
-
-    private static let currentDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MM.dd"
-        return formatter
-    }()
-
-    private static let currentDayFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE"
-        return formatter
-    }()
+    func currentDay() -> String {
+        Date.now.formatted(.dateTime.weekday(.wide).locale(.autoupdatingCurrent))
+    }
 }
 
 #Preview(as: .accessoryRectangular) { CoursesNextUpWidget() } timeline: {

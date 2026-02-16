@@ -28,13 +28,9 @@ struct CoursesNextUpSmallView: View {
         return names[index]
     }
 
-    private static let weekdaySymbols: [String] = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US")
-        return formatter.weekdaySymbols ?? [
-            "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
-        ]
-    }()
+    private static let weekdaySymbols: [String] = [
+        "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
+    ]
 
     var body: some View {
         if entry.ssoStuNo.isEmpty {
