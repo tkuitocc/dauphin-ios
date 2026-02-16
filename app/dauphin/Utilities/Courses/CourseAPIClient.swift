@@ -4,7 +4,7 @@ protocol CourseAPIClient { func fetchCoursesData(encryptedQuery: String) async t
 
 struct DefaultCourseAPIClient: CourseAPIClient {
     func fetchCoursesData(encryptedQuery: String) async throws -> Data {
-        var comps = URLComponents(string: "https://ilifeapi.az.tku.edu.tw/api/ilifeStuClassApi")!
+        var comps = URLComponents(string: Constants.courseAPIEndpoint)!
         comps.queryItems = [URLQueryItem(name: "q", value: encryptedQuery)]
         guard let url = comps.url else { throw URLError(.badURL) }
         let (data, resp) = try await URLSession.shared.data(from: url)

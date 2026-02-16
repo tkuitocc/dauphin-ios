@@ -2,7 +2,7 @@ import OSLog
 import SwiftUI
 
 @main struct MyApp: App {
-    private static let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "App")
+    private static let logger = Logger(subsystem: Constants.loggerSubsystem, category: "App")
     @State private var isLoaded = false
     @State private var errorMessage: String?
 

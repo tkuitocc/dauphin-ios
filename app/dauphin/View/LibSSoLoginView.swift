@@ -4,7 +4,7 @@ import WebKit
 
 struct LibSSOLoginView: UIViewRepresentable {
     private static let logger = Logger(
-        subsystem: "group.cantpr09ram.dauphin", category: "LibSSOLogin")
+        subsystem: Constants.loggerSubsystem, category: "LibSSOLogin")
     @ObservedObject var viewModel: AuthViewModel
 
     class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
@@ -94,7 +94,7 @@ struct LibSSOLoginView: UIViewRepresentable {
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
 
-        if let url = URL(string: "https://sso.tku.edu.tw/ilife/CoWork/AndroidSsoLogin.cshtml") {
+        if let url = URL(string: Constants.ssoLoginURL) {
             let request = URLRequest(url: url)
             webView.load(request)
         }

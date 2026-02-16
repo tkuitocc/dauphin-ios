@@ -6,8 +6,8 @@ import os
 
 @MainActor final class AuthViewModel: ObservableObject {
     private static let logger = Logger(
-        subsystem: "group.cantpr09ram.dauphin", category: "AuthViewModel")
-    private let appGroupDefaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
+        subsystem: Constants.loggerSubsystem, category: "AuthViewModel")
+    private let appGroupDefaults = UserDefaults(suiteName: Constants.appGroupSuiteName)
 
     @Published var isLoggedIn: Bool {
         didSet { appGroupDefaults?.set(isLoggedIn, forKey: Constants.isLoggedInKey) }

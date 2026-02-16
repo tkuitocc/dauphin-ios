@@ -9,7 +9,7 @@ struct SimpleEntry: TimelineEntry {
 }
 
 struct Provider: TimelineProvider {
-    private static let logger = Logger(subsystem: "group.cantpr09ram.dauphin", category: "StdID")
+    private static let logger = Logger(subsystem: Constants.loggerSubsystem, category: "StdID")
     func placeholder(in _: Context) -> SimpleEntry { SimpleEntry(date: .now, ssoStuNo: "") }
 
     func getSnapshot(in _: Context, completion: @escaping (SimpleEntry) -> Void) {
@@ -29,7 +29,7 @@ struct Provider: TimelineProvider {
     }
 
     private func fetchSsoStuNo() -> String {
-        let defaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
+        let defaults = UserDefaults(suiteName: Constants.appGroupSuiteName)
         defaults?.synchronize()
         guard let value = defaults?.string(forKey: Constants.ssoTokenKey) else {
             Provider.logger.info("ssoStuNo not found, returning default value.")
