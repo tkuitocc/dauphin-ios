@@ -40,12 +40,12 @@ struct WeekScheduleView: View {
           HStack(spacing: 0) {
             // Time Labels
             VStack(spacing: 0) {
-              ForEach(8...22, id: \.self) { hour in
+              ForEach(ScheduleLayout.startHour...ScheduleLayout.endHour, id: \.self) { hour in
                 Text("\(hour):00")
                   .font(.caption)
                   .foregroundColor(Color(UIColor.secondaryLabel))
-                  .frame(height: 99)
-                  .offset(y: -40)
+                  .frame(height: ScheduleLayout.slotHeight)
+                  .offset(y: -ScheduleLayout.slotHeight * 0.4)
               }
             }
             .frame(width: 45)  // Reduced width for tighter layout

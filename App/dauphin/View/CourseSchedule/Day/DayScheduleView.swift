@@ -3,7 +3,7 @@ import SwiftUI
 struct DayScheduleView: View {
   @ObservedObject var courseViewModel: CourseViewModel
   @ObservedObject var authViewModel: AuthViewModel
-  @State private var selectedDateIndex: Int = 0  // 0...7 per your logic
+  @State private var selectedDateIndex: Int = 0  // 0...6 (Mon...Sun)
   @State private var showBarcode = false
   @State private var selectedCourse: Course? = nil
 
@@ -97,7 +97,7 @@ struct DayScheduleView: View {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
               if value.translation.width < -50 {
                 // Swipe left - next day
-                selectedDateIndex = min(selectedDateIndex + 1, 7)
+                selectedDateIndex = min(selectedDateIndex + 1, 6)
               } else if value.translation.width > 50 {
                 // Swipe right - previous day
                 selectedDateIndex = max(selectedDateIndex - 1, 0)

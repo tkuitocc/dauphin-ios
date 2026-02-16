@@ -14,7 +14,6 @@ struct CourseDetailView: View {
   // Cache expensive computations
   private let dayOfWeek: String
   private let timeRange: String
-  private let courseColor: Color
   private let hasNote: Bool
 
   init(course: Course) {
@@ -27,8 +26,6 @@ struct CourseDetailView: View {
     let start = formatter.string(from: course.startTime)
     let end = formatter.string(from: course.endTime)
     timeRange = "\(start) - \(end)"
-
-    courseColor = CourseColors.color(for: course.name)
 
     hasNote = !course.note.isEmpty
   }

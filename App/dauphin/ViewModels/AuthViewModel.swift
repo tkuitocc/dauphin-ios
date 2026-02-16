@@ -5,7 +5,7 @@ import WidgetKit
 import os
 
 @MainActor
-class AuthViewModel: ObservableObject {
+final class AuthViewModel: ObservableObject {
   private static let logger = Logger(
     subsystem: "group.cantpr09ram.dauphin", category: "AuthViewModel")
   private let appGroupDefaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin")
@@ -20,7 +20,7 @@ class AuthViewModel: ObservableObject {
       appGroupDefaults?.set(ssoStuNo, forKey: Constants.ssoTokenKey)
     }
   }
-  private var courseViewModel: CourseViewModel
+  let courseViewModel: CourseViewModel
 
   init(courseViewModel: CourseViewModel? = nil) {
     self.isLoggedIn = appGroupDefaults?.bool(forKey: Constants.isLoggedInKey) ?? false

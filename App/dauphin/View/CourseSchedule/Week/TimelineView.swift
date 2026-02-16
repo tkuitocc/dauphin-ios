@@ -116,8 +116,8 @@ struct TimelineView: View {
 
   var body: some View {
     GeometryReader { _ in
-      let totalHeight = CGFloat(1400)
-      let numberOfSlots = 14
+      let totalHeight = ScheduleLayout.totalHeight
+      let numberOfSlots = ScheduleLayout.slotCount
 
       ZStack(alignment: .top) {
         // Grid
