@@ -22,16 +22,19 @@ struct CoursesNextUpSmallView: View {
 
     // Helper function to convert weekday index to name
     func weekdayName(for weekday: Int) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US")
-        let names =
-            formatter.weekdaySymbols ?? [
-                "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
-            ]
+        let names = Self.weekdaySymbols
         let normalized = max(1, min(weekday, 7))
         let index = (normalized % 7)  // Sunday -> 0, Monday -> 1, ...
         return names[index]
     }
+
+    private static let weekdaySymbols: [String] = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter.weekdaySymbols ?? [
+            "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
+        ]
+    }()
 
     var body: some View {
         if entry.ssoStuNo.isEmpty {

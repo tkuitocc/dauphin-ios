@@ -41,13 +41,15 @@ struct DateSelectorView: View {
         }
     }
 
-    private func weekdayString(_ date: Date) -> String {
-        let f = DateFormatter()
-        f.calendar = calendar
-        f.locale = .current
-        f.dateFormat = "EEE"  // Mon, Tue, ...
-        return f.string(from: date)
-    }
+    private func weekdayString(_ date: Date) -> String { Self.weekdayFormatter.string(from: date) }
+
+    private static let weekdayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = .current
+        formatter.dateFormat = "EEE"  // Mon, Tue, ...
+        return formatter
+    }()
 
     /// Build Monday..Sunday of the current week. `day` is 1..7 for Mon..Sun.
     static func buildCurrentWeek(calendar: Calendar = Calendar(identifier: .gregorian))
