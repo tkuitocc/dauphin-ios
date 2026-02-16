@@ -34,15 +34,24 @@ struct AboutUsView: View {
             }
             Section(header: Text("Third-Party Packages")) {
                 ForEach(packages, id: \.0) { package in
-                    Link(destination: URL(string: package.1)!) {
-                        Label(package.0, systemImage: "shippingbox.fill")
-                    }.accessibilityIdentifier("pkg_\(package.0)")
+                    if let url = URL(string: package.1) {
+                        Link(destination: url) { Label(package.0, systemImage: "shippingbox.fill") }
+                            .accessibilityIdentifier("pkg_\(package.0)")
+                    } else {
+                        Label(package.0, systemImage: "shippingbox.fill").accessibilityIdentifier(
+                            "pkg_\(package.0)")
+                    }
                 }
             }
             Section(header: Text("Data Sources and Resources")) {
                 ForEach(usefulLinks, id: \.0) { link in
-                    Link(destination: URL(string: link.1)!) { Label(link.0, systemImage: "globe") }
-                        .accessibilityIdentifier("link_\(link.0)")
+                    if let url = URL(string: link.1) {
+                        Link(destination: url) { Label(link.0, systemImage: "globe") }
+                            .accessibilityIdentifier("link_\(link.0)")
+                    } else {
+                        Label(link.0, systemImage: "globe").accessibilityIdentifier(
+                            "link_\(link.0)")
+                    }
                 }
             }
         }

@@ -27,7 +27,7 @@ extension WeekdaysView {
         let label = days[index]
         let weekdayValue = weekdays[index]
         let date = dateForDay(weekday: weekdayValue)
-        let isToday = weekdayValue == normalizedToday
+        let isToday = weekdayValue == currentWeekday
 
         HStack(spacing: 3) {
             Text(label).font(.system(size: 10, weight: .medium)).foregroundColor(
@@ -36,13 +36,6 @@ extension WeekdaysView {
             Text("\(date)").font(.system(size: 13, weight: isToday ? .semibold : .regular))
                 .foregroundColor(isToday ? Color.blue : Color(UIColor.label).opacity(0.7))
         }.frame(height: 20).frame(width: width, height: 20)
-    }
-}
-
-extension WeekdaysView {
-    fileprivate var normalizedToday: Int {
-        let sys = Calendar.current.component(.weekday, from: Date())
-        return sys == 1 ? 7 : (sys - 1)
     }
 }
 
