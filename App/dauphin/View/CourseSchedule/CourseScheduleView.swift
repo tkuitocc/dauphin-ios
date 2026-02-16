@@ -4,7 +4,12 @@ import SwiftUI
 struct CourseScheduleView: View {
   @Environment(\.horizontalSizeClass) private var horizontalSizeClass
   @ObservedObject var authViewModel: AuthViewModel
-  @StateObject private var viewModel = CourseViewModel()
+  @ObservedObject private var courseViewModel: CourseViewModel
+
+  init(authViewModel: AuthViewModel) {
+    self.authViewModel = authViewModel
+    _courseViewModel = ObservedObject(wrappedValue: authViewModel.courseViewModel)
+  }
 
   var body: some View {
     ZStack {
@@ -12,11 +17,11 @@ struct CourseScheduleView: View {
         scheduleContent
           .refreshable {
             guard !authViewModel.ssoStuNo.isEmpty else { return }
-            await viewModel.fetchCourses(with: authViewModel.ssoStuNo, forceRefresh: true)
+            await courseViewModel.fetchCourses(with: authViewModel.ssoStuNo, forceRefresh: true)
           }
           .task {
             guard !authViewModel.ssoStuNo.isEmpty else { return }
-            await viewModel.fetchCourses(with: authViewModel.ssoStuNo)
+            await courseViewModel.fetchCourses(with: authViewModel.ssoStuNo)
           }
       } else {
         LibSSOLoginView(viewModel: authViewModel)
@@ -27,9 +32,9 @@ struct CourseScheduleView: View {
   @ViewBuilder
   private var scheduleContent: some View {
     if horizontalSizeClass == .compact {
-      DayScheduleView(courseViewModel: viewModel, authViewModel: authViewModel)
+      DayScheduleView(courseViewModel: courseViewModel, authViewModel: authViewModel)
     } else {
-      WeekScheduleView(courseViewModel: viewModel)
+      WeekScheduleView(courseViewModel: courseViewModel)
         .padding(.horizontal, 15)
     }
   }

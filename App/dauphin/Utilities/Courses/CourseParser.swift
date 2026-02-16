@@ -37,11 +37,16 @@ struct DefaultCourseParser: CourseParser {
     for c in api.stuelelist {
       guard
         let week = Int(c.week), (1...7).contains(week),
-        let sesses = c.timePlace?.sesses,
-        let f = sesses.first.flatMap(Int.init),
-        let l = sesses.last.flatMap(Int.init),
-        let start = sessionToStart(f),
-        let end = sessionToEnd(l)
+        let sesses = c.timePlace?.sesses
+      else { continue }
+
+      let sessionNumbers = sesses.compactMap(Int.init).sorted()
+
+      guard
+        let firstSession = sessionNumbers.first,
+        let lastSession = sessionNumbers.last,
+        let start = sessionToStart(firstSession),
+        let end = sessionToEnd(lastSession)
       else { continue }
 
       // 所有 unknown → ""
@@ -60,7 +65,7 @@ struct DefaultCourseParser: CourseParser {
       let seatRaw = htmlStrip(c.seatNo ?? "")
       let seatNo = seatRaw.split(separator: ",", maxSplits: 1).first.map(String.init) ?? seatRaw
 
-      let time = sesses.joined(separator: ", ")
+      let time = sessionNumbers.map(String.init).joined(separator: ", ")
       let finalRoom = room.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "" : room
       let note = htmlStrip(c.note ?? "")
 

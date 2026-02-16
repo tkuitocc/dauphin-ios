@@ -27,7 +27,7 @@ final class CourseViewModel: ObservableObject {
   private let monitorQueue = DispatchQueue(label: "CourseViewModel.Network")
   private var isNetworkAvailable = true
 
-  static var hasPerformedInitialLoad = false
+  private var hasPerformedInitialLoad = false
 
   // 預設建構符合舊使用方式（不改外部）
   init(
@@ -101,7 +101,7 @@ final class CourseViewModel: ObservableObject {
   }
 
   func resetInitializationFlag() {
-    Self.hasPerformedInitialLoad = false
+    hasPerformedInitialLoad = false
     Self.logger.debug("Reset initialization flag for fresh session")
   }
 
@@ -123,7 +123,7 @@ final class CourseViewModel: ObservableObject {
     }
 
     // 同一 session 僅自動打一次，除非強制刷新或首次登入
-    guard !Self.hasPerformedInitialLoad || forceRefresh || isFirstLogin else {
+    guard !hasPerformedInitialLoad || forceRefresh || isFirstLogin else {
       self.isRefreshing = false
       return
     }
@@ -136,7 +136,7 @@ final class CourseViewModel: ObservableObject {
       return
     }
 
-    Self.hasPerformedInitialLoad = true
+    hasPerformedInitialLoad = true
     self.isUpdatingCache = true
     self.cacheUpdateMessage = "Updating course data..."
 
