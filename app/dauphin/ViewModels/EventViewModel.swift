@@ -24,6 +24,8 @@ import OSLog
 
             let parsed = try await Self.parseEvents(from: data, timeZone: .current)
 
+            try Task.checkCancellation()
+
             self.events = parsed
         } catch is CancellationError { Self.logger.debug("Cancelled XML load") } catch {
             Self.logger.error("Error loading XML data: \(error.localizedDescription)")

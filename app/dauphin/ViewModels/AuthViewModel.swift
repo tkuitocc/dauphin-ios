@@ -16,6 +16,9 @@ import os
         didSet { appGroupDefaults?.set(ssoStuNo, forKey: Constants.ssoTokenKey) }
     }
     let courseViewModel: CourseViewModel
+    private var fetchCoursesTask: Task<Void, Never>?
+
+    deinit { fetchCoursesTask?.cancel() }
 
     init(courseViewModel: CourseViewModel? = nil) {
         self.isLoggedIn = appGroupDefaults?.bool(forKey: Constants.isLoggedInKey) ?? false
@@ -42,13 +45,21 @@ import os
 
     // Fetch courses for the logged-in user
     private func fetchCourses(token: String) {
-        Task {
+        fetchCoursesTask?.cancel()
+        fetchCoursesTask = Task { @MainActor [weak self] in
+            guard let self = self else { return }
+            guard !Task.isCancelled else { return }
+            guard self.isLoggedIn, self.ssoStuNo == token else { return }
             // Initiating course fetch for authenticated user - force fetch on login
-            await courseViewModel.fetchCourses(with: token, forceRefresh: false, isFirstLogin: true)
+            await self.courseViewModel.fetchCourses(
+                with: token, forceRefresh: false, isFirstLogin: true)
         }
     }
 
     func logout() {
+        fetchCoursesTask?.cancel()
+        fetchCoursesTask = nil
+
         // Clear token and courses from App Group defaults
         appGroupDefaults?.removeObject(forKey: Constants.ssoTokenKey)
         appGroupDefaults?.removeObject(forKey: Constants.courses)
