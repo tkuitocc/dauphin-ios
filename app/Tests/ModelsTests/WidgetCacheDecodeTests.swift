@@ -7,7 +7,7 @@ import Testing
     @Test("widget-style decoder reads cache payload") func widgetStyleDecoderReadsCachePayload()
         throws
     {
-        let suiteName = "group.cantpr09ram.dauphin.tests.\(UUID().uuidString)"
+        let suiteName = "\(Constants.appGroupSuiteName).tests.\(UUID().uuidString)"
         let key = "courses"
 
         let cache = DefaultsCourseCache(suiteName: suiteName, key: key)

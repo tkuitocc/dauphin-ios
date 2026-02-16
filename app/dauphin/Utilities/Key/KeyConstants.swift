@@ -3,11 +3,11 @@ import OSLog
 
 enum KeyConstants {
     private static let logger = Logger(
-        subsystem: "group.cantpr09ram.dauphin", category: "KeyConstants")
+        subsystem: Constants.loggerSubsystem, category: "KeyConstants")
 
     static func loadAPIKeys() async throws {
-        if let key = KeychainManager.shared.get(forKey: "AES256KEY"),
-            let iv = KeychainManager.shared.get(forKey: "AES256IV"),
+        if let key = KeychainManager.shared.get(forKey: Constants.keychainAESKey),
+            let iv = KeychainManager.shared.get(forKey: Constants.keychainAESIV),
             !key.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
             !iv.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         {
@@ -43,8 +43,8 @@ enum KeyConstants {
                     userInfo: [NSLocalizedDescriptionKey: "AES key or IV is empty."])
             }
 
-            KeychainManager.shared.save(key, forKey: "AES256KEY")
-            KeychainManager.shared.save(iv, forKey: "AES256IV")
+            KeychainManager.shared.save(key, forKey: Constants.keychainAESKey)
+            KeychainManager.shared.save(iv, forKey: Constants.keychainAESIV)
             logger.info("API keys successfully saved to Keychain")
         } catch {
             logger.error("Failed to load or decode 'api.plist': \(error.localizedDescription)")

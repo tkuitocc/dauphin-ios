@@ -3,11 +3,11 @@ import OSLog
 
 @MainActor final class EventViewModel: ObservableObject {
     private static let logger = Logger(
-        subsystem: "group.cantpr09ram.dauphin", category: "EventViewModel")
+        subsystem: Constants.loggerSubsystem, category: "EventViewModel")
     @Published private(set) var events: [CalendarEvent] = []
 
     func loadXMLData(withQuery query: [String: String]) async {
-        var components = URLComponents(string: "https://ilifeapi.az.tku.edu.tw/data/xml_cal.ashx")
+        var components = URLComponents(string: Constants.eventXMLAPIEndpoint)
         components?.queryItems = query.map { URLQueryItem(name: $0.key, value: $0.value) }
 
         guard let url = components?.url else {

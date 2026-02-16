@@ -11,7 +11,7 @@ import os
 
 struct Provider: TimelineProvider {
     private static let logger = Logger(
-        subsystem: "group.cantpr09ram.dauphin", category: "CoursesWidget")
+        subsystem: Constants.loggerSubsystem, category: "CoursesWidget")
 
     // MARK: - Placeholder
 
@@ -64,7 +64,7 @@ struct Provider: TimelineProvider {
     // MARK: - Helpers
 
     private func getSsoStuNo() -> String? {
-        guard let defaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin") else {
+        guard let defaults = UserDefaults(suiteName: Constants.appGroupSuiteName) else {
             Provider.logger.error("App Group defaults unavailable.")
             return nil
         }
@@ -79,7 +79,7 @@ struct Provider: TimelineProvider {
     }
 
     private func loadCoursesFromCache() -> [Course]? {
-        guard let defaults = UserDefaults(suiteName: "group.cantpr09ram.dauphin") else {
+        guard let defaults = UserDefaults(suiteName: Constants.appGroupSuiteName) else {
             Provider.logger.error("App Group defaults unavailable.")
             return nil
         }
