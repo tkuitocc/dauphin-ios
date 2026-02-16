@@ -25,6 +25,7 @@ import SwiftUI
     private var monitor: NWPathMonitor
     private let monitorQueue = DispatchQueue(label: "CourseViewModel.Network")
     private var isNetworkAvailable = true
+    private var cacheMessageTask: Task<Void, Never>?
 
     private var hasPerformedInitialLoad = false
 
@@ -62,7 +63,19 @@ import SwiftUI
         startNetworkMonitor()
     }
 
-    deinit { monitor.cancel() }
+    deinit {
+        cacheMessageTask?.cancel()
+        monitor.cancel()
+    }
+
+    private func scheduleCacheMessageClear() {
+        cacheMessageTask?.cancel()
+        cacheMessageTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: 2_000_000_000)
+            guard !Task.isCancelled else { return }
+            self?.cacheUpdateMessage = nil
+        }
+    }
 
     private func startNetworkMonitor() {
         monitor.pathUpdateHandler = { [weak self] path in
@@ -111,6 +124,7 @@ import SwiftUI
         async
     {
         if forceRefresh { self.isRefreshing = true }
+        cacheMessageTask?.cancel()
 
         // 先載入快取顯示
         if let cached = loadCoursesFromCache(), !cached.isEmpty {
@@ -146,11 +160,7 @@ import SwiftUI
             self.isRefreshing = false
             self.cacheUpdateMessage =
                 forceRefresh ? "Refreshed successfully" : "Course data updated"
-
-            Task { @MainActor [weak self] in
-                try? await Task.sleep(nanoseconds: 2_000_000_000)
-                self?.cacheUpdateMessage = nil
-            }
+            scheduleCacheMessageClear()
         } catch {
             self.isUpdatingCache = false
             self.isRefreshing = false
@@ -159,10 +169,7 @@ import SwiftUI
                 self.errorMessage = "Failed to fetch courses."
             } else if forceRefresh {
                 self.cacheUpdateMessage = "Refresh failed"
-                Task { @MainActor [weak self] in
-                    try? await Task.sleep(nanoseconds: 2_000_000_000)
-                    self?.cacheUpdateMessage = nil
-                }
+                scheduleCacheMessageClear()
             }
             Self.logger.error("Fetch error: \(error.localizedDescription)")
         }

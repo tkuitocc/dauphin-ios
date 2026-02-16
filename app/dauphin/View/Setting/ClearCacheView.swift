@@ -11,6 +11,7 @@ struct ClearCacheView: View {
     @StateObject private var courseViewModel = CourseViewModel()
     @State private var showingClearCacheAlert = false
     @State private var cacheCleared = false
+    @State private var clearTask: Task<Void, Never>?
 
     var body: some View {
         VStack(spacing: 20) {
@@ -33,6 +34,9 @@ struct ClearCacheView: View {
             Text(
                 "This will remove all cached course data. You'll need to refresh to reload your courses."
             )
+        }.onDisappear {
+            clearTask?.cancel()
+            clearTask = nil
         }
     }
 
@@ -41,8 +45,10 @@ struct ClearCacheView: View {
 
         withAnimation(.spring()) { cacheCleared = true }
 
-        Task {
+        clearTask?.cancel()
+        clearTask = Task { @MainActor in
             try? await Task.sleep(nanoseconds: 3_000_000_000)
+            guard !Task.isCancelled else { return }
             withAnimation { cacheCleared = false }
         }
     }
