@@ -22,26 +22,43 @@ import OSLog
                 return
             }
 
-            let parsed: [CalendarEvent] = try await withCheckedThrowingContinuation { cont in
-                Task.detached {
-                    let parser = XMLParser(data: data)
-                    let delegate = XMLParserDelegateImplementation()
-                    parser.delegate = delegate
-                    if parser.parse() {
-                        cont.resume(returning: delegate.events)
-                    } else if let err = parser.parserError {
-                        cont.resume(throwing: err)
-                    } else {
-                        cont.resume(
-                            throwing: NSError(
-                                domain: "XMLParser", code: -1,
-                                userInfo: [NSLocalizedDescriptionKey: "Unknown parse failure"]))
-                    }
-                }
-            }
+            let parsed = try await Self.parseEvents(from: data, timeZone: .current)
 
             self.events = parsed
-        } catch { Self.logger.error("Error loading XML data: \(error.localizedDescription)") }
+        } catch is CancellationError { Self.logger.debug("Cancelled XML load") } catch {
+            Self.logger.error("Error loading XML data: \(error.localizedDescription)")
+        }
+    }
+
+    private static func parseEvents(from data: Data, timeZone: TimeZone) async throws
+        -> [CalendarEvent]
+    {
+        let parseTask = Task.detached(priority: .userInitiated) {
+            try Task.checkCancellation()
+
+            let parser = XMLParser(data: data)
+            let delegate = XMLParserDelegateImplementation(timeZone: timeZone)
+            parser.delegate = delegate
+
+            if parser.parse() {
+                try Task.checkCancellation()
+                return delegate.events
+            }
+
+            if Task.isCancelled { throw CancellationError() }
+
+            if let err = parser.parserError { throw err }
+
+            throw NSError(
+                domain: "XMLParser", code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "Unknown parse failure"])
+        }
+
+        return try await withTaskCancellationHandler {
+            try await parseTask.value
+        } onCancel: {
+            parseTask.cancel()
+        }
     }
 }
 
@@ -56,46 +73,48 @@ final class XMLParserDelegateImplementation: NSObject, XMLParserDelegate {
     private var currentStartDate: Date?
     private var currentEndDate: Date?
 
-    private static let cal = Calendar(identifier: .gregorian)
+    private let calendar: Calendar
+    private let ymdFormatter: DateFormatter
+    private let ymdLooseFormatter: DateFormatter
+    private let mdFormatter: DateFormatter
 
-    private static let ymdFormatter: DateFormatter = {
-        let f = DateFormatter()
-        f.locale = Locale(identifier: "en_US_POSIX")
-        f.timeZone = TimeZone(secondsFromGMT: 0)
-        f.calendar = cal
-        f.dateFormat = "yyyy-MM-dd"
-        return f
-    }()
+    init(timeZone: TimeZone = .current) {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
+        self.calendar = calendar
 
-    private static let ymdLooseFormatter: DateFormatter = {
-        let f = DateFormatter()
-        f.locale = Locale(identifier: "en_US_POSIX")
-        f.timeZone = TimeZone(secondsFromGMT: 0)
-        f.calendar = cal
-        f.dateFormat = "yyyy-M-d"
-        return f
-    }()
+        ymdFormatter = Self.makeFormatter(
+            dateFormat: "yyyy-MM-dd", calendar: calendar, timeZone: timeZone)
+        ymdLooseFormatter = Self.makeFormatter(
+            dateFormat: "yyyy-M-d", calendar: calendar, timeZone: timeZone)
+        mdFormatter = Self.makeFormatter(
+            dateFormat: "MM-dd", calendar: calendar, timeZone: timeZone)
 
-    private static let mdFormatter: DateFormatter = {
-        let f = DateFormatter()
-        f.locale = Locale(identifier: "en_US_POSIX")
-        f.timeZone = TimeZone(secondsFromGMT: 0)
-        f.calendar = cal
-        f.dateFormat = "MM-dd"
-        return f
-    }()
+        super.init()
+    }
 
-    private static func parseDate(_ s: Substring, fallbackYear: Int?) -> Date? {
+    private static func makeFormatter(dateFormat: String, calendar: Calendar, timeZone: TimeZone)
+        -> DateFormatter
+    {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = timeZone
+        formatter.calendar = calendar
+        formatter.dateFormat = dateFormat
+        return formatter
+    }
+
+    private func parseDate(_ s: Substring, fallbackYear: Int?) -> Date? {
         let str = s.trimmingCharacters(in: .whitespacesAndNewlines)
         if let d = ymdFormatter.date(from: str) { return d }
         if let d = ymdLooseFormatter.date(from: str) { return d }
         if let year = fallbackYear, let md = mdFormatter.date(from: str) {
-            let comps = cal.dateComponents([.month, .day], from: md)
-            var c = DateComponents(calendar: cal, timeZone: TimeZone(secondsFromGMT: 0))
+            let comps = calendar.dateComponents([.month, .day], from: md)
+            var c = DateComponents(calendar: calendar, timeZone: calendar.timeZone)
             c.year = year
             c.month = comps.month
             c.day = comps.day
-            return cal.date(from: c)
+            return calendar.date(from: c)
         }
         return nil
     }
@@ -140,8 +159,8 @@ final class XMLParserDelegateImplementation: NSObject, XMLParserDelegate {
                 separator: "~", maxSplits: 1, omittingEmptySubsequences: true)
             // start
             guard let startStr = parts.first,
-                let start = Self.parseDate(
-                    startStr, fallbackYear: Self.cal.component(.year, from: Date()))
+                let start = parseDate(
+                    startStr, fallbackYear: calendar.component(.year, from: Date()))
             else {
                 currentStartDate = nil
                 currentEndDate = nil
@@ -150,8 +169,8 @@ final class XMLParserDelegateImplementation: NSObject, XMLParserDelegate {
             currentStartDate = start
             // end
             if let endStr = parts.dropFirst().first {
-                let y = Self.cal.component(.year, from: start)
-                currentEndDate = Self.parseDate(endStr, fallbackYear: y) ?? start
+                let y = calendar.component(.year, from: start)
+                currentEndDate = parseDate(endStr, fallbackYear: y) ?? start
             } else {
                 currentEndDate = start
             }
