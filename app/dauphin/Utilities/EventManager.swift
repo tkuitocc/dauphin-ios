@@ -25,8 +25,11 @@ import EventKit
         ek.startDate = ce.startDate
         ek.endDate = ce.endDate
         ek.isAllDay = Calendar.current.isDate(ce.startDate, inSameDayAs: ce.endDate)
-        ek.calendar =
-            eventStore.defaultCalendarForNewEvents ?? eventStore.calendars(for: .event).first!
+        if let calendar = eventStore.defaultCalendarForNewEvents
+            ?? eventStore.calendars(for: .event).first
+        {
+            ek.calendar = calendar
+        }
         return ek
     }
 }
