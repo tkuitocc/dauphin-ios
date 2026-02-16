@@ -7,12 +7,6 @@
 
 import SwiftUI
 
-struct WifiView: View {
-  var body: some View {
-    Text("Coming Soon")
-  }
-}
+struct WifiView: View { var body: some View { Text("Coming Soon") } }
 
-#Preview {
-  WifiView()
-}
+#Preview { WifiView() }

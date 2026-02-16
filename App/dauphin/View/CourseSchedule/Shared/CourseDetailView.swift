@@ -8,109 +8,96 @@
 import SwiftUI
 
 struct CourseDetailView: View {
-  let course: Course
-  @Environment(\.dismiss) var dismiss
+    let course: Course
+    @Environment(\.dismiss) var dismiss
 
-  // Cache expensive computations
-  private let dayOfWeek: String
-  private let timeRange: String
-  private let hasNote: Bool
+    // Cache expensive computations
+    private let dayOfWeek: String
+    private let timeRange: String
+    private let hasNote: Bool
 
-  init(course: Course) {
-    self.course = course
+    init(course: Course) {
+        self.course = course
 
-    let days = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    dayOfWeek = days[min(max(course.weekday, 0), days.count - 1)]
+        let days = [
+            "", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
+        ]
+        dayOfWeek = days[min(max(course.weekday, 0), days.count - 1)]
 
-    let formatter = CourseDetailView.timeFormatter
-    let start = formatter.string(from: course.startTime)
-    let end = formatter.string(from: course.endTime)
-    timeRange = "\(start) - \(end)"
+        let formatter = CourseDetailView.timeFormatter
+        let start = formatter.string(from: course.startTime)
+        let end = formatter.string(from: course.endTime)
+        timeRange = "\(start) - \(end)"
 
-    hasNote = !course.note.isEmpty
-  }
-
-  private static let timeFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "HH:mm"
-    return formatter
-  }()
-
-  var body: some View {
-    NavigationView {
-      ScrollView {
-        VStack(alignment: .leading, spacing: 10) {
-          detailRow(title: "Time", content: timeRange, subcontent: dayOfWeek)
-          Divider()
-          detailRow(title: "Location", content: course.room)
-          Divider()
-          detailRow(title: "Seat Number", content: course.stdNo)
-          Divider()
-          detailRow(title: "Instructor", content: course.teacher)
-
-          if hasNote {
-            Divider()
-            detailRow(title: "Note", content: course.note, isNote: true)
-          }
-          let code =
-            course.room.range(of: #"^[A-Za-z]+"#, options: .regularExpression)
-            .map { String(course.room[$0]).uppercased() } ?? "X"
-
-          LandmarkView(coordinate: letterToCoordinate(for: code))
-
-        }
-        .padding(24)
-
-      }
-      .navigationTitle(course.name)
-      .navigationBarTitleDisplayMode(.large)
-      .toolbar {
-        ToolbarItem(placement: .navigationBarTrailing) {
-          Button {
-            dismiss()
-          } label: {
-            Image(systemName: "xmark")
-          }
-        }
-      }
+        hasNote = !course.note.isEmpty
     }
-  }
 
-  @ViewBuilder
-  private func detailRow(
-    title: String, content: String, subcontent: String? = nil, isNote: Bool = false
-  ) -> some View {
-    HStack(spacing: 4) {
-      VStack(alignment: .leading, spacing: 4) {
-        Text(title)
-          .font(.caption)
-          .foregroundColor(Color(UIColor.secondaryLabel))
-        if let subcontent = subcontent {
-          Text(subcontent)
-            .font(.system(size: 14))
-            .foregroundColor(Color(UIColor.secondaryLabel))
+    private static let timeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return formatter
+    }()
+
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 10) {
+                    detailRow(title: "Time", content: timeRange, subcontent: dayOfWeek)
+                    Divider()
+                    detailRow(title: "Location", content: course.room)
+                    Divider()
+                    detailRow(title: "Seat Number", content: course.stdNo)
+                    Divider()
+                    detailRow(title: "Instructor", content: course.teacher)
+
+                    if hasNote {
+                        Divider()
+                        detailRow(title: "Note", content: course.note, isNote: true)
+                    }
+                    let code =
+                        course.room.range(of: #"^[A-Za-z]+"#, options: .regularExpression).map {
+                            String(course.room[$0]).uppercased()
+                        } ?? "X"
+
+                    LandmarkView(coordinate: letterToCoordinate(for: code))
+
+                }.padding(24)
+
+            }.navigationTitle(course.name).navigationBarTitleDisplayMode(.large).toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
+                }
+            }
         }
-        Text(content)
-          .font(.system(size: isNote ? 14 : 16, weight: isNote ? .regular : .medium))
-          .foregroundColor(Color(UIColor.label))
-          .fixedSize(horizontal: false, vertical: isNote)
-      }
     }
-  }
+
+    @ViewBuilder private func detailRow(
+        title: String, content: String, subcontent: String? = nil, isNote: Bool = false
+    ) -> some View {
+        HStack(spacing: 4) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title).font(.caption).foregroundColor(Color(UIColor.secondaryLabel))
+                if let subcontent = subcontent {
+                    Text(subcontent).font(.system(size: 14)).foregroundColor(
+                        Color(UIColor.secondaryLabel))
+                }
+                Text(content).font(
+                    .system(size: isNote ? 14 : 16, weight: isNote ? .regular : .medium)
+                ).foregroundColor(Color(UIColor.label)).fixedSize(
+                    horizontal: false, vertical: isNote)
+            }
+        }
+    }
 }
 
 #Preview {
-  CourseDetailView(
-    course: Course(
-      name: "Programming",
-      room: "E236",
-      teacher: "Dr. Smith",
-      time: "1, 2",
-      startTime: Date(),
-      endTime: Date().addingTimeInterval(3600),
-      stdNo: "A12",
-      weekday: 1,
-      note: "This is a sample note for the course"
-    )
-  )
+    CourseDetailView(
+        course: Course(
+            name: "Programming", room: "E236", teacher: "Dr. Smith", time: "1, 2",
+            startTime: Date(), endTime: Date().addingTimeInterval(3600), stdNo: "A12", weekday: 1,
+            note: "This is a sample note for the course"))
 }

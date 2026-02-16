@@ -8,9 +8,4 @@
 import SwiftUI
 import WidgetKit
 
-@main
-struct StdIDBundle: WidgetBundle {
-  var body: some Widget {
-    StdID()
-  }
-}
+@main struct StdIDBundle: WidgetBundle { var body: some Widget { StdID() } }

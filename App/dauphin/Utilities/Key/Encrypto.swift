@@ -11,88 +11,78 @@ import Foundation
 import SwiftUI
 
 class CustomAES256Helper {
-  private let aes256IV: String
-  private let aes256Key: String
+    private let aes256IV: String
+    private let aes256Key: String
 
-  init(key: String, iv: String) {
-    aes256Key = key
-    aes256IV = iv
-  }
-
-  // MARK: - AES-256 Encryption and Decryption
-
-  func encryptDecrypt(data: String, mode: CCOperation) -> String? {
-    guard let keyData = aes256Key.data(using: .utf8),
-      let ivData = aes256IV.data(using: .utf8),
-      let inputData = mode == CCOperation(kCCEncrypt)
-        ? data.data(using: .utf8) : Data(base64Encoded: data)
-    else {
-      return nil
+    init(key: String, iv: String) {
+        aes256Key = key
+        aes256IV = iv
     }
 
-    let keyLength = size_t(kCCKeySizeAES256)
-    let dataOutLength = inputData.count + kCCBlockSizeAES128
-    var dataOut = Data(count: dataOutLength)
-    var numBytesOut: size_t = 0
+    // MARK: - AES-256 Encryption and Decryption
 
-    let cryptStatus = dataOut.withUnsafeMutableBytes { dataOutBytes in
-      inputData.withUnsafeBytes { dataInBytes in
-        ivData.withUnsafeBytes { ivBytes in
-          keyData.withUnsafeBytes { keyBytes in
-            CCCrypt(
-              mode,  // Operation (Encrypt/Decrypt)
-              CCAlgorithm(kCCAlgorithmAES),  // Algorithm
-              CCOptions(kCCOptionPKCS7Padding),  // Padding
-              keyBytes.baseAddress,  // Key
-              keyLength,  // Key Length
-              ivBytes.baseAddress,  // IV
-              dataInBytes.baseAddress,  // Input Data
-              inputData.count,  // Input Length
-              dataOutBytes.baseAddress,  // Output Buffer
-              dataOutLength,  // Output Buffer Length
-              &numBytesOut)  // Output Byte Count
-          }
+    func encryptDecrypt(data: String, mode: CCOperation) -> String? {
+        guard let keyData = aes256Key.data(using: .utf8), let ivData = aes256IV.data(using: .utf8),
+            let inputData = mode == CCOperation(kCCEncrypt)
+                ? data.data(using: .utf8) : Data(base64Encoded: data)
+        else { return nil }
+
+        let keyLength = size_t(kCCKeySizeAES256)
+        let dataOutLength = inputData.count + kCCBlockSizeAES128
+        var dataOut = Data(count: dataOutLength)
+        var numBytesOut: size_t = 0
+
+        let cryptStatus = dataOut.withUnsafeMutableBytes { dataOutBytes in
+            inputData.withUnsafeBytes { dataInBytes in
+                ivData.withUnsafeBytes { ivBytes in
+                    keyData.withUnsafeBytes { keyBytes in
+                        CCCrypt(
+                            mode,  // Operation (Encrypt/Decrypt)
+                            CCAlgorithm(kCCAlgorithmAES),  // Algorithm
+                            CCOptions(kCCOptionPKCS7Padding),  // Padding
+                            keyBytes.baseAddress,  // Key
+                            keyLength,  // Key Length
+                            ivBytes.baseAddress,  // IV
+                            dataInBytes.baseAddress,  // Input Data
+                            inputData.count,  // Input Length
+                            dataOutBytes.baseAddress,  // Output Buffer
+                            dataOutLength,  // Output Buffer Length
+                            &numBytesOut)  // Output Byte Count
+                    }
+                }
+            }
         }
-      }
+
+        guard cryptStatus == kCCSuccess else { return nil }
+
+        dataOut.count = numBytesOut
+        guard mode == CCOperation(kCCEncrypt) else { return String(data: dataOut, encoding: .utf8) }
+        return dataOut.base64EncodedString()
     }
 
-    guard cryptStatus == kCCSuccess else {
-      return nil
+    func encrypt(data: String) -> String? {
+        return encryptDecrypt(data: data, mode: CCOperation(kCCEncrypt))
     }
 
-    dataOut.count = numBytesOut
-    if mode == CCOperation(kCCEncrypt) {
-      return dataOut.base64EncodedString()
-    } else {
-      return String(data: dataOut, encoding: .utf8)
+    func decrypt(data: String) -> String? {
+        return encryptDecrypt(data: data, mode: CCOperation(kCCDecrypt))
     }
-  }
 
-  func encrypt(data: String) -> String? {
-    return encryptDecrypt(data: data, mode: CCOperation(kCCEncrypt))
-  }
+    // MARK: - SHA-256 Hash Function
 
-  func decrypt(data: String) -> String? {
-    return encryptDecrypt(data: data, mode: CCOperation(kCCDecrypt))
-  }
-
-  // MARK: - SHA-256 Hash Function
-
-  func sha256(_ input: String, length: Int) -> String {
-    let inputData = Data(input.utf8)
-    let hashed = SHA256.hash(data: inputData)
-    let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
-    return String(hashString.prefix(length))
-  }
-
-  // MARK: - Generate Random IV
-
-  func generateRandomIV(length: Int = 16) -> String? {
-    var bytes = [UInt8](repeating: 0, count: length)
-    let status = SecRandomCopyBytes(kSecRandomDefault, length, &bytes)
-    guard status == errSecSuccess else {
-      return nil
+    func sha256(_ input: String, length: Int) -> String {
+        let inputData = Data(input.utf8)
+        let hashed = SHA256.hash(data: inputData)
+        let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
+        return String(hashString.prefix(length))
     }
-    return bytes.map { String(format: "%02x", $0) }.joined()
-  }
+
+    // MARK: - Generate Random IV
+
+    func generateRandomIV(length: Int = 16) -> String? {
+        var bytes = [UInt8](repeating: 0, count: length)
+        let status = SecRandomCopyBytes(kSecRandomDefault, length, &bytes)
+        guard status == errSecSuccess else { return nil }
+        return bytes.map { String(format: "%02x", $0) }.joined()
+    }
 }

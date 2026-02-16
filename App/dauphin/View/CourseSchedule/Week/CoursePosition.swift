@@ -8,7 +8,7 @@
 import Foundation
 
 struct CoursePosition {
-  let course: Course
-  let column: Int
-  let totalColumns: Int
+    let course: Course
+    let column: Int
+    let totalColumns: Int
 }

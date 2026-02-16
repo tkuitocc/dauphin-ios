@@ -3,118 +3,113 @@ import SwiftUI
 import WebKit
 
 struct LibSSOLoginView: UIViewRepresentable {
-  private static let logger = Logger(
-    subsystem: "group.cantpr09ram.dauphin", category: "LibSSOLogin")
-  @ObservedObject var viewModel: AuthViewModel
+    private static let logger = Logger(
+        subsystem: "group.cantpr09ram.dauphin", category: "LibSSOLogin")
+    @ObservedObject var viewModel: AuthViewModel
 
-  class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
-    var parent: LibSSOLoginView
-    private let allowedHosts: Set<String> = ["sso.tku.edu.tw"]
+    class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
+        var parent: LibSSOLoginView
+        private let allowedHosts: Set<String> = ["sso.tku.edu.tw"]
 
-    init(parent: LibSSOLoginView) {
-      self.parent = parent
-    }
+        init(parent: LibSSOLoginView) { self.parent = parent }
 
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-      // Web page loaded
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-        let javascript = """
-              try {
-                  var token = getSsoLoginToken();
-                  window.webkit.messageHandlers.ExtObj.postMessage(token);
-              } catch(e) {
-                  console.error('Error:', e);
-                  window.webkit.messageHandlers.ExtObj.postMessage('error:' + e.message);
-              }
-          """
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            // Web page loaded
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                let javascript = """
+                        try {
+                            var token = getSsoLoginToken();
+                            window.webkit.messageHandlers.ExtObj.postMessage(token);
+                        } catch(e) {
+                            console.error('Error:', e);
+                            window.webkit.messageHandlers.ExtObj.postMessage('error:' + e.message);
+                        }
+                    """
 
-        webView.evaluateJavaScript(javascript) { (result, error) in
-          if let error = error {
-            LibSSOLoginView.logger.error(
-              "JavaScript execution error: \(error.localizedDescription)")
-          }
+                webView.evaluateJavaScript(javascript) { (result, error) in
+                    if let error = error {
+                        LibSSOLoginView.logger.error(
+                            "JavaScript execution error: \(error.localizedDescription)")
+                    }
+                }
+            }
         }
-      }
-    }
 
-    func userContentController(
-      _ userContentController: WKUserContentController, didReceive message: WKScriptMessage
-    ) {
-      // Received JavaScript message
-      if message.name == "ExtObj" {
-        if let token = message.body as? String {
-          if token.starts(with: "error:") {
-            LibSSOLoginView.logger.error("JavaScript token retrieval failed: \(token)")
-          } else {
-            LibSSOLoginView.logger.info("Authentication token received successfully")
-            parent.handleToken(token)
-          }
+        func userContentController(
+            _ userContentController: WKUserContentController, didReceive message: WKScriptMessage
+        ) {
+            // Received JavaScript message
+            if message.name == "ExtObj" {
+                if let token = message.body as? String {
+                    if token.starts(with: "error:") {
+                        LibSSOLoginView.logger.error("JavaScript token retrieval failed: \(token)")
+                    } else {
+                        LibSSOLoginView.logger.info("Authentication token received successfully")
+                        parent.handleToken(token)
+                    }
+                }
+            }
         }
-      }
+
+        func webView(
+            _ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
+            decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+        ) {
+            guard let url = navigationAction.request.url else {
+                decisionHandler(.cancel)
+                return
+            }
+
+            let isHttps = url.scheme?.lowercased() == "https"
+            let hostAllowed = url.host.map { allowedHosts.contains($0.lowercased()) } ?? false
+
+            if isHttps && hostAllowed {
+                decisionHandler(.allow)
+            } else {
+                LibSSOLoginView.logger.error("Blocked navigation to \(url.absoluteString)")
+                decisionHandler(.cancel)
+            }
+        }
+
+        func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+            LibSSOLoginView.logger.error("Web content process terminated")
+        }
     }
 
-    func webView(
-      _ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
-      decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
-    ) {
-      guard let url = navigationAction.request.url else {
-        decisionHandler(.cancel)
-        return
-      }
+    func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
 
-      let isHttps = url.scheme?.lowercased() == "https"
-      let hostAllowed = url.host.map { allowedHosts.contains($0.lowercased()) } ?? false
+    func makeUIView(context: Context) -> WKWebView {
+        let contentController = WKUserContentController()
+        contentController.add(context.coordinator, name: "ExtObj")
 
-      if isHttps && hostAllowed {
-        decisionHandler(.allow)
-      } else {
-        LibSSOLoginView.logger.error("Blocked navigation to \(url.absoluteString)")
-        decisionHandler(.cancel)
-      }
+        let config = WKWebViewConfiguration()
+        config.userContentController = contentController
+        config.websiteDataStore = .nonPersistent()
+
+        let webView = WKWebView(frame: .zero, configuration: config)
+        webView.navigationDelegate = context.coordinator
+
+        if let url = URL(string: "https://sso.tku.edu.tw/ilife/CoWork/AndroidSsoLogin.cshtml") {
+            let request = URLRequest(url: url)
+            webView.load(request)
+        }
+
+        return webView
     }
 
-    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-      LibSSOLoginView.logger.error("Web content process terminated")
-    }
-  }
+    func updateUIView(_ webView: WKWebView, context _: Context) {}
 
-  func makeCoordinator() -> Coordinator {
-    Coordinator(parent: self)
-  }
-
-  func makeUIView(context: Context) -> WKWebView {
-    let contentController = WKUserContentController()
-    contentController.add(context.coordinator, name: "ExtObj")
-
-    let config = WKWebViewConfiguration()
-    config.userContentController = contentController
-    config.websiteDataStore = .nonPersistent()
-
-    let webView = WKWebView(frame: .zero, configuration: config)
-    webView.navigationDelegate = context.coordinator
-
-    if let url = URL(string: "https://sso.tku.edu.tw/ilife/CoWork/AndroidSsoLogin.cshtml") {
-      let request = URLRequest(url: url)
-      webView.load(request)
+    static func dismantleUIView(_ webView: WKWebView, coordinator _: Coordinator) {
+        webView.configuration.userContentController.removeScriptMessageHandler(forName: "ExtObj")
     }
 
-    return webView
-  }
+    private func handleToken(_ token: String) {
+        guard !token.isEmpty else {
+            LibSSOLoginView.logger.error("Invalid authentication token received")
+            return
+        }
 
-  func updateUIView(_ webView: WKWebView, context _: Context) {}
-
-  static func dismantleUIView(_ webView: WKWebView, coordinator _: Coordinator) {
-    webView.configuration.userContentController.removeScriptMessageHandler(
-      forName: "ExtObj")
-  }
-
-  private func handleToken(_ token: String) {
-    guard !token.isEmpty else {
-      LibSSOLoginView.logger.error("Invalid authentication token received")
-      return
+        // Processing valid authentication token
+        viewModel.login(with: token)
     }
-
-    // Processing valid authentication token
-    viewModel.login(with: token)
-  }
 }
