@@ -8,7 +8,7 @@
 import Foundation
 import KeychainSwift
 
-struct KeychainManager {
+final class KeychainManager: @unchecked Sendable {
     static let shared = KeychainManager()
     private let keychain: KeychainSwift
 

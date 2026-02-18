@@ -1,9 +1,11 @@
 import Foundation
 
-protocol CourseAPIClient { func fetchCoursesData(encryptedQuery: String) async throws -> Data }
+protocol CourseAPIClient {
+    @MainActor func fetchCoursesData(encryptedQuery: String) async throws -> Data
+}
 
 struct DefaultCourseAPIClient: CourseAPIClient {
-    func fetchCoursesData(encryptedQuery: String) async throws -> Data {
+    @MainActor func fetchCoursesData(encryptedQuery: String) async throws -> Data {
         var comps = URLComponents(string: Constants.courseAPIEndpoint)!
         comps.queryItems = [URLQueryItem(name: "q", value: encryptedQuery)]
         guard let url = comps.url else { throw URLError(.badURL) }

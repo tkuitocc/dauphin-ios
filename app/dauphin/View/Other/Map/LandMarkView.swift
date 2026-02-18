@@ -1,4 +1,4 @@
-import MapKit
+@preconcurrency import MapKit
 import SwiftUI
 
 struct LandmarkView: View {
