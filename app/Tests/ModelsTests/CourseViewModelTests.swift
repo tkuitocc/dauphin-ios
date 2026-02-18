@@ -3,7 +3,7 @@ import Testing
 
 @testable import dauphin
 
-@MainActor private final class MockViewModelRepository: CourseRepository {
+private final class MockViewModelRepository: CourseRepository, @unchecked Sendable {
     var cachedCourses: [dauphin.Course]?
     var savedCourses: [dauphin.Course]?
     var didClear = false
@@ -17,9 +17,7 @@ import Testing
         cachedCourses = nil
     }
 
-    func fetchRemote(stdNo _: String, encrypt _: (String) -> String?) async throws -> [dauphin
-        .Course]
-    {
+    @CourseDataActor func fetchRemote(encryptedQuery _: String) async throws -> [dauphin.Course] {
         fetchCount += 1
         return try nextRemoteResult.get()
     }

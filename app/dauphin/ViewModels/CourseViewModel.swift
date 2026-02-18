@@ -151,7 +151,10 @@ import SwiftUI
         self.cacheUpdateMessage = "Updating course data..."
 
         do {
-            let courses = try await repo.fetchRemote(stdNo: stdNo, encrypt: encryptor)
+            guard let encryptedQuery = encryptor("20220901200540356," + stdNo) else {
+                throw URLError(.cannotParseResponse)
+            }
+            let courses = try await repo.fetchRemote(encryptedQuery: encryptedQuery)
             saveCoursesToCache(courses: courses)
             self.weekCourses = courses
             self.isCacheEmpty = courses.isEmpty
