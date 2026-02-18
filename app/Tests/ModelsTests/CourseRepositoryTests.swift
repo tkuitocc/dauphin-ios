@@ -6,8 +6,10 @@ import Testing
 private final class MockCourseAPIClient: CourseAPIClient {
     var receivedQuery: String?
     var nextData: Data = Data()
+    var nextError: Error?
 
-    @MainActor func fetchCoursesData(encryptedQuery: String) async throws -> Data {
+    @CourseDataActor func fetchCoursesData(encryptedQuery: String) async throws -> Data {
+        if let nextError { throw nextError }
         receivedQuery = encryptedQuery
         return nextData
     }
@@ -36,14 +38,15 @@ private final class MockCourseParser: CourseParser {
 }
 
 @MainActor @Suite("Course Repository") struct CourseRepositoryTests {
-    @Test("throws when encryption fails") func throwsWhenEncryptionFails() async {
+    @Test("propagates API errors") func propagatesAPIErrors() async {
         let api = MockCourseAPIClient()
         let cache = MockCourseCache()
         let parser = MockCourseParser()
         let repo = DefaultCourseRepository(api: api, cache: cache, parser: parser)
+        api.nextError = URLError(.timedOut)
 
         await #expect(throws: URLError.self) {
-            _ = try await repo.fetchRemote(stdNo: "410000000", encrypt: { _ in nil })
+            _ = try await repo.fetchRemote(encryptedQuery: "ENC")
         }
     }
 
@@ -62,7 +65,7 @@ private final class MockCourseParser: CourseParser {
         parser.result = expected
 
         let repo = DefaultCourseRepository(api: api, cache: cache, parser: parser)
-        let courses = try await repo.fetchRemote(stdNo: "410000000", encrypt: { _ in "ENC" })
+        let courses = try await repo.fetchRemote(encryptedQuery: "ENC")
 
         #expect(api.receivedQuery == "ENC")
         #expect(parser.receivedData == Data("raw-payload".utf8))

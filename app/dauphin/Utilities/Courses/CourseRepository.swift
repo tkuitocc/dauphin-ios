@@ -1,14 +1,15 @@
 import Foundation
 
-protocol CourseRepository {
+@globalActor actor CourseDataActor { static let shared = CourseDataActor() }
+
+protocol CourseRepository: Sendable {
     func loadCache() -> [Course]?
     func saveCache(_ courses: [Course])
     func clearCache()
-    @MainActor func fetchRemote(stdNo: String, encrypt: (String) -> String?) async throws
-        -> [Course]
+    @CourseDataActor func fetchRemote(encryptedQuery: String) async throws -> [Course]
 }
 
-struct DefaultCourseRepository: CourseRepository {
+struct DefaultCourseRepository: CourseRepository, @unchecked Sendable {
     let api: CourseAPIClient
     let cache: CourseCache
     let parser: CourseParser
@@ -17,14 +18,8 @@ struct DefaultCourseRepository: CourseRepository {
     func saveCache(_ courses: [Course]) { cache.save(courses) }
     func clearCache() { cache.clear() }
 
-    // CourseRepository.swift
-    @MainActor func fetchRemote(stdNo: String, encrypt: (String) -> String?) async throws
-        -> [Course]
-    {
-        guard let enc = encrypt("20220901200540356," + stdNo) else {
-            throw URLError(.cannotParseResponse)
-        }
-        let data = try await api.fetchCoursesData(encryptedQuery: enc)
+    @CourseDataActor func fetchRemote(encryptedQuery: String) async throws -> [Course] {
+        let data = try await api.fetchCoursesData(encryptedQuery: encryptedQuery)
         return try parser.parse(data)
     }
 }

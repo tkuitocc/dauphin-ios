@@ -5,7 +5,7 @@ enum KeyConstants {
     private static let logger = Logger(
         subsystem: Constants.loggerSubsystem, category: "KeyConstants")
 
-    static func loadAPIKeys() async throws {
+    @MainActor static func loadAPIKeys() async throws {
         if let key = KeychainManager.shared.get(forKey: Constants.keychainAESKey),
             let iv = KeychainManager.shared.get(forKey: Constants.keychainAESIV),
             !key.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
