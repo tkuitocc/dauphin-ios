@@ -3,7 +3,7 @@ import Testing
 
 @testable import dauphin
 
-private final class MockViewModelRepository: CourseRepository {
+@MainActor private final class MockViewModelRepository: CourseRepository {
     var cachedCourses: [dauphin.Course]?
     var savedCourses: [dauphin.Course]?
     var didClear = false

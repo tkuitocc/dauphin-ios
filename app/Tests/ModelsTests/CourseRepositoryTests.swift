@@ -7,7 +7,7 @@ private final class MockCourseAPIClient: CourseAPIClient {
     var receivedQuery: String?
     var nextData: Data = Data()
 
-    func fetchCoursesData(encryptedQuery: String) async throws -> Data {
+    @MainActor func fetchCoursesData(encryptedQuery: String) async throws -> Data {
         receivedQuery = encryptedQuery
         return nextData
     }
@@ -35,7 +35,7 @@ private final class MockCourseParser: CourseParser {
     }
 }
 
-@Suite("Course Repository") struct CourseRepositoryTests {
+@MainActor @Suite("Course Repository") struct CourseRepositoryTests {
     @Test("throws when encryption fails") func throwsWhenEncryptionFails() async {
         let api = MockCourseAPIClient()
         let cache = MockCourseCache()

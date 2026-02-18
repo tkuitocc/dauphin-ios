@@ -4,7 +4,8 @@ protocol CourseRepository {
     func loadCache() -> [Course]?
     func saveCache(_ courses: [Course])
     func clearCache()
-    func fetchRemote(stdNo: String, encrypt: (String) -> String?) async throws -> [Course]
+    @MainActor func fetchRemote(stdNo: String, encrypt: (String) -> String?) async throws
+        -> [Course]
 }
 
 struct DefaultCourseRepository: CourseRepository {
@@ -17,7 +18,9 @@ struct DefaultCourseRepository: CourseRepository {
     func clearCache() { cache.clear() }
 
     // CourseRepository.swift
-    func fetchRemote(stdNo: String, encrypt: (String) -> String?) async throws -> [Course] {
+    @MainActor func fetchRemote(stdNo: String, encrypt: (String) -> String?) async throws
+        -> [Course]
+    {
         guard let enc = encrypt("20220901200540356," + stdNo) else {
             throw URLError(.cannotParseResponse)
         }
