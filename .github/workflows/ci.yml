@@ -62,23 +62,11 @@ jobs:
   localization_check:
     name: localization-check
     runs-on: ubuntu-latest
-    needs: swift_format
     steps:
       - uses: actions/checkout@v4
 
-      - name: Detect localization catalog changes
-        id: changed-files
-        uses: tj-actions/changed-files@v46
-        with:
-          files: app/dauphin/Localizable.xcstrings
-
       - name: Check localizations
-        if: steps.changed-files.outputs.any_changed == 'true'
         run: python3 scripts/check_localizations.py
-
-      - name: Skip unchanged catalog
-        if: steps.changed-files.outputs.any_changed != 'true'
-        run: echo "Localizable.xcstrings unchanged, skipping localization check."
 
   test:
     name: test
