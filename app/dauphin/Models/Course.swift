@@ -3,7 +3,8 @@ import OSLog
 import SwiftUI
 
 enum CourseLogger {
-    static let logger = Logger(subsystem: Constants.loggerSubsystem, category: "Course")
+    static let subsystem = "group.cantpr09ram.dauphin"
+    static let logger = Logger(subsystem: subsystem, category: "Course")
 }
 
 struct Course: Identifiable, Hashable, Codable {
