@@ -8,7 +8,7 @@
 import Foundation
 
 enum Constants {
-    static let loggerSubsystem = "group.cantpr09ram.dauphin"
+    static let loggerSubsystem = CourseLogger.subsystem
     static let appGroupSuiteName = "group.cantpr09ram.dauphin"
 
     static let ssoTokenKey = "ssoStuNo"
