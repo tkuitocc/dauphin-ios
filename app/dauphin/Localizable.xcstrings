@@ -262,6 +262,12 @@
             "state" : "translated",
             "value" : "Course"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "課程"
+          }
         }
       }
     },
