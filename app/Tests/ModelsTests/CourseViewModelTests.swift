@@ -23,11 +23,40 @@ private final class MockViewModelRepository: CourseRepository, @unchecked Sendab
     }
 }
 
+private struct MockCourseQueryEncryptor: CourseQueryEncrypting {
+    var nextValue: String?
+
+    @MainActor func encryptedQuery(stdNo _: String) -> String? { nextValue }
+}
+
+private final class MockNetworkStatusProvider: NetworkStatusProviding, @unchecked Sendable {
+    var isNetworkAvailable: Bool
+    private var onUpdate: (@Sendable (Bool) -> Void)?
+
+    init(isNetworkAvailable: Bool = true) { self.isNetworkAvailable = isNetworkAvailable }
+
+    func startMonitoring(_ onUpdate: @escaping @Sendable (Bool) -> Void) {
+        self.onUpdate = onUpdate
+    }
+    func stopMonitoring() { onUpdate = nil }
+}
+
 @MainActor @Suite("Course ViewModel") struct CourseViewModelTests {
+    private func makeViewModel(
+        repository: MockViewModelRepository, encryptedQuery: String? = "ENC",
+        isNetworkAvailable: Bool = true
+    ) -> CourseViewModel {
+        CourseViewModel(
+            repository: repository,
+            queryEncryptor: MockCourseQueryEncryptor(nextValue: encryptedQuery),
+            networkStatusProvider: MockNetworkStatusProvider(isNetworkAvailable: isNetworkAvailable)
+        )
+    }
+
     @Test("loadCoursesFromCache updates empty state") func loadCoursesFromCacheUpdatesState() {
         let repo = MockViewModelRepository()
         repo.cachedCourses = []
-        let vm = CourseViewModel(repository: repo, encryptor: { _ in "ENC" })
+        let vm = makeViewModel(repository: repo)
 
         let loaded = vm.loadCoursesFromCache()
         #expect(loaded?.isEmpty == true)
@@ -36,7 +65,7 @@ private final class MockViewModelRepository: CourseRepository, @unchecked Sendab
 
     @Test("clearCache clears courses and reports message") func clearCacheResetsState() {
         let repo = MockViewModelRepository()
-        let vm = CourseViewModel(repository: repo, encryptor: { _ in "ENC" })
+        let vm = makeViewModel(repository: repo)
 
         vm.weekCourses = [
             CourseTestSupport.makeCourse(
@@ -63,7 +92,7 @@ private final class MockViewModelRepository: CourseRepository, @unchecked Sendab
         repo.cachedCourses = []
         repo.nextRemoteResult = .success(remote)
 
-        let vm = CourseViewModel(repository: repo, encryptor: { _ in "ENC" })
+        let vm = makeViewModel(repository: repo)
         await vm.fetchCourses(with: "410000000", isFirstLogin: true)
 
         #expect(repo.fetchCount == 1)
@@ -81,10 +110,32 @@ private final class MockViewModelRepository: CourseRepository, @unchecked Sendab
                 reference: CourseTestSupport.referenceDate())
         ])
 
-        let vm = CourseViewModel(repository: repo, encryptor: { _ in "ENC" })
+        let vm = makeViewModel(repository: repo)
         await vm.fetchCourses(with: "410000000", isFirstLogin: true)
         await vm.fetchCourses(with: "410000000")
 
         #expect(repo.fetchCount == 1)
+    }
+
+    @Test("offline state skips remote fetch and reports cache error")
+    func offlineStateSkipsRemoteFetch() async {
+        let repo = MockViewModelRepository()
+        let vm = makeViewModel(repository: repo, isNetworkAvailable: false)
+
+        await vm.fetchCourses(with: "410000000", isFirstLogin: true)
+
+        #expect(repo.fetchCount == 0)
+        #expect(vm.errorMessage == "No internet connection and no cached data available.")
+    }
+
+    @Test("encryption failure skips remote fetch and reports error")
+    func encryptionFailureSkipsRemoteFetch() async {
+        let repo = MockViewModelRepository()
+        let vm = makeViewModel(repository: repo, encryptedQuery: nil)
+
+        await vm.fetchCourses(with: "410000000", isFirstLogin: true)
+
+        #expect(repo.fetchCount == 0)
+        #expect(vm.errorMessage == "Failed to fetch courses.")
     }
 }
