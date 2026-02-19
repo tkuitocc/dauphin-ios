@@ -18,8 +18,8 @@ import SwiftUI
     // 內部依賴
     private let repo: CourseRepository
     private let nextUp: NextUpService
-    private let queryEncryptor: CourseQueryEncrypting
-    private let networkStatusProvider: NetworkStatusProviding
+    private let queryEncryptor: CourseQueryEncryptor
+    private let networkStatusProvider: NetworkStatusProvider
 
     // 網路狀態（維持原行為）
     private var isNetworkAvailable = true
@@ -30,8 +30,8 @@ import SwiftUI
     // 預設建構符合舊使用方式（不改外部）
     init(
         repository: CourseRepository? = nil, nextUpService: NextUpService = DefaultNextUpService(),
-        queryEncryptor: CourseQueryEncrypting? = nil,
-        networkStatusProvider: NetworkStatusProviding? = nil
+        queryEncryptor: CourseQueryEncryptor? = nil,
+        networkStatusProvider: NetworkStatusProvider? = nil
     ) {
         // Cache 與 Parser 預設注入
         let cache = DefaultsCourseCache(
