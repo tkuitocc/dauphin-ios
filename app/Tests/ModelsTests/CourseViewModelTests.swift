@@ -23,13 +23,13 @@ private final class MockViewModelRepository: CourseRepository, @unchecked Sendab
     }
 }
 
-private struct MockCourseQueryEncryptor: CourseQueryEncrypting {
+private struct MockCourseQueryEncryptor: CourseQueryEncryptor {
     var nextValue: String?
 
     @MainActor func encryptedQuery(stdNo _: String) -> String? { nextValue }
 }
 
-private final class MockNetworkStatusProvider: NetworkStatusProviding, @unchecked Sendable {
+private final class MockNetworkStatusProvider: NetworkStatusProvider, @unchecked Sendable {
     var isNetworkAvailable: Bool
     private var onUpdate: (@Sendable (Bool) -> Void)?
 
