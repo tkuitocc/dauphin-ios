@@ -1,5 +1,4 @@
 import Combine
-import Network
 import OSLog
 import SwiftUI
 
@@ -19,11 +18,10 @@ import SwiftUI
     // 內部依賴
     private let repo: CourseRepository
     private let nextUp: NextUpService
-    private let encryptor: (String) -> String?
+    private let queryEncryptor: CourseQueryEncrypting
+    private let networkStatusProvider: NetworkStatusProviding
 
     // 網路狀態（維持原行為）
-    private var monitor: NWPathMonitor
-    private let monitorQueue = DispatchQueue(label: "CourseViewModel.Network")
     private var isNetworkAvailable = true
     private var cacheMessageTask: Task<Void, Never>?
 
@@ -32,7 +30,8 @@ import SwiftUI
     // 預設建構符合舊使用方式（不改外部）
     init(
         repository: CourseRepository? = nil, nextUpService: NextUpService = DefaultNextUpService(),
-        encryptor: ((String) -> String?)? = nil
+        queryEncryptor: CourseQueryEncrypting? = nil,
+        networkStatusProvider: NetworkStatusProviding? = nil
     ) {
         // Cache 與 Parser 預設注入
         let cache = DefaultsCourseCache(
@@ -45,27 +44,15 @@ import SwiftUI
         self.repo = repository ?? DefaultCourseRepository(api: api, cache: cache, parser: parser)
         self.nextUp = nextUpService
 
-        if let enc = encryptor {
-            self.encryptor = enc
-        } else if let key = KeychainManager.shared.get(forKey: Constants.keychainAESKey),
-            let iv = KeychainManager.shared.get(forKey: Constants.keychainAESIV)
-        {
-            let helper = CustomAES256Helper(key: key, iv: iv)
-            self.encryptor = { helper.encrypt(data: $0) }
-            Self.logger.debug("Successfully initialized AES256 helper")
-        } else {
-            self.encryptor = { _ in nil }
-            self.errorMessage = "Failed to retrieve AES256 key or IV from Keychain."
-            Self.logger.error("Failed to retrieve AES256 key or IV from Keychain")
-        }
-
-        self.monitor = NWPathMonitor()
+        self.queryEncryptor = queryEncryptor ?? DefaultCourseQueryEncryptor()
+        self.networkStatusProvider = networkStatusProvider ?? DefaultNetworkStatusProvider()
+        self.isNetworkAvailable = self.networkStatusProvider.isNetworkAvailable
         startNetworkMonitor()
     }
 
     deinit {
         cacheMessageTask?.cancel()
-        monitor.cancel()
+        networkStatusProvider.stopMonitoring()
     }
 
     private func scheduleCacheMessageClear() {
@@ -78,10 +65,10 @@ import SwiftUI
     }
 
     private func startNetworkMonitor() {
-        monitor.pathUpdateHandler = { [weak self] path in
+        networkStatusProvider.startMonitoring { [weak self] isAvailable in
             Task { @MainActor [weak self] in
                 guard let self = self else { return }
-                self.isNetworkAvailable = (path.status == .satisfied)
+                self.isNetworkAvailable = isAvailable
                 if self.isNetworkAvailable {
                     Self.logger.debug("Network is available")
                     self.errorMessage = nil
@@ -91,7 +78,6 @@ import SwiftUI
                 }
             }
         }
-        monitor.start(queue: monitorQueue)
     }
 
     // 與舊版相同的快取 API（對外行為不變）
@@ -151,7 +137,7 @@ import SwiftUI
         self.cacheUpdateMessage = "Updating course data..."
 
         do {
-            guard let encryptedQuery = encryptor("20220901200540356," + stdNo) else {
+            guard let encryptedQuery = queryEncryptor.encryptedQuery(stdNo: stdNo) else {
                 throw URLError(.cannotParseResponse)
             }
             let courses = try await repo.fetchRemote(encryptedQuery: encryptedQuery)
