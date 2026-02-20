@@ -5,31 +5,100 @@
 //  Created on 2025-09-19.
 //
 
+import Foundation
 import SwiftUI
 
 struct CourseDetailView: View {
     let course: Course
-    @Environment(\.dismiss) var dismiss
-
-    // Cache expensive computations
-    private let dayOfWeek: String
-    private let timeRange: String
-    private let hasNote: Bool
+    @Environment(\.dismiss) private var dismiss
+    private let viewData: CourseDetailViewData
 
     init(course: Course) {
         self.course = course
+        viewData = CourseDetailViewData(course: course)
+    }
 
-        let days = [
-            "", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
-        ]
-        dayOfWeek = days[min(max(course.weekday, 0), days.count - 1)]
+    var body: some View {
+        NavigationStack {
+            List {
+                scheduleSection
+                detailsSection
+                if viewData.hasNote { noteSection }
+                mapSection
+            }.listStyle(.insetGrouped).navigationTitle(course.name).navigationBarTitleDisplayMode(
+                .inline
+            ).toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: dismiss.callAsFunction) {
+                        Image(systemName: "xmark").frame(width: 44, height: 44)
+                    }
+                }
+            }
+        }
+    }
 
-        let formatter = CourseDetailView.timeFormatter
+    // MARK: - Sections
+
+    private var scheduleSection: some View {
+        Section {
+            LabeledContent(LocalizedStringKey("course.detail.time"), value: viewData.timeRangeText)
+            LabeledContent(LocalizedStringKey("course.detail.day"), value: viewData.dayText)
+        } header: {
+            Text(LocalizedStringKey("course.detail.section.schedule"))
+        }
+    }
+
+    private var detailsSection: some View {
+        Section {
+            LabeledContent(LocalizedStringKey("course.detail.location"), value: course.room)
+            LabeledContent(LocalizedStringKey("course.detail.seatNumber"), value: course.stdNo)
+            LabeledContent(LocalizedStringKey("course.detail.instructor"), value: course.teacher)
+        } header: {
+            Text(LocalizedStringKey("course.detail.section.details"))
+        }
+    }
+
+    private var noteSection: some View {
+        Section {
+            Text(course.note).font(.body).lineSpacing(3).fixedSize(
+                horizontal: false, vertical: true)
+        } header: {
+            Text(LocalizedStringKey("course.detail.section.note"))
+        }
+    }
+
+    private var mapSection: some View {
+        Section {
+            LandmarkView(coordinate: letterToCoordinate(for: viewData.roomCode)).padding(
+                .horizontal, 6
+            ).padding(.vertical, 4).listRowInsets(
+                EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+            ).listRowBackground(Color.clear)
+        } header: {
+            Text(LocalizedStringKey("course.detail.section.map"))
+        }
+    }
+}
+
+// MARK: - View Data
+
+private struct CourseDetailViewData {
+    let timeRangeText: String
+    let dayText: String
+    let hasNote: Bool
+    let roomCode: String
+
+    init(course: Course) {
+        let formatter = Self.timeFormatter
         let start = formatter.string(from: course.startTime)
         let end = formatter.string(from: course.endTime)
-        timeRange = "\(start) - \(end)"
-
-        hasNote = !course.note.isEmpty
+        timeRangeText = "\(start) - \(end)"
+        dayText = Self.localizedWeekdayText(for: course.weekday)
+        hasNote = !course.note.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        roomCode =
+            course.room.range(of: #"^[A-Za-z]+"#, options: .regularExpression).map {
+                String(course.room[$0]).uppercased()
+            } ?? "X"
     }
 
     private static let timeFormatter: DateFormatter = {
@@ -38,59 +107,14 @@ struct CourseDetailView: View {
         return formatter
     }()
 
-    var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 10) {
-                    detailRow(title: "Time", content: timeRange, subcontent: dayOfWeek)
-                    Divider()
-                    detailRow(title: "Location", content: course.room)
-                    Divider()
-                    detailRow(title: "Seat Number", content: course.stdNo)
-                    Divider()
-                    detailRow(title: "Instructor", content: course.teacher)
-
-                    if hasNote {
-                        Divider()
-                        detailRow(title: "Note", content: course.note, isNote: true)
-                    }
-                    let code =
-                        course.room.range(of: #"^[A-Za-z]+"#, options: .regularExpression).map {
-                            String(course.room[$0]).uppercased()
-                        } ?? "X"
-
-                    LandmarkView(coordinate: letterToCoordinate(for: code))
-
-                }.padding(24)
-
-            }.navigationTitle(course.name).navigationBarTitleDisplayMode(.large).toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
-                }
-            }
-        }
-    }
-
-    @ViewBuilder private func detailRow(
-        title: String, content: String, subcontent: String? = nil, isNote: Bool = false
-    ) -> some View {
-        HStack(spacing: 4) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title).font(.caption).foregroundColor(Color(UIColor.secondaryLabel))
-                if let subcontent = subcontent {
-                    Text(subcontent).font(.system(size: 14)).foregroundColor(
-                        Color(UIColor.secondaryLabel))
-                }
-                Text(content).font(
-                    .system(size: isNote ? 14 : 16, weight: isNote ? .regular : .medium)
-                ).foregroundColor(Color(UIColor.label)).fixedSize(
-                    horizontal: false, vertical: isNote)
-            }
-        }
+    private static func localizedWeekdayText(for weekday: Int) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = .autoupdatingCurrent
+        let symbols = formatter.weekdaySymbols ?? []
+        guard !symbols.isEmpty else { return "" }
+        let normalizedWeekday = min(max(weekday, 1), 7)
+        let symbolIndex = normalizedWeekday % 7
+        return symbols[symbolIndex]
     }
 }
 
