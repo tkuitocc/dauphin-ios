@@ -13,6 +13,9 @@ on:
       - ".github/workflows/ci.yml"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -20,44 +23,13 @@ concurrency:
 jobs:
   swift_format:
     name: swift-format
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
+    container: swift:6.0
     steps:
       - uses: actions/checkout@v4
-
-      - name: Xcode Select
-        run: sudo xcode-select -s /Applications/Xcode_16.2.app
-
-      - name: Install swift-format
-        run: brew install swift-format
 
       - name: Check Format
         run: swift-format lint --configuration app/.swift-format --recursive .
-
-  build:
-    name: build
-    runs-on: macos-latest
-    needs: [swift_format, localization_check]
-    steps:
-      - uses: actions/checkout@v4
-          
-      - name: List available Xcode versions
-        run: ls /Applications | grep Xcode
-        
-      - name: Show Xcode
-        run: |
-          xcodebuild -version
-          xcode-select -p
-
-      - name: Build (iOS Simulator)
-        run: |
-          xcrun simctl list runtimes
-          xcodebuild \
-            -project app/dauphin.xcodeproj \
-            -scheme "dauphin" \
-            -configuration Debug \
-            -destination 'generic/platform=iOS Simulator' \
-            -sdk iphonesimulator \
-            clean build
 
   localization_check:
     name: localization-check
@@ -68,10 +40,10 @@ jobs:
       - name: Check localizations
         run: python3 scripts/check_localizations.py
 
-  test:
-    name: test
+  build_and_test:
+    name: build-and-test
     runs-on: macos-latest
-    needs: build
+    needs: [swift_format, localization_check]
     steps:
       - uses: actions/checkout@v4
 
@@ -80,12 +52,20 @@ jobs:
           xcodebuild -version
           xcode-select -p
 
+      - name: Build for testing (iOS Simulator)
+        run: |
+          xcodebuild \
+            -project app/dauphin.xcodeproj \
+            -scheme "dauphin" \
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            build-for-testing
+
       - name: Run unit tests (iOS Simulator)
         run: |
-          xcrun simctl list devices available
           xcodebuild \
             -project app/dauphin.xcodeproj \
             -scheme "dauphin" \
             -testPlan Models \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
-            test
+            test-without-building
