@@ -1,23 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    ": %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ": %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ": %@"
-          }
-        }
-      }
-    },
     "%@" : {
       "localizations" : {
         "en" : {
@@ -46,23 +29,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ - %2$@ "
-          }
-        }
-      }
-    },
-    "%@ ~ %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ ~ %2$@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ ~ %2$@"
           }
         }
       }
@@ -175,23 +141,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "程式資訊"
-          }
-        }
-      }
-    },
-    "Browse" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Browse"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "瀏覽"
           }
         }
       }
@@ -581,23 +530,6 @@
         }
       }
     },
-    "First" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "First"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "上"
-          }
-        }
-      }
-    },
     "Hey, %@" : {
       "localizations" : {
         "en" : {
@@ -610,23 +542,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "嗨，%@"
-          }
-        }
-      }
-    },
-    "Hey, %@." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hey, %@."
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "嗨, %@"
           }
         }
       }
@@ -659,23 +574,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "圖書館"
-          }
-        }
-      }
-    },
-    "Loading courses..." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Loading courses..."
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "載入課程"
           }
         }
       }
@@ -729,23 +627,6 @@
         }
       }
     },
-    "Log out" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Log out"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "登出"
-          }
-        }
-      }
-    },
     "Logout" : {
       "localizations" : {
         "en" : {
@@ -758,23 +639,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "登出"
-          }
-        }
-      }
-    },
-    "No courses for %@." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No courses for %@."
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@沒有課程"
           }
         }
       }
@@ -871,23 +735,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "其他"
-          }
-        }
-      }
-    },
-    "Second" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Second"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "下"
           }
         }
       }
