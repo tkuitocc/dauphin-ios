@@ -9,7 +9,7 @@ LOCALIZATIONS = ("en", "zh-Hant")
 XCSTRINGS_PATH = Path("app/dauphin/Localizable.xcstrings")
 
 
-def read_catalog(path: Path) -> dict:
+def read_catalog(path: Path):
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except FileNotFoundError:
@@ -21,22 +21,34 @@ def read_catalog(path: Path) -> dict:
 
 
 def missing_value(entry: dict, locale: str) -> bool:
-    localizations = entry.get("localizations", {})
-    locale_entry = localizations.get(locale, {})
-    string_unit = locale_entry.get("stringUnit", {})
+    localizations = entry.get("localizations")
+    if not isinstance(localizations, dict):
+        return True
+
+    locale_entry = localizations.get(locale)
+    if not isinstance(locale_entry, dict):
+        return True
+
+    string_unit = locale_entry.get("stringUnit")
+    if not isinstance(string_unit, dict):
+        return True
+
     value = string_unit.get("value")
     return not isinstance(value, str) or not value.strip()
 
 
 def main() -> int:
     catalog = read_catalog(XCSTRINGS_PATH)
+    if not isinstance(catalog, dict):
+        print("ERROR: localization catalog root must be a JSON object")
+        return 1
+
     strings = catalog.get("strings")
     if not isinstance(strings, dict):
         print("ERROR: missing or invalid `strings` object in Localizable.xcstrings")
         return 1
 
-    missing_en = []
-    missing_zh_hant = []
+    missing_by_locale = {locale: [] for locale in LOCALIZATIONS}
     stale_keys = []
 
     for key, entry in strings.items():
@@ -46,29 +58,24 @@ def main() -> int:
         if entry.get("extractionState") == "stale":
             stale_keys.append(key)
 
-        if missing_value(entry, "en"):
-            missing_en.append(key)
-        if missing_value(entry, "zh-Hant"):
-            missing_zh_hant.append(key)
+        for locale in LOCALIZATIONS:
+            if missing_value(entry, locale):
+                missing_by_locale[locale].append(key)
 
     has_error = False
 
-    if missing_en:
-        has_error = True
-        print("ERROR: missing `en` localization values:")
-        for key in missing_en:
-            print(f"  - {key}")
-
-    if missing_zh_hant:
-        has_error = True
-        print("ERROR: missing `zh-Hant` localization values:")
-        for key in missing_zh_hant:
-            print(f"  - {key}")
+    for locale in LOCALIZATIONS:
+        missing_keys = sorted(missing_by_locale[locale])
+        if missing_keys:
+            has_error = True
+            print(f"ERROR: missing `{locale}` localization values:")
+            for key in missing_keys:
+                print(f"  - {key}")
 
     if stale_keys:
         has_error = True
         print("ERROR: stale localization keys present:")
-        for key in stale_keys:
+        for key in sorted(stale_keys):
             print(f"  - {key}")
 
     if has_error:
