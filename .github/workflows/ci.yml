@@ -65,8 +65,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: astral-sh/setup-uv@v6
+
       - name: Check localizations
-        run: python3 scripts/check_localizations.py
+        run: uv run scripts/check_localizations.py
 
   test:
     name: test

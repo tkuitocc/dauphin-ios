@@ -47,7 +47,7 @@ struct EventView: View {
                     }
                 }.padding(.vertical, 2)
             }
-        }.navigationTitle("校務行事曆").toolbar {
+        }.navigationTitle(LocalizedStringKey("校務行事曆")).toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     term = term == 1 ? 2 : 1
@@ -77,7 +77,7 @@ struct EventView: View {
     private static let fmt: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "yyyy M d EEEE"
-        f.locale = Locale(identifier: "zh_TW")
+        f.locale = .autoupdatingCurrent
         return f
     }()
 }

@@ -53,7 +53,8 @@ struct StdIDEntryView: View {
                 VStack(spacing: 8) {
                     Image(systemName: "person.text.rectangle.trianglebadge.exclamationmark.fill")
                         .font(.system(size: 60, weight: .semibold))
-                    Text("尚未登入").font(.caption).fontWeight(.medium)
+                    Text(LocalizedStringKey("widget.notLoggedIn")).font(.caption).fontWeight(
+                        .medium)
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }.padding(12).foregroundStyle(.black).background(Color.white)
@@ -71,8 +72,8 @@ struct StdID: Widget {
             } else {
                 StdIDEntryView(entry: entry).environment(\.colorScheme, .light)
             }
-        }.configurationDisplayName("Student Barcode").description(
-            "Showing your StudentID use barcode."
+        }.configurationDisplayName(LocalizedStringResource("widget.stdid.displayName")).description(
+            LocalizedStringResource("widget.stdid.description")
         ).supportedFamilies([.systemMedium])
     }
 }

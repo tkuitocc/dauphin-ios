@@ -11,7 +11,7 @@ struct CoursesNextUpViewLockScreenView: View {
                 Image(systemName: "person.text.rectangle.trianglebadge.exclamationmark.fill").font(
                     .system(size: 40, weight: .semibold))
 
-                Text("尚未登入").font(.caption).fontWeight(.medium)
+                Text(LocalizedStringKey("widget.notLoggedIn")).font(.caption).fontWeight(.medium)
             }.frame(maxWidth: .infinity, maxHeight: .infinity).containerBackground(for: .widget) {
                 Color(UIColor.systemBackground)
             }
@@ -20,7 +20,8 @@ struct CoursesNextUpViewLockScreenView: View {
                 HStack(spacing: 10) {
                     Image(systemName: "figure.wave").font(.system(size: 40, weight: .semibold))
 
-                    Text("下週見").font(.caption).fontWeight(.medium)
+                    Text(LocalizedStringKey("widget.seeYouNextWeek")).font(.caption).fontWeight(
+                        .medium)
                 }.frame(maxWidth: .infinity, maxHeight: .infinity).containerBackground(for: .widget)
                 { Color(UIColor.systemBackground) }
             } else {
@@ -41,7 +42,7 @@ struct CoursesNextUpViewLockScreenView: View {
                             HStack(spacing: 0) {
                                 Image(systemName: "location.circle").resizable().frame(
                                     width: 15, height: 15)
-                                Text(" : \(entry.courses[0].room)").font(.system(size: 12))
+                                Text(entry.courses[0].room).font(.system(size: 12))
                             }
 
                             Spacer(minLength: 20)
@@ -49,7 +50,7 @@ struct CoursesNextUpViewLockScreenView: View {
                             HStack(spacing: 0) {
                                 Image(systemName: "graduationcap").resizable().frame(
                                     width: 15, height: 15)
-                                Text(" : \(entry.courses[0].stdNo)").font(.system(size: 12))
+                                Text(entry.courses[0].stdNo).font(.system(size: 12))
                             }
                         }
                     }
