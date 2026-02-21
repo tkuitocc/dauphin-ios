@@ -29,7 +29,7 @@ struct LocationListView: View {
                             .tertiary)
                     }.padding(2)
                 }.accessibilityLabel(Text("\(loc.name) \(loc.code)")).accessibilityHint(
-                    Text("Open in Maps")
+                    Text("Show location details")
                 ).accessibilityIdentifier("map.location.\(loc.code)")
             }.navigationTitle("Locations").navigationBarTitleDisplayMode(.inline).listStyle(.plain)
                 .searchable(text: $searchText).toolbar {

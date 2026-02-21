@@ -19,18 +19,14 @@ struct MapView: View {
 
                 Annotation(location.name, coordinate: location.coordinate, anchor: .bottom) {
                     Button {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            if selectedLocation == nil { overviewPosition = position }
-                            shouldRestoreOverviewOnDetailDismiss = true
-                            selectedLocation = location
-                            position = focusedPosition(for: location)
-                        }
+                        shouldRestoreOverviewOnDetailDismiss = true
+                        selectLocation(location)
                     } label: {
                         Image(systemName: "mappin.circle.fill").font(isSelected ? .title : .title2)
                             .foregroundStyle(isSelected ? .red : .secondary).shadow(
                                 radius: isSelected ? 3 : 1)
                     }.accessibilityLabel(Text("\(location.name) \(location.code)"))
-                        .accessibilityHint(Text("Open in Maps")).accessibilityIdentifier(
+                        .accessibilityHint(Text("Show location details")).accessibilityIdentifier(
                             "map.annotation.\(location.code)"
                         ).buttonStyle(.plain)
                 }
