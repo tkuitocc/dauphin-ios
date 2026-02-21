@@ -72,8 +72,8 @@ struct StdID: Widget {
             } else {
                 StdIDEntryView(entry: entry).environment(\.colorScheme, .light)
             }
-        }.configurationDisplayName(LocalizedStringResource("widget.stdid.displayName")).description(
-            LocalizedStringResource("widget.stdid.description")
+        }.configurationDisplayName(String(localized: "widget.stdid.displayName")).description(
+            String(localized: "widget.stdid.description")
         ).supportedFamilies([.systemMedium])
     }
 }
