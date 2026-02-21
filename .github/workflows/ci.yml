@@ -23,10 +23,12 @@ concurrency:
 jobs:
   swift_format:
     name: swift-format
-    runs-on: ubuntu-latest
-    container: swift:6.0
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install swift-format
+        run: brew install swift-format
 
       - name: Check Format
         run: swift-format lint --configuration app/.swift-format --recursive .
@@ -47,6 +49,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Select Xcode 16.2
+        run: sudo xcode-select -s /Applications/Xcode_16.2.app
+
       - name: Show Xcode
         run: |
           xcodebuild -version
@@ -58,6 +63,7 @@ jobs:
             -project app/dauphin.xcodeproj \
             -scheme "dauphin" \
             -configuration Debug \
+            -sdk iphonesimulator \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
             build-for-testing
 
@@ -66,6 +72,8 @@ jobs:
           xcodebuild \
             -project app/dauphin.xcodeproj \
             -scheme "dauphin" \
+            -configuration Debug \
+            -sdk iphonesimulator \
             -testPlan Models \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
             test-without-building
