@@ -78,7 +78,7 @@ private final class MockNetworkStatusProvider: NetworkStatusProvider, @unchecked
         #expect(repo.didClear)
         #expect(vm.weekCourses.isEmpty)
         #expect(vm.isCacheEmpty)
-        #expect(vm.errorMessage == "Cache cleared. Please refresh to load courses.")
+        #expect(vm.errorMessage == String(localized: "course.cache.cleared"))
     }
 
     @Test("first login fetch loads remote and saves cache")
@@ -125,7 +125,7 @@ private final class MockNetworkStatusProvider: NetworkStatusProvider, @unchecked
         await vm.fetchCourses(with: "410000000", isFirstLogin: true)
 
         #expect(repo.fetchCount == 0)
-        #expect(vm.errorMessage == "No internet connection and no cached data available.")
+        #expect(vm.errorMessage == String(localized: "course.error.noInternetNoCache"))
     }
 
     @Test("encryption failure skips remote fetch and reports error")
@@ -136,6 +136,6 @@ private final class MockNetworkStatusProvider: NetworkStatusProvider, @unchecked
         await vm.fetchCourses(with: "410000000", isFirstLogin: true)
 
         #expect(repo.fetchCount == 0)
-        #expect(vm.errorMessage == "Failed to fetch courses.")
+        #expect(vm.errorMessage == String(localized: "course.error.fetchFailed"))
     }
 }
