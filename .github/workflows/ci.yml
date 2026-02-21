@@ -17,6 +17,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  checks: write
+
 jobs:
   swift_format:
     name: swift-format
@@ -91,9 +95,9 @@ jobs:
 
       - name: Pre-boot iOS simulator
         run: |
-          SIMULATOR_UDID="$(xcrun simctl list devices available -j | python3 -c "import json, sys; data=json.load(sys.stdin).get('devices', {}); target_runtime='com.apple.CoreSimulator.SimRuntime.iOS-18-2'; target_name='iPhone 16 Pro'; matches=[d['udid'] for r, devices in data.items() if r==target_runtime for d in devices if d.get('name')==target_name and d.get('isAvailable')]; print(matches[0] if matches else '');")"
+          SIMULATOR_UDID="$(xcrun simctl list devices available -j | python3 -c "import json, sys; data=json.load(sys.stdin).get('devices', {}); preferred='com.apple.CoreSimulator.SimRuntime.iOS-18-2'; names=['iPhone 16 Pro','iPhone 16']; candidates=[]; [candidates.append((r,d.get('name'),d.get('udid'))) for r,devices in data.items() for d in devices if d.get('isAvailable') and d.get('name') in names and r.startswith('com.apple.CoreSimulator.SimRuntime.iOS-') and d.get('udid')]; candidates.sort(key=lambda x: (0 if x[0]==preferred else 1, names.index(x[1]), x[0]), reverse=False); print(candidates[0][2] if candidates else '');")"
           if [ -z "$SIMULATOR_UDID" ]; then
-            echo "Unable to find iPhone 16 Pro on iOS 18.2 runtime"
+            echo "Unable to find an available iPhone 16 Pro/iPhone 16 simulator runtime"
             exit 1
           fi
           echo "SIMULATOR_UDID=$SIMULATOR_UDID" >> "$GITHUB_ENV"
@@ -115,8 +119,9 @@ jobs:
             test | xcbeautify --renderer github-actions --report junit --report-path reports/junit.xml
 
       - name: Publish test report
-        if: always()
+        if: always() && hashFiles('reports/junit.xml') != ''
         uses: mikepenz/action-junit-report@v5
+        continue-on-error: true
         with:
           report_paths: reports/junit.xml
           check_name: junit
@@ -135,7 +140,7 @@ jobs:
           {
             echo "## test"
             echo "- Status: ${{ job.status }}"
-            echo "- Destination: iPhone 16 Pro (iOS 18.2)"
+            echo "- Destination: iPhone 16 Pro/iPhone 16 (prefer iOS 18.2)"
             echo "- Simulator UDID: $SIMULATOR_UDID"
             echo "- Result bundle: TestResults.xcresult"
             echo "- JUnit report: reports/junit.xml"
