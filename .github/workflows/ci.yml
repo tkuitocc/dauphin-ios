@@ -109,17 +109,6 @@ jobs:
           HOMEBREW_NO_AUTO_UPDATE: "1"
         run: brew install xcbeautify
 
-      - name: Pre-boot iOS simulator
-        run: |
-          SIMULATOR_UDID="$(xcrun simctl list devices available -j | python3 -c "import json, sys; data=json.load(sys.stdin).get('devices', {}); preferred='com.apple.CoreSimulator.SimRuntime.iOS-18-2'; names=['iPhone 16 Pro','iPhone 16']; candidates=[]; [candidates.append((r,d.get('name'),d.get('udid'))) for r,devices in data.items() for d in devices if d.get('isAvailable') and d.get('name') in names and r.startswith('com.apple.CoreSimulator.SimRuntime.iOS-18-') and d.get('udid')]; candidates.sort(key=lambda x: (0 if x[0]==preferred else 1, names.index(x[1]), x[0]), reverse=False); print(candidates[0][2] if candidates else '');")"
-          if [ -z "$SIMULATOR_UDID" ]; then
-            echo "Unable to find an available iPhone 16 Pro/iPhone 16 simulator on iOS 18.x"
-            exit 1
-          fi
-          echo "SIMULATOR_UDID=$SIMULATOR_UDID" >> "$GITHUB_ENV"
-          xcrun simctl boot "$SIMULATOR_UDID" || true
-          xcrun simctl bootstatus "$SIMULATOR_UDID" -b
-
       - name: Build and run unit tests (iOS Simulator)
         run: |
           mkdir -p reports
@@ -129,7 +118,7 @@ jobs:
             -scheme "dauphin" \
             -testPlan Models \
             -configuration Debug \
-            -destination "id=$SIMULATOR_UDID" \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.2' \
             -clonedSourcePackagesDirPath "${{ github.workspace }}/.spm" \
             -resultBundlePath TestResults.xcresult \
             test | xcbeautify --renderer github-actions --report junit --report-path reports/junit.xml
@@ -157,8 +146,7 @@ jobs:
           {
             echo "## test"
             echo "- Status: ${{ job.status }}"
-            echo "- Destination: iPhone 16 Pro/iPhone 16 (prefer iOS 18.2)"
-            echo "- Simulator UDID: $SIMULATOR_UDID"
+            echo "- Destination: iPhone 16 (iOS 18.2)"
             echo "- Result bundle: TestResults.xcresult"
             echo "- JUnit report: reports/junit.xml"
           } >> "$GITHUB_STEP_SUMMARY"
