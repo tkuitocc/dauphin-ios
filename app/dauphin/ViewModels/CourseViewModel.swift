@@ -74,7 +74,7 @@ import SwiftUI
                     self.errorMessage = nil
                 } else {
                     Self.logger.debug("Network is unavailable")
-                    self.errorMessage = "No internet connection. Please check your network."
+                    self.errorMessage = String(localized: "course.error.noInternet")
                 }
             }
         }
@@ -92,7 +92,7 @@ import SwiftUI
         repo.clearCache()
         weekCourses = []
         isCacheEmpty = true
-        errorMessage = "Cache cleared. Please refresh to load courses."
+        errorMessage = String(localized: "course.cache.cleared")
     }
 
     func resetInitializationFlag() {
@@ -126,7 +126,7 @@ import SwiftUI
 
         guard isNetworkAvailable else {
             if weekCourses.isEmpty {
-                self.errorMessage = "No internet connection and no cached data available."
+                self.errorMessage = String(localized: "course.error.noInternetNoCache")
             }
             self.isRefreshing = false
             return
@@ -134,7 +134,7 @@ import SwiftUI
 
         hasPerformedInitialLoad = true
         self.isUpdatingCache = true
-        self.cacheUpdateMessage = "Updating course data..."
+        self.cacheUpdateMessage = String(localized: "course.cache.updating")
 
         do {
             guard let encryptedQuery = queryEncryptor.encryptedQuery(stdNo: stdNo) else {
@@ -148,16 +148,18 @@ import SwiftUI
             self.isUpdatingCache = false
             self.isRefreshing = false
             self.cacheUpdateMessage =
-                forceRefresh ? "Refreshed successfully" : "Course data updated"
+                forceRefresh
+                ? String(localized: "course.cache.refreshed")
+                : String(localized: "course.cache.updated")
             scheduleCacheMessageClear()
         } catch {
             self.isUpdatingCache = false
             self.isRefreshing = false
             self.cacheUpdateMessage = nil
             if self.weekCourses.isEmpty {
-                self.errorMessage = "Failed to fetch courses."
+                self.errorMessage = String(localized: "course.error.fetchFailed")
             } else if forceRefresh {
-                self.cacheUpdateMessage = "Refresh failed"
+                self.cacheUpdateMessage = String(localized: "course.cache.refreshFailed")
                 scheduleCacheMessageClear()
             }
             Self.logger.error("Fetch error: \(error.localizedDescription)")

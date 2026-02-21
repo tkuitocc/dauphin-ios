@@ -28,9 +28,11 @@ struct CoursesNextUpSmallView: View {
         return names[index]
     }
 
-    private static let weekdaySymbols: [String] = [
-        "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
-    ]
+    private static let weekdaySymbols: [String] = {
+        let formatter = DateFormatter()
+        formatter.locale = .autoupdatingCurrent
+        return formatter.weekdaySymbols
+    }()
 
     var body: some View {
         if entry.ssoStuNo.isEmpty {
@@ -38,7 +40,7 @@ struct CoursesNextUpSmallView: View {
                 Image(systemName: "person.text.rectangle.trianglebadge.exclamationmark.fill").font(
                     .system(size: 60, weight: .semibold))
 
-                Text("尚未登入").font(.caption).fontWeight(.medium)
+                Text(LocalizedStringKey("widget.notLoggedIn")).font(.caption).fontWeight(.medium)
             }.frame(maxWidth: .infinity, maxHeight: .infinity).containerBackground(for: .widget) {
                 Color(UIColor.systemBackground)
             }
@@ -47,7 +49,8 @@ struct CoursesNextUpSmallView: View {
                 VStack(spacing: 8) {
                     Image(systemName: "figure.wave").font(.system(size: 60, weight: .semibold))
 
-                    Text("下週見").font(.caption).fontWeight(.medium)
+                    Text(LocalizedStringKey("widget.seeYouNextWeek")).font(.caption).fontWeight(
+                        .medium)
                 }.frame(maxWidth: .infinity, maxHeight: .infinity).containerBackground(for: .widget)
                 { Color(UIColor.systemBackground) }
             } else {

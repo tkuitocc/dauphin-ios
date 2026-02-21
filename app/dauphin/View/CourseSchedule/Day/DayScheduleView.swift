@@ -12,12 +12,17 @@ struct DayScheduleView: View {
     private static let monthYearStyle = Date.FormatStyle.dateTime.month(.wide).year(.defaultDigits)
         .locale(.autoupdatingCurrent)
 
+    private var greetingText: String {
+        String.localizedStringWithFormat(
+            NSLocalizedString("Hey, %@", comment: ""), authViewModel.ssoStuNo)
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             // Header Section
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 0) {
-                    Text("Hey, \(authViewModel.ssoStuNo)").font(.title).fontWeight(.bold)
+                    Text(greetingText).font(.title).fontWeight(.bold)
 
                     Spacer()
 

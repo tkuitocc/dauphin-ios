@@ -18,12 +18,13 @@ struct LaunchScreenView: View {
                 Image(systemName: "exclamationmark.triangle.fill").font(.system(size: 48))
                     .foregroundColor(.orange)
 
-                Text("Failed to load keys").font(.headline)
+                Text(LocalizedStringKey("launch.failedToLoadKeys")).font(.headline)
 
                 Text(errorMessage).font(.callout).foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
 
-                Button("Retry") { onRetry?() }.buttonStyle(.borderedProminent)
+                Button(LocalizedStringKey("launch.retry")) { onRetry?() }.buttonStyle(
+                    .borderedProminent)
             } else {
                 LottieView(animationFileName: "loading", loopMode: .loop).frame(
                     width: 200, height: 250)
