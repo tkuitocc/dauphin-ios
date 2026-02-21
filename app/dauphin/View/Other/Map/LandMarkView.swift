@@ -3,85 +3,75 @@ import SwiftUI
 
 struct LandmarkView: View {
     let coordinate: CLLocationCoordinate2D
+    let didReturnToList: (() -> Void)?
+    @Environment(\.openURL) private var openURL
 
     @State private var lookAroundScene: MKLookAroundScene?
 
+    init(coordinate: CLLocationCoordinate2D, didReturnToList: (() -> Void)? = nil) {
+        self.coordinate = coordinate
+        self.didReturnToList = didReturnToList
+    }
+
     var body: some View {
-        VStack(spacing: 20) {
-            HStack {
-                Menu {
-                    appleMapsLink
-                    googleMapsLink
-                } label: {
-                    Map(
-                        initialPosition: .region(
-                            MKCoordinateRegion(
-                                center: coordinate,
-                                span: MKCoordinateSpan(latitudeDelta: 0.001, longitudeDelta: 0.001))
-                        )
-                    ) {
-                        Annotation("", coordinate: coordinate) {
-                            Image(systemName: "mappin").foregroundStyle(.red)
-                        }
-                    }.aspectRatio(1, contentMode: .fit).clipShape(RoundedRectangle(cornerRadius: 8))
-                }
-                // 明明有圖資為什麼不給我用？
-                LookAroundPreview(
-                    scene: $lookAroundScene, allowsNavigation: true, showsRoadLabels: true
-                ).aspectRatio(1, contentMode: .fit).clipShape(.rect(cornerRadius: 8)).task {
-                    let request = MKLookAroundSceneRequest(coordinate: coordinate)
-                    lookAroundScene = try? await request.scene
-                }
+        VStack(spacing: 16) {
+            HStack(spacing: 12) {
+                mapPreview
+                lookAroundPreview
             }
 
             Button {
                 let googleURLString =
                     "comgooglemaps://?daddr=\(coordinate.latitude),\(coordinate.longitude)&directionsmode=driving"
-                if let googleURL = URL(string: googleURLString),
-                    UIApplication.shared.canOpenURL(googleURL)
-                {
-                    // 開啟 Google Maps 導航
-                    UIApplication.shared.open(googleURL)
+                if let googleURL = URL(string: googleURLString) {
+                    openURL(googleURL) { accepted in if !accepted { openAppleDirections() } }
                 } else {
-                    // fallback: 使用 Apple Maps 導航
-                    let placemark = MKPlacemark(coordinate: coordinate)
-                    let mapItem = MKMapItem(placemark: placemark)
-                    //mapItem.name = name
-                    mapItem.openInMaps(launchOptions: [
-                        MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
-                    ])
+                    openAppleDirections()
                 }
             } label: {
-                VStack(alignment: .leading) {
-                    Label {
-                        VStack(alignment: .leading) { Text("Open in Maps") }
-                    } icon: {
-                        Image(
-                            systemName:
-                                "point.topright.arrow.triangle.backward.to.point.bottomleft.scurvepath.fill"
-                        )
-                    }
-                }
+                Label(
+                    "Open in Maps",
+                    systemImage:
+                        "point.topright.arrow.triangle.backward.to.point.bottomleft.scurvepath.fill"
+                ).frame(maxWidth: .infinity)
+            }.buttonStyle(.borderedProminent).accessibilityIdentifier("map.action.directions")
+
+            if let didReturnToList {
+                Button(action: didReturnToList) {
+                    Label("Return to List", systemImage: "list.bullet").frame(maxWidth: .infinity)
+                }.buttonStyle(.bordered).accessibilityIdentifier("map.action.returnList")
             }
         }
     }
 
-    private var appleMapsLink: some View {
-        Button {
-            let placemark = MKPlacemark(coordinate: coordinate)
-            let mapItem = MKMapItem(placemark: placemark)
-            //mapItem.name = name
-            mapItem.openInMaps()
-        } label: {
-            Label("Open in Apple Maps", systemImage: "map")
-        }
+    private var mapPreview: some View {
+        Map(
+            initialPosition: .region(
+                MKCoordinateRegion(
+                    center: coordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.001, longitudeDelta: 0.001)))
+        ) {
+            Annotation("", coordinate: coordinate) {
+                Image(systemName: "mappin").foregroundStyle(.red).accessibilityHidden(true)
+            }
+        }.aspectRatio(1, contentMode: .fit).clipShape(RoundedRectangle(cornerRadius: 12))
+            .accessibilityLabel(Text("Campus Map"))
     }
 
-    private var googleMapsLink: some View {
-        let urlString = "comgooglemaps://?q=\(coordinate.latitude),\(coordinate.longitude)"
-        guard let url = URL(string: urlString) else { return AnyView(EmptyView()) }
-        return AnyView(
-            Link(destination: url) { Label("Open in Google Maps", systemImage: "globe") })
+    private var lookAroundPreview: some View {
+        LookAroundPreview(scene: $lookAroundScene, allowsNavigation: true, showsRoadLabels: true)
+            .aspectRatio(1, contentMode: .fit).clipShape(.rect(cornerRadius: 12)).task {
+                let request = MKLookAroundSceneRequest(coordinate: coordinate)
+                lookAroundScene = try? await request.scene
+            }
+    }
+
+    private func openAppleDirections() {
+        let placemark = MKPlacemark(coordinate: coordinate)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.openInMaps(launchOptions: [
+            MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+        ])
     }
 }
 

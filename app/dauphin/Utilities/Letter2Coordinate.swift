@@ -1,17 +1,16 @@
 import CoreLocation
 
 struct L2GData: Identifiable {
-    let id: UUID
     let code: String
     let name: String
     let coordinate: CLLocationCoordinate2D
 
-    init(id: UUID = UUID(), code: String, name: String, coordinate: CLLocationCoordinate2D) {
-        self.id = id
+    var id: String { code }
+
+    init(code: String, name: String, coordinate: CLLocationCoordinate2D) {
         self.code = code
         self.name = name
         self.coordinate = coordinate
-
     }
 }
 
@@ -66,6 +65,10 @@ let letterLocations: [String: L2GData] = [
 ]
 
 private let defaultCoord = CLLocationCoordinate2D(latitude: 25.0478, longitude: 121.5170)
+
+let campusLocations: [L2GData] = letterLocations.values.sorted { lhs, rhs in
+    lhs.code.localizedStandardCompare(rhs.code) == .orderedAscending
+}
 
 func letterToCoordinate(for letter: String) -> CLLocationCoordinate2D {
     letterLocations[letter]?.coordinate ?? defaultCoord
