@@ -27,11 +27,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install swift-format
-        run: brew install swift-format
-
       - name: Check Format
-        run: swift-format lint --configuration app/.swift-format --recursive .
+        run: |
+          SWIFT_FORMAT="$(xcode-select -p)/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-format"
+          "$SWIFT_FORMAT" --version
+          "$SWIFT_FORMAT" lint --configuration app/.swift-format --recursive .
 
   localization_check:
     name: localization-check
@@ -49,27 +49,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Select Xcode 16.2
-        run: sudo xcode-select -s /Applications/Xcode_16.2.app
-
-      - name: Install iOS Simulator runtime
-        run: xcodebuild -downloadPlatform iOS
-
-      - name: Cache DerivedData
-        uses: actions/cache@v4
-        with:
-          path: DerivedData/Build
-          key: deriveddata-${{ runner.os }}-${{ hashFiles('app/dauphin.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
-          restore-keys: |
-            deriveddata-${{ runner.os }}-
-
-      - name: Show Xcode
+      - name: Environment info
         run: |
+          sw_vers
           xcodebuild -version
           xcode-select -p
+          xcrun simctl list runtimes
+          xcrun simctl list devices available
+
+      - name: Cache Xcode DerivedData
+        uses: actions/cache@v4
+        with:
+          path: DerivedData
+          key: xcode-deriveddata-${{ runner.os }}-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            xcode-deriveddata-${{ runner.os }}-
+
+      - name: Cache SwiftPM
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            ~/.swiftpm
+          key: swiftpm-${{ runner.os }}-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            swiftpm-${{ runner.os }}-
 
       - name: Build for testing (iOS Simulator)
         run: |
+          set -o pipefail
           xcodebuild \
             -project app/dauphin.xcodeproj \
             -scheme "dauphin" \
@@ -77,10 +85,13 @@ jobs:
             -sdk iphonesimulator \
             -derivedDataPath DerivedData \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
-            build-for-testing
+            -resultBundlePath build-result \
+            -showBuildTimingSummary \
+            build-for-testing 2>&1 | tee build.log
 
       - name: Run unit tests (iOS Simulator)
         run: |
+          set -o pipefail
           xcodebuild \
             -project app/dauphin.xcodeproj \
             -scheme "dauphin" \
@@ -89,4 +100,17 @@ jobs:
             -derivedDataPath DerivedData \
             -testPlan Models \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
-            test-without-building
+            -resultBundlePath test-result \
+            test-without-building 2>&1 | tee test.log
+
+      - name: Upload build artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build-result.xcresult/
+            test-result.xcresult/
+            build.log
+            test.log
+          retention-days: 7
