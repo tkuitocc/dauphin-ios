@@ -24,9 +24,17 @@ permissions:
 jobs:
   swift_format:
     name: swift-format
-    runs-on: macos-latest
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
+
+      - name: Verify Xcode 16.2 exists
+        run: |
+          if [ ! -d /Applications/Xcode_16.2.app ]; then
+            echo "Xcode 16.2 not found on runner"
+            ls /Applications | grep Xcode || true
+            exit 1
+          fi
 
       - name: Xcode Select
         run: sudo xcode-select -s /Applications/Xcode_16.2.app
@@ -68,9 +76,17 @@ jobs:
 
   test:
     name: test
-    runs-on: macos-latest
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
+
+      - name: Verify Xcode 16.2 exists
+        run: |
+          if [ ! -d /Applications/Xcode_16.2.app ]; then
+            echo "Xcode 16.2 not found on runner"
+            ls /Applications | grep Xcode || true
+            exit 1
+          fi
 
       - name: Xcode Select
         run: sudo xcode-select -s /Applications/Xcode_16.2.app
@@ -133,6 +149,7 @@ jobs:
         with:
           name: xcode-test-xcresult
           path: TestResults.xcresult
+          if-no-files-found: warn
 
       - name: Test summary
         if: always()
