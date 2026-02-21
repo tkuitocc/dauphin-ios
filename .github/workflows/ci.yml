@@ -55,6 +55,14 @@ jobs:
       - name: Install iOS Simulator runtime
         run: xcodebuild -downloadPlatform iOS
 
+      - name: Cache DerivedData
+        uses: actions/cache@v4
+        with:
+          path: DerivedData/Build
+          key: deriveddata-${{ runner.os }}-${{ hashFiles('app/dauphin.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          restore-keys: |
+            deriveddata-${{ runner.os }}-
+
       - name: Show Xcode
         run: |
           xcodebuild -version
@@ -67,6 +75,7 @@ jobs:
             -scheme "dauphin" \
             -configuration Debug \
             -sdk iphonesimulator \
+            -derivedDataPath DerivedData \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
             build-for-testing
 
@@ -77,6 +86,7 @@ jobs:
             -scheme "dauphin" \
             -configuration Debug \
             -sdk iphonesimulator \
+            -derivedDataPath DerivedData \
             -testPlan Models \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
             test-without-building
