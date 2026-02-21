@@ -28,17 +28,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Verify Xcode 16.2 exists
-        run: |
-          if [ ! -d /Applications/Xcode_16.2.app ]; then
-            echo "Xcode 16.2 not found on runner"
-            ls /Applications | grep Xcode || true
-            exit 1
-          fi
-
-      - name: Xcode Select
-        run: sudo xcode-select -s /Applications/Xcode_16.2.app
-
       - name: Install swift-format
         env:
           HOMEBREW_NO_AUTO_UPDATE: "1"
@@ -80,17 +69,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Verify Xcode 16.2 exists
-        run: |
-          if [ ! -d /Applications/Xcode_16.2.app ]; then
-            echo "Xcode 16.2 not found on runner"
-            ls /Applications | grep Xcode || true
-            exit 1
-          fi
-
-      - name: Xcode Select
-        run: sudo xcode-select -s /Applications/Xcode_16.2.app
-
       - name: Show Xcode
         run: |
           xcodebuild -version
@@ -100,14 +78,21 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ github.workspace }}/.spm
-          key: ${{ runner.os }}-xcode-16.2-spm-${{ hashFiles('**/Package.resolved') }}
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
-            ${{ runner.os }}-xcode-16.2-spm-
+            ${{ runner.os }}-spm-
 
       - name: Install xcbeautify
         env:
           HOMEBREW_NO_AUTO_UPDATE: "1"
         run: brew install xcbeautify
+
+      - name: Resolve compatible simulator destination
+        run: |
+          python3 scripts/select_simulator_destination.py \
+            --project app/dauphin.xcodeproj \
+            --scheme dauphin \
+            --github-env "$GITHUB_ENV"
 
       - name: Build and run unit tests (iOS Simulator)
         run: |
@@ -118,7 +103,7 @@ jobs:
             -scheme "dauphin" \
             -testPlan Models \
             -configuration Debug \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -destination "id=$SIMULATOR_DESTINATION_ID" \
             -clonedSourcePackagesDirPath "${{ github.workspace }}/.spm" \
             -resultBundlePath TestResults.xcresult \
             test | xcbeautify --renderer github-actions --report junit --report-path reports/junit.xml
@@ -146,7 +131,7 @@ jobs:
           {
             echo "## test"
             echo "- Status: ${{ job.status }}"
-            echo "- Destination: iPhone 16 (iOS latest available in Xcode 16.2)"
+            echo "- Destination: $SIMULATOR_DESTINATION_NAME ($SIMULATOR_DESTINATION_OS)"
             echo "- Result bundle: TestResults.xcresult"
             echo "- JUnit report: reports/junit.xml"
           } >> "$GITHUB_STEP_SUMMARY"
