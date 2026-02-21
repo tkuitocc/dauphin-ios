@@ -28,36 +28,20 @@ jobs:
         run: sudo xcode-select -s /Applications/Xcode_16.2.app
 
       - name: Install swift-format
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
         run: brew install swift-format
 
       - name: Check Format
         run: swift-format lint --configuration app/.swift-format --recursive .
 
-  build:
-    name: build
-    runs-on: macos-latest
-    needs: [swift_format, localization_check]
-    steps:
-      - uses: actions/checkout@v4
-          
-      - name: List available Xcode versions
-        run: ls /Applications | grep Xcode
-        
-      - name: Show Xcode
+      - name: Format summary
+        if: always()
         run: |
-          xcodebuild -version
-          xcode-select -p
-
-      - name: Build (iOS Simulator)
-        run: |
-          xcrun simctl list runtimes
-          xcodebuild \
-            -project app/dauphin.xcodeproj \
-            -scheme "dauphin" \
-            -configuration Debug \
-            -destination 'generic/platform=iOS Simulator' \
-            -sdk iphonesimulator \
-            clean build
+          {
+            echo "## swift-format"
+            echo "- Status: ${{ job.status }}"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   localization_check:
     name: localization-check
@@ -70,24 +54,89 @@ jobs:
       - name: Check localizations
         run: uv run scripts/check_localizations.py
 
+      - name: Localization summary
+        if: always()
+        run: |
+          {
+            echo "## localization-check"
+            echo "- Status: ${{ job.status }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   test:
     name: test
     runs-on: macos-latest
-    needs: build
     steps:
       - uses: actions/checkout@v4
+
+      - name: Xcode Select
+        run: sudo xcode-select -s /Applications/Xcode_16.2.app
 
       - name: Show Xcode
         run: |
           xcodebuild -version
           xcode-select -p
 
-      - name: Run unit tests (iOS Simulator)
+      - name: Cache SwiftPM packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.spm
+          key: ${{ runner.os }}-xcode-16.2-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-16.2-spm-
+
+      - name: Install xcbeautify
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+        run: brew install xcbeautify
+
+      - name: Pre-boot iOS simulator
         run: |
-          xcrun simctl list devices available
+          SIMULATOR_UDID="$(xcrun simctl list devices available -j | python3 -c "import json, sys; data=json.load(sys.stdin).get('devices', {}); target_runtime='com.apple.CoreSimulator.SimRuntime.iOS-18-2'; target_name='iPhone 16 Pro'; matches=[d['udid'] for r, devices in data.items() if r==target_runtime for d in devices if d.get('name')==target_name and d.get('isAvailable')]; print(matches[0] if matches else '');")"
+          if [ -z "$SIMULATOR_UDID" ]; then
+            echo "Unable to find iPhone 16 Pro on iOS 18.2 runtime"
+            exit 1
+          fi
+          echo "SIMULATOR_UDID=$SIMULATOR_UDID" >> "$GITHUB_ENV"
+          xcrun simctl boot "$SIMULATOR_UDID" || true
+          xcrun simctl bootstatus "$SIMULATOR_UDID" -b
+
+      - name: Build and run unit tests (iOS Simulator)
+        run: |
+          mkdir -p reports
+          set -o pipefail
           xcodebuild \
             -project app/dauphin.xcodeproj \
             -scheme "dauphin" \
             -testPlan Models \
-            -destination 'platform=iOS Simulator,name=iPhone 16' \
-            test
+            -configuration Debug \
+            -destination "id=$SIMULATOR_UDID" \
+            -clonedSourcePackagesDirPath "${{ github.workspace }}/.spm" \
+            -resultBundlePath TestResults.xcresult \
+            test | xcbeautify --renderer github-actions --report junit --report-path reports/junit.xml
+
+      - name: Publish test report
+        if: always()
+        uses: mikepenz/action-junit-report@v5
+        with:
+          report_paths: reports/junit.xml
+          check_name: junit
+          include_passed: true
+
+      - name: Upload xcresult artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcode-test-xcresult
+          path: TestResults.xcresult
+
+      - name: Test summary
+        if: always()
+        run: |
+          {
+            echo "## test"
+            echo "- Status: ${{ job.status }}"
+            echo "- Destination: iPhone 16 Pro (iOS 18.2)"
+            echo "- Simulator UDID: $SIMULATOR_UDID"
+            echo "- Result bundle: TestResults.xcresult"
+            echo "- JUnit report: reports/junit.xml"
+          } >> "$GITHUB_STEP_SUMMARY"
