@@ -87,23 +87,17 @@ jobs:
           HOMEBREW_NO_AUTO_UPDATE: "1"
         run: brew install xcbeautify
 
-      - name: Resolve compatible simulator destination
-        run: |
-          python3 scripts/select_simulator_destination.py \
-            --project app/dauphin.xcodeproj \
-            --scheme dauphin \
-            --github-env "$GITHUB_ENV"
-
       - name: Build and run unit tests (iOS Simulator)
         run: |
           mkdir -p reports
           set -o pipefail
+          xcrun simctl list devices available
           xcodebuild \
             -project app/dauphin.xcodeproj \
             -scheme "dauphin" \
             -testPlan Models \
             -configuration Debug \
-            -destination "id=$SIMULATOR_DESTINATION_ID" \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
             -clonedSourcePackagesDirPath "${{ github.workspace }}/.spm" \
             -resultBundlePath TestResults.xcresult \
             test | xcbeautify --renderer github-actions --report junit --report-path reports/junit.xml
@@ -131,7 +125,7 @@ jobs:
           {
             echo "## test"
             echo "- Status: ${{ job.status }}"
-            echo "- Destination: $SIMULATOR_DESTINATION_NAME ($SIMULATOR_DESTINATION_OS)"
+            echo "- Destination: iPhone 16"
             echo "- Result bundle: TestResults.xcresult"
             echo "- JUnit report: reports/junit.xml"
           } >> "$GITHUB_STEP_SUMMARY"
