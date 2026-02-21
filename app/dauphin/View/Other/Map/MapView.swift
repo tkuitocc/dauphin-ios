@@ -6,61 +6,86 @@ struct MapView: View {
         .init(
             centerCoordinate: .init(latitude: 25.17553, longitude: 121.45063), distance: 1600,
             heading: 90, pitch: 35))
-    @State private var lookAroundScene: MKLookAroundScene?
     @State private var selectedLocation: L2GData?
-    @State private var isSheetPresented = true  // 無選中時顯示列表用
+    @State private var overviewPosition: MapCameraPosition?
+    @State private var isLocationListPresented = false
+    @State private var detailSheetDetent: PresentationDetent = .fraction(0.39)
+    @State private var shouldRestoreOverviewOnDetailDismiss = true
 
     var body: some View {
-        VStack(spacing: 8) {
-            Map(position: $position) {
-                ForEach(Array(letterLocations.values), id: \.id) { location in
-                    let isSelected = selectedLocation?.id == location.id
+        Map(position: $position) {
+            ForEach(campusLocations) { location in
+                let isSelected = selectedLocation?.id == location.id
 
-                    Annotation(location.name, coordinate: location.coordinate, anchor: .bottom) {
-                        Button {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                selectedLocation = location
-                                isSheetPresented = true
-                            }
-                        } label: {
-                            ZStack {
-                                Circle().fill(Color.white).scaleEffect(
-                                    isSelected ? 5.0 : 1.0, anchor: .bottom
-                                ).animation(.easeInOut(duration: 0.2), value: isSelected)
-
-                                Image(systemName: "mappin.circle.fill").font(.title2)
-                                    .foregroundStyle(.red).scaleEffect(
-                                        isSelected ? 5.0 : 1.0, anchor: .bottom
-                                    ).animation(.easeInOut(duration: 0.2), value: isSelected)
-                            }
-                        }.buttonStyle(.plain)
-                    }
+                Annotation(location.name, coordinate: location.coordinate, anchor: .bottom) {
+                    Button {
+                        shouldRestoreOverviewOnDetailDismiss = true
+                        selectLocation(location)
+                    } label: {
+                        Image(systemName: "mappin.circle.fill").font(isSelected ? .title : .title2)
+                            .foregroundStyle(isSelected ? .red : .secondary).shadow(
+                                radius: isSelected ? 3 : 1)
+                    }.accessibilityLabel(Text("\(location.name) \(location.code)"))
+                        .accessibilityHint(Text("Show location details")).accessibilityIdentifier(
+                            "map.annotation.\(location.code)"
+                        ).buttonStyle(.plain)
                 }
-            }.mapStyle(.standard).mapControls {
-                MapCompass()
-                MapPitchToggle()
-                MapScaleView()
-            }.sheet(isPresented: $isSheetPresented) {
-                Group {
-                    if let location = selectedLocation {
-                        MarkerSheetView(location: location)
-                    } else {
-                        LocationListView(
-                            locations: Array(letterLocations.values).sorted { $0.name < $1.name },
-                            didSelect: { loc in selectedLocation = loc })
-                    }
-                }.presentationDetents([.fraction(0.5), .medium]).presentationDragIndicator(.visible)
-            }.onAppear {
-                isSheetPresented = true  // 初次進入就顯示清單
-                Task { await loadLookAround() }
             }
+        }.mapStyle(.standard).mapControls {
+            MapCompass()
+            MapPitchToggle()
+            MapScaleView()
+        }.safeAreaInset(edge: .bottom) {
+            HStack {
+                Spacer()
+                Button {
+                    isLocationListPresented = true
+                } label: {
+                    Label("Locations", systemImage: "list.bullet")
+                }.buttonStyle(.borderedProminent).padding(.horizontal, 16).padding(.bottom, 12)
+            }
+        }.sheet(item: $selectedLocation, onDismiss: restoreOverviewCamera) { location in
+            MarkerSheetView(
+                location: location, didClearSelection: { selectedLocation = nil },
+                didReturnToList: returnToLocationList
+            ).presentationDetents([.fraction(0.39), .medium], selection: $detailSheetDetent)
+                .presentationDragIndicator(.hidden)
+        }.sheet(isPresented: $isLocationListPresented) {
+            LocationListView(
+                locations: campusLocations, didClose: { isLocationListPresented = false },
+                didSelect: { location in
+                    isLocationListPresented = false
+                    selectLocation(location)
+                }
+            ).presentationDragIndicator(.hidden)
         }
     }
 
-    private func loadLookAround() async {
-        let coord = CLLocationCoordinate2D(latitude: 25.033968, longitude: 121.564468)
-        let request = MKLookAroundSceneRequest(coordinate: coord)
-        self.lookAroundScene = try? await request.scene
+    private func selectLocation(_ location: L2GData) {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            if selectedLocation == nil { overviewPosition = position }
+            detailSheetDetent = .fraction(0.39)
+            selectedLocation = location
+            position = focusedPosition(for: location)
+        }
+    }
+
+    private func focusedPosition(for location: L2GData) -> MapCameraPosition {
+        .camera(.init(centerCoordinate: location.coordinate, distance: 500, heading: 0, pitch: 35))
+    }
+
+    private func restoreOverviewCamera() {
+        if shouldRestoreOverviewOnDetailDismiss, let overviewPosition {
+            withAnimation(.easeInOut(duration: 0.2)) { position = overviewPosition }
+        }
+        shouldRestoreOverviewOnDetailDismiss = true
+        self.overviewPosition = nil
+    }
+
+    private func returnToLocationList() {
+        shouldRestoreOverviewOnDetailDismiss = false
+        selectedLocation = nil
+        isLocationListPresented = true
     }
 }
 

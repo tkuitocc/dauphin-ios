@@ -42,3 +42,17 @@
 
 ## Security
 - Secrets live in `api.plist` and load through `KeyConstants`. Commit only sample values.
+
+## UI Design Policy
+As you design interfaces for Apple platforms, keep these principles in mind:
+- Hierarchy
+  - Establish a clear visual hierarchy where controls and interface elements elevate and distinguish the content beneath them.
+- Harmony
+  - Align with the concentric design of the hardware and software to create harmony between interface elements, system experiences, and devices.
+- Consistency
+  - Adopt platform conventions to maintain a consistent design that continuously adapts across window sizes and displays.
+
+- Prefer native iOS patterns for navigation, hierarchy, controls, spacing, and typography.
+- Accessibility is required by default: support Dynamic Type, VoiceOver labels/hints, sufficient contrast, and tappable target sizes.
+- Use SF Symbols and standard components when possible; deviations from HIG must be explicitly justified in PR notes.
+- Ensure user-facing UI strings are localized and consistent across supported locales.
