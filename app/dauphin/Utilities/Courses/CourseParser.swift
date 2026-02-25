@@ -148,7 +148,7 @@ struct DefaultCourseParser: CourseParser {
             name: name, enName: enName, room: room, teacher: teacher, teacherEn: teachNameEn,
             teachers: [teacher],
             time: String(sess), sessionNumbers: [sess], startTime: start, endTime: end,
-            stdNo: seatNo ?? "", weekday: week, note: note, remark: teachNameEn,
+            stdNo: seatNo ?? "", weekday: week, note: note, remark: nil,
             startMinuteOfDay: startMinute, endMinuteOfDay: endMinute,
             durationMinutes: max(0, endMinute - startMinute), sortKey: week * 10_000 + startMinute,
             sourceProvider: "cells")

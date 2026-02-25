@@ -35,6 +35,22 @@ import Testing
         #expect(course.displayName(showEnglish: true) == "LINEAR ALGEBRA")
         #expect(course.displayTeacher(showEnglish: false) == "Dr. Lin")
         #expect(course.displayTeacher(showEnglish: true) == "DR. LIN")
+
+        let noEnglish = Course(
+            name: "微積分",
+            enName: "   ",
+            room: "A101",
+            teacher: "王老師",
+            teacherEn: "",
+            time: "3, 4",
+            startTime: Date(),
+            endTime: Date().addingTimeInterval(3600),
+            stdNo: "002",
+            weekday: 2
+        )
+
+        #expect(noEnglish.displayName(showEnglish: true) == "微積分")
+        #expect(noEnglish.displayTeacher(showEnglish: true) == "王老師")
     }
 
     @Test("default language rule only keeps Chinese for zh-Hant locales")

@@ -263,6 +263,7 @@ import Testing
         let course = try #require(courses.first)
         #expect(course.teacher == "張三")
         #expect(course.teacherEn == "CHANG SAN")
+        #expect(course.remark == nil)
         #expect(course.displayTeacher(showEnglish: true) == "CHANG SAN")
     }
 }
