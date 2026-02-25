@@ -15,4 +15,34 @@ import Testing
         let err = formatTime(nil)
         #expect(err == "ERROR")
     }
+
+    @Test("displayName prefers English when enabled and available")
+    func displayNamePrefersEnglishWhenEnabled() {
+        let course = Course(
+            name: "線性代數",
+            enName: "LINEAR ALGEBRA",
+            room: "B101",
+            teacher: "Dr. Lin",
+            teacherEn: "DR. LIN",
+            time: "2, 3",
+            startTime: Date(),
+            endTime: Date().addingTimeInterval(3600),
+            stdNo: "001",
+            weekday: 1
+        )
+
+        #expect(course.displayName(showEnglish: false) == "線性代數")
+        #expect(course.displayName(showEnglish: true) == "LINEAR ALGEBRA")
+        #expect(course.displayTeacher(showEnglish: false) == "Dr. Lin")
+        #expect(course.displayTeacher(showEnglish: true) == "DR. LIN")
+    }
+
+    @Test("default language rule only keeps Chinese for zh-Hant locales")
+    func defaultLanguageRule() {
+        #expect(Course.shouldShowEnglishCourseName(forPreferredLanguage: "en-US") == true)
+        #expect(Course.shouldShowEnglishCourseName(forPreferredLanguage: "ja-JP") == true)
+        #expect(Course.shouldShowEnglishCourseName(forPreferredLanguage: "zh-Hant-TW") == false)
+        #expect(Course.shouldShowEnglishCourseName(forPreferredLanguage: "zh-TW") == false)
+        #expect(Course.defaultShowEnglishTeacherName() == Course.defaultShowEnglishCourseName())
+    }
 }

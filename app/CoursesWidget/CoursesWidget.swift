@@ -21,14 +21,23 @@ struct Provider: TimelineProvider {
     // MARK: - Placeholder
 
     func placeholder(in _: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), ssoStuNo: "", courses: [], today: 0)
+        SimpleEntry(date: Date(), ssoStuNo: "", courses: [], today: 0, showEnglishCourseName: false)
     }
 
     // MARK: - Snapshot
     func getSnapshot(in _: Context, completion: @escaping (SimpleEntry) -> Void) {
         let now = Date()
+        let showEnglishCourseName = loadShowEnglishCourseNamePreference()
         guard let stdNo = getSsoStuNo() else {
-            return completion(SimpleEntry(date: now, ssoStuNo: "", courses: [], today: 0))
+            return completion(
+                SimpleEntry(
+                    date: now,
+                    ssoStuNo: "",
+                    courses: [],
+                    today: 0,
+                    showEnglishCourseName: showEnglishCourseName
+                )
+            )
         }
 
         let cached = loadCoursesFromCache() ?? []
@@ -39,12 +48,16 @@ struct Provider: TimelineProvider {
         completion(
             SimpleEntry(
                 date: now, ssoStuNo: stdNo, courses: service.nextUp(from: cached, now: now),
-                today: cached.filter { $0.weekday == today }.count))
+                today: cached.filter { $0.weekday == today }.count,
+                showEnglishCourseName: showEnglishCourseName
+            )
+        )
     }
 
     // MARK: - Timeline
     func getTimeline(in _: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
         let now = Date()
+        let showEnglishCourseName = loadShowEnglishCourseNamePreference()
         let refresh =
             Calendar.current.date(byAdding: .minute, value: 15, to: now)
             ?? now.addingTimeInterval(900)
@@ -52,7 +65,15 @@ struct Provider: TimelineProvider {
         guard let stdNo = getSsoStuNo() else {
             return completion(
                 Timeline(
-                    entries: [SimpleEntry(date: now, ssoStuNo: "", courses: [], today: 0)],
+                    entries: [
+                        SimpleEntry(
+                            date: now,
+                            ssoStuNo: "",
+                            courses: [],
+                            today: 0,
+                            showEnglishCourseName: showEnglishCourseName
+                        )
+                    ],
                     policy: .after(refresh)))
         }
 
@@ -61,7 +82,8 @@ struct Provider: TimelineProvider {
         let today = ((Calendar.current.component(.weekday, from: now) + 5) % 7) + 1  // 1=Mon…7=Sun
         let entry = SimpleEntry(
             date: now, ssoStuNo: stdNo, courses: svc.nextUp(from: cached, now: now),
-            today: cached.lazy.filter { $0.weekday == today }.count)
+            today: cached.lazy.filter { $0.weekday == today }.count,
+            showEnglishCourseName: showEnglishCourseName)
 
         completion(Timeline(entries: [entry], policy: .after(refresh)))
     }
@@ -102,6 +124,16 @@ struct Provider: TimelineProvider {
             return nil
         }
     }
+
+    private func loadShowEnglishCourseNamePreference() -> Bool {
+        guard let defaults = UserDefaults(suiteName: Constants.appGroupSuiteName) else {
+            return Course.defaultShowEnglishCourseName()
+        }
+        guard defaults.object(forKey: Constants.showEnglishCourseName) != nil else {
+            return Course.defaultShowEnglishCourseName()
+        }
+        return defaults.bool(forKey: Constants.showEnglishCourseName)
+    }
 }
 struct CoursesNextUpWidgetEntryView: View {
     @Environment(\.colorScheme) var colorScheme
@@ -123,6 +155,7 @@ struct SimpleEntry: TimelineEntry {
     let ssoStuNo: String
     let courses: [Course]
     let today: Int
+    let showEnglishCourseName: Bool
 }
 
 struct CoursesNextUpWidget: Widget {

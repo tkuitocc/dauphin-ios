@@ -17,6 +17,16 @@ struct SettingView: View {
     @ObservedObject var viewModel: AuthViewModel
     @State private var selectedSection: SettingsSection? = .account
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @AppStorage(
+        Constants.showEnglishCourseName,
+        store: UserDefaults(suiteName: Constants.appGroupSuiteName)
+    )
+    private var showEnglishCourseName = Course.defaultShowEnglishCourseName()
+    @AppStorage(
+        Constants.showEnglishTeacherName,
+        store: UserDefaults(suiteName: Constants.appGroupSuiteName)
+    )
+    private var showEnglishTeacherName = Course.defaultShowEnglishTeacherName()
 
     var body: some View {
         if horizontalSizeClass == .regular {
@@ -29,6 +39,15 @@ struct SettingView: View {
 
                     Section("Data Management") {
                         Label("Clear Cache", systemImage: "trash").tag(SettingsSection.cache)
+                    }
+
+                    Section("Course") {
+                        Toggle(isOn: $showEnglishCourseName) {
+                            Label("Show English Course Name", systemImage: "character.book.closed")
+                        }
+                        Toggle(isOn: $showEnglishTeacherName) {
+                            Label("Show English Teacher Name", systemImage: "person.text.rectangle")
+                        }
                     }
                 }.navigationTitle("Settings").listStyle(SidebarListStyle())
             } detail: {
@@ -61,6 +80,15 @@ struct SettingView: View {
                     Section("Data Management") {
                         NavigationLink(destination: ClearCacheView()) {
                             Label("Clear Cache", systemImage: "trash")
+                        }
+                    }
+
+                    Section("Course") {
+                        Toggle(isOn: $showEnglishCourseName) {
+                            Label("Show English Course Name", systemImage: "character.book.closed")
+                        }
+                        Toggle(isOn: $showEnglishTeacherName) {
+                            Label("Show English Teacher Name", systemImage: "person.text.rectangle")
                         }
                     }
                 }.navigationTitle("Settings")

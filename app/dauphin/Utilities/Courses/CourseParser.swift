@@ -114,10 +114,10 @@ struct DefaultCourseParser: CourseParser {
 
         return Course(
             name: name, enName: enName, cosNo: cosNo, cosEleSeq: cosEleSeq, room: room,
-            teacher: teacher, teachers: [teacher],
+            teacher: teacher, teacherEn: teachNameEn, teachers: [teacher],
             time: sessions.map(String.init).joined(separator: ", "), sessionNumbers: sessions,
             startTime: start, endTime: end, stdNo: seatNo ?? "", weekday: week, note: note,
-            remark: [remark, teachNameEn].compactMap { $0 }.joined(separator: " | "),
+            remark: remark,
             startMinuteOfDay: startMinute, endMinuteOfDay: endMinute,
             durationMinutes: max(0, endMinute - startMinute), sortKey: week * 10_000 + startMinute,
             sourceProvider: "stuelelist")
@@ -145,7 +145,8 @@ struct DefaultCourseParser: CourseParser {
         let endMinute = minuteOfDay(from: end)
 
         return Course(
-            name: name, enName: enName, room: room, teacher: teacher, teachers: [teacher],
+            name: name, enName: enName, room: room, teacher: teacher, teacherEn: teachNameEn,
+            teachers: [teacher],
             time: String(sess), sessionNumbers: [sess], startTime: start, endTime: end,
             stdNo: seatNo ?? "", weekday: week, note: note, remark: teachNameEn,
             startMinuteOfDay: startMinute, endMinuteOfDay: endMinute,
@@ -209,6 +210,7 @@ struct DefaultCourseParser: CourseParser {
             let cosEleSeq: String?
             let room: String
             let teacher: String
+            let teacherEn: String?
             let time: String
             let sessionNumbers: [Int]
             let startTime: Date
@@ -226,6 +228,7 @@ struct DefaultCourseParser: CourseParser {
                 self.cosEleSeq = course.cosEleSeq
                 self.room = course.room
                 self.teacher = course.teacher
+                self.teacherEn = course.teacherEn
                 self.time = course.time
                 self.sessionNumbers = course.sessionNumbers
                 self.startTime = course.startTime
@@ -248,6 +251,7 @@ struct DefaultCourseParser: CourseParser {
             let cosNo: String?
             let cosEleSeq: String?
             let room: String
+            let teacherEn: String?
             let time: String
             let sessionNumbers: [Int]
             let startTime: Date
@@ -263,7 +267,8 @@ struct DefaultCourseParser: CourseParser {
         for course in unique {
             let key = MergeKey(
                 name: course.name, enName: course.enName, cosNo: course.cosNo,
-                cosEleSeq: course.cosEleSeq, room: course.room, time: course.time,
+                cosEleSeq: course.cosEleSeq, room: course.room, teacherEn: course.teacherEn,
+                time: course.time,
                 sessionNumbers: course.sessionNumbers, startTime: course.startTime,
                 endTime: course.endTime, seatNo: course.seatNo, weekday: course.weekday,
                 note: course.note, remark: course.remark, sourceProvider: course.sourceProvider)
@@ -305,6 +310,7 @@ struct DefaultCourseParser: CourseParser {
             let cosEleSeq: String?
             let room: String
             let teacher: String
+            let teacherEn: String?
             let teachers: [String]
             let seatNo: String?
             let weekday: Int
@@ -316,7 +322,8 @@ struct DefaultCourseParser: CourseParser {
         let grouped = Dictionary(grouping: courses) {
             MergeLineKey(
                 name: $0.name, enName: $0.enName, cosNo: $0.cosNo, cosEleSeq: $0.cosEleSeq,
-                room: $0.room, teacher: $0.teacher, teachers: $0.teachers, seatNo: $0.seatNo,
+                room: $0.room, teacher: $0.teacher, teacherEn: $0.teacherEn, teachers: $0.teachers,
+                seatNo: $0.seatNo,
                 weekday: $0.weekday, note: $0.note, remark: $0.remark,
                 sourceProvider: $0.sourceProvider)
         }
@@ -373,7 +380,8 @@ struct DefaultCourseParser: CourseParser {
 
         return Course(
             name: lhs.name, enName: lhs.enName, cosNo: lhs.cosNo, cosEleSeq: lhs.cosEleSeq,
-            room: lhs.room, teacher: teachers.joined(separator: ", "), teachers: teachers,
+            room: lhs.room, teacher: teachers.joined(separator: ", "),
+            teacherEn: lhs.teacherEn ?? rhs.teacherEn, teachers: teachers,
             time: sessions.map(String.init).joined(separator: ", "), sessionNumbers: sessions,
             startTime: start.startTime, endTime: end.endTime, stdNo: lhs.seatNo ?? "",
             weekday: lhs.weekday, note: lhs.note, remark: lhs.remark,

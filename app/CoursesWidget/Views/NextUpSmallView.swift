@@ -58,8 +58,11 @@ struct CoursesNextUpSmallView: View {
                     // First Event
                     VStack(alignment: .leading, spacing: 2) {
                         VStack(alignment: .leading, spacing: 0) {
-                            Text("\(entry.courses[0].name)").lineLimit(1).font(.subheadline)
-                                .foregroundColor(.primary)
+                            Text(
+                                entry.courses[0].displayName(
+                                    showEnglish: entry.showEnglishCourseName
+                                )
+                            ).lineLimit(1).font(.subheadline).foregroundColor(.primary)
                             Text(
                                 "\(formatTime(entry.courses[0].startTime)) - \(formatTime(entry.courses[0].endTime))"
                             ).font(.footnote).foregroundColor(.secondary)
@@ -94,8 +97,11 @@ struct CoursesNextUpSmallView: View {
                         if isSameDay {
                             VStack(alignment: .leading, spacing: 2) {
                                 VStack(alignment: .leading, spacing: 0) {
-                                    Text("\(entry.courses[1].name)").lineLimit(1).font(.subheadline)
-                                        .foregroundColor(.primary)
+                                    Text(
+                                        entry.courses[1].displayName(
+                                            showEnglish: entry.showEnglishCourseName
+                                        )
+                                    ).lineLimit(1).font(.subheadline).foregroundColor(.primary)
                                     Text(
                                         "\(formatTime(entry.courses[1].startTime)) - \(formatTime(entry.courses[1].endTime))"
                                     ).font(.footnote).foregroundColor(.secondary)
@@ -124,8 +130,11 @@ struct CoursesNextUpSmallView: View {
                                     .padding(.leading, -10)
 
                                 VStack(alignment: .leading, spacing: 0) {
-                                    Text("\(entry.courses[1].name)").font(.subheadline)
-                                        .foregroundColor(.primary).lineLimit(1)
+                                    Text(
+                                        entry.courses[1].displayName(
+                                            showEnglish: entry.showEnglishCourseName
+                                        )
+                                    ).font(.subheadline).foregroundColor(.primary).lineLimit(1)
                                     Text(
                                         "\(formatTime(entry.courses[1].startTime)) - \(formatTime(entry.courses[1].endTime))"
                                     ).font(.caption).foregroundColor(.secondary)
@@ -147,7 +156,9 @@ struct CoursesNextUpSmallView: View {
 }
 
 #Preview(as: .systemSmall) { CoursesNextUpWidget() } timeline: {
-    SimpleEntry(date: Date(), ssoStuNo: "123456789", courses: mockData, today: mockData.count)
+    SimpleEntry(
+        date: Date(), ssoStuNo: "123456789", courses: mockData, today: mockData.count,
+        showEnglishCourseName: false)
 
     SimpleEntry(
         date: Date(), ssoStuNo: "123456789",
@@ -155,11 +166,15 @@ struct CoursesNextUpSmallView: View {
             from: mockData,
             currentDate: Calendar.current.date(
                 from: DateComponents(year: 2025, month: 9, day: 29, hour: 21, minute: 0))!),
-        today: mockData.count)
+        today: mockData.count, showEnglishCourseName: false)
 
-    SimpleEntry(date: Date(), ssoStuNo: "123456789", courses: [mockData[0]], today: mockData.count)
+    SimpleEntry(
+        date: Date(), ssoStuNo: "123456789", courses: [mockData[0]], today: mockData.count,
+        showEnglishCourseName: false)
 
-    SimpleEntry(date: Date(), ssoStuNo: "", courses: mockData, today: mockData.count)
+    SimpleEntry(
+        date: Date(), ssoStuNo: "", courses: mockData, today: mockData.count,
+        showEnglishCourseName: false)
 
     SimpleEntry(
         date: Date(), ssoStuNo: "123456789",
@@ -167,5 +182,5 @@ struct CoursesNextUpSmallView: View {
             from: mockData,
             currentDate: Calendar.current.date(
                 from: DateComponents(year: 2025, month: 9, day: 27, hour: 22, minute: 0))!),
-        today: mockData.count)
+        today: mockData.count, showEnglishCourseName: false)
 }

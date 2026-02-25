@@ -4,6 +4,11 @@ struct CourseView: View {
     let course: Course
     let height: CGFloat
     let yOffset: CGFloat
+    @AppStorage(
+        Constants.showEnglishCourseName,
+        store: UserDefaults(suiteName: Constants.appGroupSuiteName)
+    )
+    private var showEnglishCourseName = Course.defaultShowEnglishCourseName()
 
     var body: some View {
         RoundedRectangle(cornerRadius: 8).fill(Color(UIColor.secondarySystemBackground)).overlay(
@@ -11,9 +16,9 @@ struct CourseView: View {
         ).frame(height: height).overlay(
             VStack(alignment: .leading, spacing: 3) {
                 HStack(alignment: .top, spacing: 0) {
-                    Text(course.name).font(.system(size: 15, weight: .semibold)).foregroundColor(
-                        Color(UIColor.label)
-                    ).lineLimit(2)
+                    Text(course.displayName(showEnglish: showEnglishCourseName)).font(
+                        .system(size: 15, weight: .semibold)
+                    ).foregroundColor(Color(UIColor.label)).lineLimit(2)
                 }
 
                 HStack(spacing: 2) {

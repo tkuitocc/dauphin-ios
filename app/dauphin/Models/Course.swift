@@ -15,6 +15,7 @@ struct Course: Identifiable, Hashable, Codable {
     var cosEleSeq: String?
     var room: String
     var teacher: String
+    var teacherEn: String?
     var teachers: [String]
     var time: String
     var sessionNumbers: [Int]
@@ -34,7 +35,8 @@ struct Course: Identifiable, Hashable, Codable {
 
     init(
         id: String? = nil, name: String, enName: String? = nil, cosNo: String? = nil,
-        cosEleSeq: String? = nil, room: String, teacher: String, teachers: [String]? = nil,
+        cosEleSeq: String? = nil, room: String, teacher: String, teacherEn: String? = nil,
+        teachers: [String]? = nil,
         time: String, sessionNumbers: [Int] = [], startTime: Date, endTime: Date, stdNo: String,
         weekday: Int, note: String = "", remark: String? = nil, startMinuteOfDay: Int? = nil,
         endMinuteOfDay: Int? = nil, durationMinutes: Int? = nil, sortKey: Int? = nil,
@@ -46,6 +48,7 @@ struct Course: Identifiable, Hashable, Codable {
         self.cosEleSeq = cosEleSeq
         self.room = room
         self.teacher = teacher
+        self.teacherEn = Self.normalizeOptional(teacherEn)
         self.teachers = teachers ?? Self.normalizeTeachers(primary: teacher, extras: [])
         self.time = time
         self.sessionNumbers = sessionNumbers
@@ -119,7 +122,8 @@ struct Course: Identifiable, Hashable, Codable {
     }
 
     enum CodingKeys: String, CodingKey {
-        case id, name, enName, cosNo, cosEleSeq, room, teacher, teachers, time, sessionNumbers
+        case id, name, enName, cosNo, cosEleSeq, room, teacher, teacherEn, teachers, time,
+            sessionNumbers
         case startTime, endTime, seatNo, stdNo, weekday, note, remark
         case startMinuteOfDay, endMinuteOfDay, durationMinutes, sortKey, sourceProvider
     }
@@ -133,6 +137,7 @@ struct Course: Identifiable, Hashable, Codable {
         cosEleSeq = try c.decodeIfPresent(String.self, forKey: .cosEleSeq)
         room = try c.decode(String.self, forKey: .room)
         teacher = try c.decode(String.self, forKey: .teacher)
+        teacherEn = Self.normalizeOptional(try c.decodeIfPresent(String.self, forKey: .teacherEn))
         let decodedTeachers = try c.decodeIfPresent([String].self, forKey: .teachers) ?? []
         teachers = Self.normalizeTeachers(primary: teacher, extras: decodedTeachers)
         time = try c.decode(String.self, forKey: .time)
@@ -179,6 +184,7 @@ struct Course: Identifiable, Hashable, Codable {
         try c.encodeIfPresent(cosEleSeq, forKey: .cosEleSeq)
         try c.encode(room, forKey: .room)
         try c.encode(teacher, forKey: .teacher)
+        try c.encodeIfPresent(teacherEn, forKey: .teacherEn)
         try c.encode(teachers, forKey: .teachers)
         try c.encode(time, forKey: .time)
         try c.encode(sessionNumbers, forKey: .sessionNumbers)
@@ -194,6 +200,45 @@ struct Course: Identifiable, Hashable, Codable {
         try c.encode(durationMinutes, forKey: .durationMinutes)
         try c.encode(sortKey, forKey: .sortKey)
         try c.encode(sourceProvider, forKey: .sourceProvider)
+    }
+}
+
+extension Course {
+    func displayName(showEnglish: Bool) -> String {
+        guard showEnglish,
+            let enName,
+            !enName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        else {
+            return name
+        }
+        return enName
+    }
+
+    func displayTeacher(showEnglish: Bool) -> String {
+        guard showEnglish,
+            let teacherEn,
+            !teacherEn.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        else {
+            return teacher
+        }
+        return teacherEn
+    }
+
+    static func defaultShowEnglishCourseName() -> Bool {
+        shouldShowEnglishCourseName(forPreferredLanguage: Locale.preferredLanguages.first)
+    }
+
+    static func defaultShowEnglishTeacherName() -> Bool {
+        shouldShowEnglishCourseName(forPreferredLanguage: Locale.preferredLanguages.first)
+    }
+
+    static func shouldShowEnglishCourseName(forPreferredLanguage preferredLanguage: String?) -> Bool {
+        guard let preferredLanguage else { return true }
+        let normalized = preferredLanguage.lowercased().replacingOccurrences(of: "_", with: "-")
+        let isTraditionalChinese =
+            normalized.hasPrefix("zh-hant") || normalized.hasPrefix("zh-tw")
+            || normalized.hasPrefix("zh-hk") || normalized.hasPrefix("zh-mo")
+        return !isTraditionalChinese
     }
 }
 

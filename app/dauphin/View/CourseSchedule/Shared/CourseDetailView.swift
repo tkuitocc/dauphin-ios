@@ -10,6 +10,16 @@ import SwiftUI
 struct CourseDetailView: View {
     let course: Course
     @Environment(\.dismiss) var dismiss
+    @AppStorage(
+        Constants.showEnglishCourseName,
+        store: UserDefaults(suiteName: Constants.appGroupSuiteName)
+    )
+    private var showEnglishCourseName = Course.defaultShowEnglishCourseName()
+    @AppStorage(
+        Constants.showEnglishTeacherName,
+        store: UserDefaults(suiteName: Constants.appGroupSuiteName)
+    )
+    private var showEnglishTeacherName = Course.defaultShowEnglishTeacherName()
 
     // Cache expensive computations
     private let dayOfWeek: String
@@ -48,7 +58,10 @@ struct CourseDetailView: View {
                     Divider()
                     detailRow(title: "Seat Number", content: course.stdNo)
                     Divider()
-                    detailRow(title: "Instructor", content: course.teacher)
+                    detailRow(
+                        title: "Instructor",
+                        content: course.displayTeacher(showEnglish: showEnglishTeacherName)
+                    )
 
                     if hasNote {
                         Divider()
@@ -63,7 +76,8 @@ struct CourseDetailView: View {
 
                 }.padding(24)
 
-            }.navigationTitle(course.name).navigationBarTitleDisplayMode(.large).toolbar {
+            }.navigationTitle(course.displayName(showEnglish: showEnglishCourseName))
+                .navigationBarTitleDisplayMode(.large).toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         dismiss()

@@ -15,6 +15,8 @@ enum Constants {
     static let isLoggedInKey = "isLoggedIn"
     static let loginSuccessNotification = "LoginSuccess"
     static let courses = "Courses"
+    static let showEnglishCourseName = "showEnglishCourseName"
+    static let showEnglishTeacherName = "showEnglishTeacherName"
 
     static let keychainAESKey = "AES256KEY"
     static let keychainAESIV = "AES256IV"
