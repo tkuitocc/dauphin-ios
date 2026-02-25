@@ -48,8 +48,10 @@ import Testing
         #expect(course.sessionNumbers == [2, 4])
         #expect(course.weekday == 1)
         #expect(course.enName == "LINEAR ALGEBRA")
+        #expect(course.teacherEn == "DR. LIN")
         #expect(course.cosNo == "COS001")
         #expect(course.cosEleSeq == "0743")
+        #expect(course.remark == nil)
         #expect(course.startTime == Date(timeIntervalSince1970: 120))
         #expect(course.endTime == Date(timeIntervalSince1970: 270))
         let calendar = Calendar.current
@@ -231,5 +233,36 @@ import Testing
         let courses = try parser.parse(Data(json.utf8))
         let course = try #require(courses.first)
         #expect(course.name == "幸福的理性與感性(本科目為通識教育跨領域微學程課程,大學部學生均可選修)")
+    }
+
+    @Test("parses english teacher name from cells fallback")
+    func parsesEnglishTeacherNameFromCells() throws {
+        let json = """
+            {
+              "stuelelist": [],
+              "cells": [
+                {
+                  "weekno": "2",
+                  "sessno": "07",
+                  "ch_cos_name": "離散數學",
+                  "teach_name": "張三",
+                  "teach_name_en": "CHANG SAN",
+                  "seatno": "012",
+                  "room": "C101"
+                }
+              ]
+            }
+            """
+
+        let parser = DefaultCourseParser(
+            htmlStrip: { $0 },
+            sessionToStart: { Date(timeIntervalSince1970: TimeInterval($0 * 60)) },
+            sessionToEnd: { Date(timeIntervalSince1970: TimeInterval($0 * 60 + 30)) })
+
+        let courses = try parser.parse(Data(json.utf8))
+        let course = try #require(courses.first)
+        #expect(course.teacher == "張三")
+        #expect(course.teacherEn == "CHANG SAN")
+        #expect(course.displayTeacher(showEnglish: true) == "CHANG SAN")
     }
 }

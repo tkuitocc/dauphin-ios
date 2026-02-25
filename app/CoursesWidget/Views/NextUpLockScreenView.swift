@@ -11,7 +11,7 @@ struct CoursesNextUpViewLockScreenView: View {
                 Image(systemName: "person.text.rectangle.trianglebadge.exclamationmark.fill").font(
                     .system(size: 40, weight: .semibold))
 
-                Text(LocalizedStringKey("widget.notLoggedIn")).font(.caption).fontWeight(.medium)
+                Text(String(localized: "widget.notLoggedIn")).font(.caption).fontWeight(.medium)
             }.frame(maxWidth: .infinity, maxHeight: .infinity).containerBackground(for: .widget) {
                 Color(UIColor.systemBackground)
             }
@@ -20,7 +20,7 @@ struct CoursesNextUpViewLockScreenView: View {
                 HStack(spacing: 10) {
                     Image(systemName: "figure.wave").font(.system(size: 40, weight: .semibold))
 
-                    Text(LocalizedStringKey("widget.seeYouNextWeek")).font(.caption).fontWeight(
+                    Text(String(localized: "widget.seeYouNextWeek")).font(.caption).fontWeight(
                         .medium)
                 }.frame(maxWidth: .infinity, maxHeight: .infinity).containerBackground(for: .widget)
                 { Color(UIColor.systemBackground) }

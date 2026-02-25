@@ -187,7 +187,11 @@ struct CoursesNextUpWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             CoursesNextUpWidgetEntryView(entry: entry)
-        }.configurationDisplayName("Next Up").description("顯示下一堂課").supportedFamilies([
+        }.configurationDisplayName(
+            String(localized: "widget.courses.displayName")
+        ).description(
+            String(localized: "widget.courses.description")
+        ).supportedFamilies([
             .systemSmall, .accessoryRectangular,
         ])
     }
