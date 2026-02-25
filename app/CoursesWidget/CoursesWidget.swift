@@ -21,13 +21,20 @@ struct Provider: TimelineProvider {
     // MARK: - Placeholder
 
     func placeholder(in _: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), ssoStuNo: "", courses: [], today: 0, showEnglishCourseName: false)
+        SimpleEntry(
+            date: Date(),
+            ssoStuNo: "",
+            courses: [],
+            today: 0,
+            showEnglishCourseName: false,
+            showEnglishTeacherName: false)
     }
 
     // MARK: - Snapshot
     func getSnapshot(in _: Context, completion: @escaping (SimpleEntry) -> Void) {
         let now = Date()
         let showEnglishCourseName = loadShowEnglishCourseNamePreference()
+        let showEnglishTeacherName = loadShowEnglishTeacherNamePreference()
         guard let stdNo = getSsoStuNo() else {
             return completion(
                 SimpleEntry(
@@ -35,7 +42,8 @@ struct Provider: TimelineProvider {
                     ssoStuNo: "",
                     courses: [],
                     today: 0,
-                    showEnglishCourseName: showEnglishCourseName
+                    showEnglishCourseName: showEnglishCourseName,
+                    showEnglishTeacherName: showEnglishTeacherName
                 )
             )
         }
@@ -49,7 +57,8 @@ struct Provider: TimelineProvider {
             SimpleEntry(
                 date: now, ssoStuNo: stdNo, courses: service.nextUp(from: cached, now: now),
                 today: cached.filter { $0.weekday == today }.count,
-                showEnglishCourseName: showEnglishCourseName
+                showEnglishCourseName: showEnglishCourseName,
+                showEnglishTeacherName: showEnglishTeacherName
             )
         )
     }
@@ -58,6 +67,7 @@ struct Provider: TimelineProvider {
     func getTimeline(in _: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
         let now = Date()
         let showEnglishCourseName = loadShowEnglishCourseNamePreference()
+        let showEnglishTeacherName = loadShowEnglishTeacherNamePreference()
         let refresh =
             Calendar.current.date(byAdding: .minute, value: 15, to: now)
             ?? now.addingTimeInterval(900)
@@ -71,7 +81,8 @@ struct Provider: TimelineProvider {
                             ssoStuNo: "",
                             courses: [],
                             today: 0,
-                            showEnglishCourseName: showEnglishCourseName
+                            showEnglishCourseName: showEnglishCourseName,
+                            showEnglishTeacherName: showEnglishTeacherName
                         )
                     ],
                     policy: .after(refresh)))
@@ -83,7 +94,8 @@ struct Provider: TimelineProvider {
         let entry = SimpleEntry(
             date: now, ssoStuNo: stdNo, courses: svc.nextUp(from: cached, now: now),
             today: cached.lazy.filter { $0.weekday == today }.count,
-            showEnglishCourseName: showEnglishCourseName)
+            showEnglishCourseName: showEnglishCourseName,
+            showEnglishTeacherName: showEnglishTeacherName)
 
         completion(Timeline(entries: [entry], policy: .after(refresh)))
     }
@@ -134,6 +146,16 @@ struct Provider: TimelineProvider {
         }
         return defaults.bool(forKey: Constants.showEnglishCourseName)
     }
+
+    private func loadShowEnglishTeacherNamePreference() -> Bool {
+        guard let defaults = UserDefaults(suiteName: Constants.appGroupSuiteName) else {
+            return Course.defaultShowEnglishTeacherName()
+        }
+        guard defaults.object(forKey: Constants.showEnglishTeacherName) != nil else {
+            return Course.defaultShowEnglishTeacherName()
+        }
+        return defaults.bool(forKey: Constants.showEnglishTeacherName)
+    }
 }
 struct CoursesNextUpWidgetEntryView: View {
     @Environment(\.colorScheme) var colorScheme
@@ -156,6 +178,7 @@ struct SimpleEntry: TimelineEntry {
     let courses: [Course]
     let today: Int
     let showEnglishCourseName: Bool
+    let showEnglishTeacherName: Bool
 }
 
 struct CoursesNextUpWidget: Widget {

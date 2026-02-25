@@ -40,6 +40,12 @@ struct CoursesNextUpViewLockScreenView: View {
                             "\(formatTime(entry.courses[0].startTime)) - \(formatTime(entry.courses[0].endTime))"
                         ).font(.system(size: 12))
 
+                        Text(
+                            entry.courses[0].displayTeacher(
+                                showEnglish: entry.showEnglishTeacherName
+                            )
+                        ).font(.system(size: 11)).lineLimit(1)
+
                         HStack {
                             HStack(spacing: 0) {
                                 Image(systemName: "location.circle").resizable().frame(
@@ -78,11 +84,11 @@ struct CoursesNextUpViewLockScreenView: View {
 #Preview(as: .accessoryRectangular) { CoursesNextUpWidget() } timeline: {
     SimpleEntry(
         date: Date(), ssoStuNo: "123456789", courses: mockData, today: mockData.count,
-        showEnglishCourseName: false)
+        showEnglishCourseName: false, showEnglishTeacherName: false)
 
     SimpleEntry(
         date: Date(), ssoStuNo: "", courses: mockData, today: mockData.count,
-        showEnglishCourseName: false)
+        showEnglishCourseName: false, showEnglishTeacherName: false)
 
     SimpleEntry(
         date: Date(), ssoStuNo: "123456789",
@@ -90,6 +96,6 @@ struct CoursesNextUpViewLockScreenView: View {
             from: mockData,
             currentDate: Calendar.current.date(
                 from: DateComponents(year: 2025, month: 9, day: 27, hour: 22, minute: 0))!),
-        today: mockData.count, showEnglishCourseName: false)
+        today: mockData.count, showEnglishCourseName: false, showEnglishTeacherName: false)
 
 }

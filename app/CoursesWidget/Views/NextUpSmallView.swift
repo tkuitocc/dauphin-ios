@@ -66,6 +66,11 @@ struct CoursesNextUpSmallView: View {
                             Text(
                                 "\(formatTime(entry.courses[0].startTime)) - \(formatTime(entry.courses[0].endTime))"
                             ).font(.footnote).foregroundColor(.secondary)
+                            Text(
+                                entry.courses[0].displayTeacher(
+                                    showEnglish: entry.showEnglishTeacherName
+                                )
+                            ).lineLimit(1).font(.caption2).foregroundColor(.secondary)
                         }
 
                         HStack(spacing: 3) {
@@ -105,6 +110,11 @@ struct CoursesNextUpSmallView: View {
                                     Text(
                                         "\(formatTime(entry.courses[1].startTime)) - \(formatTime(entry.courses[1].endTime))"
                                     ).font(.footnote).foregroundColor(.secondary)
+                                    Text(
+                                        entry.courses[1].displayTeacher(
+                                            showEnglish: entry.showEnglishTeacherName
+                                        )
+                                    ).lineLimit(1).font(.caption2).foregroundColor(.secondary)
                                 }
 
                                 HStack(spacing: 3) {
@@ -138,6 +148,11 @@ struct CoursesNextUpSmallView: View {
                                     Text(
                                         "\(formatTime(entry.courses[1].startTime)) - \(formatTime(entry.courses[1].endTime))"
                                     ).font(.caption).foregroundColor(.secondary)
+                                    Text(
+                                        entry.courses[1].displayTeacher(
+                                            showEnglish: entry.showEnglishTeacherName
+                                        )
+                                    ).lineLimit(1).font(.caption2).foregroundColor(.secondary)
                                 }.padding(.bottom, 2).overlay(
                                     Capsule().fill(isSameDay ? Color.blue : Color.orange).frame(
                                         width: 4
@@ -158,7 +173,7 @@ struct CoursesNextUpSmallView: View {
 #Preview(as: .systemSmall) { CoursesNextUpWidget() } timeline: {
     SimpleEntry(
         date: Date(), ssoStuNo: "123456789", courses: mockData, today: mockData.count,
-        showEnglishCourseName: false)
+        showEnglishCourseName: false, showEnglishTeacherName: false)
 
     SimpleEntry(
         date: Date(), ssoStuNo: "123456789",
@@ -166,15 +181,15 @@ struct CoursesNextUpSmallView: View {
             from: mockData,
             currentDate: Calendar.current.date(
                 from: DateComponents(year: 2025, month: 9, day: 29, hour: 21, minute: 0))!),
-        today: mockData.count, showEnglishCourseName: false)
+        today: mockData.count, showEnglishCourseName: false, showEnglishTeacherName: false)
 
     SimpleEntry(
         date: Date(), ssoStuNo: "123456789", courses: [mockData[0]], today: mockData.count,
-        showEnglishCourseName: false)
+        showEnglishCourseName: false, showEnglishTeacherName: false)
 
     SimpleEntry(
         date: Date(), ssoStuNo: "", courses: mockData, today: mockData.count,
-        showEnglishCourseName: false)
+        showEnglishCourseName: false, showEnglishTeacherName: false)
 
     SimpleEntry(
         date: Date(), ssoStuNo: "123456789",
@@ -182,5 +197,5 @@ struct CoursesNextUpSmallView: View {
             from: mockData,
             currentDate: Calendar.current.date(
                 from: DateComponents(year: 2025, month: 9, day: 27, hour: 22, minute: 0))!),
-        today: mockData.count, showEnglishCourseName: false)
+        today: mockData.count, showEnglishCourseName: false, showEnglishTeacherName: false)
 }
