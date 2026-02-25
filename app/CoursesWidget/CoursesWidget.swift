@@ -9,6 +9,11 @@ import SwiftUI
 import WidgetKit
 import os
 
+private struct WidgetCourseCachePayloadV2: Decodable {
+    let version: Int
+    let courses: [Course]
+}
+
 struct Provider: TimelineProvider {
     private static let logger = Logger(
         subsystem: Constants.loggerSubsystem, category: "CoursesWidget")
@@ -86,6 +91,11 @@ struct Provider: TimelineProvider {
         guard let data = defaults.data(forKey: Constants.courses) else { return nil }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
+        if let payload = try? decoder.decode(WidgetCourseCachePayloadV2.self, from: data),
+            payload.version == 2
+        {
+            return payload.courses
+        }
         do { return try decoder.decode([Course].self, from: data) } catch {
             Provider.logger.error(
                 "Failed to decode cached courses: \(String(describing: error), privacy: .private)")

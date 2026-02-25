@@ -23,7 +23,7 @@ import Testing
         defer { defaults.removePersistentDomain(forName: suiteName) }
 
         let data = try #require(defaults.data(forKey: key))
-        let decoded = widgetStyleDecodeCourses(data)
+        let decoded = decodeCoursesFromCacheData(data)
         let decodedCourses = try #require(decoded)
         #expect(decodedCourses == sample)
     }
@@ -31,12 +31,6 @@ import Testing
     @Test("widget-style decoder returns nil for invalid payload")
     func widgetStyleDecoderRejectsInvalidPayload() throws {
         let invalid = Data("not-json".utf8)
-        #expect(widgetStyleDecodeCourses(invalid) == nil)
-    }
-
-    private func widgetStyleDecodeCourses(_ data: Data) -> [dauphin.Course]? {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try? decoder.decode([dauphin.Course].self, from: data)
+        #expect(decodeCoursesFromCacheData(invalid) == nil)
     }
 }

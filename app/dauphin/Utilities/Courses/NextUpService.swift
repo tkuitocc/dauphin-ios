@@ -11,23 +11,20 @@ struct DefaultNextUpService: NextUpService {
         let sys = cal.component(.weekday, from: now)
         let today = (sys == 1) ? 7 : (sys - 1)
 
-        // 依 weekday、開始時間排序
+        // 依 weekday、開始分鐘排序
         let sorted = weekly.sorted { a, b in
             if a.weekday != b.weekday { return a.weekday < b.weekday }
-            let sh1 = cal.component(.hour, from: a.startTime)
-            let sm1 = cal.component(.minute, from: a.startTime)
-            let sh2 = cal.component(.hour, from: b.startTime)
-            let sm2 = cal.component(.minute, from: b.startTime)
-            guard let s1 = cal.date(bySettingHour: sh1, minute: sm1, second: 0, of: now),
-                let s2 = cal.date(bySettingHour: sh2, minute: sm2, second: 0, of: now)
-            else { return false }
-            return s1 < s2
+            return a.startMinuteOfDay < b.startMinuteOfDay
         }
 
         let upcoming = sorted.filter { c in
             if c.weekday < today { return false }
             if c.weekday > today { return true }
-            guard let end = alignedEndDate(for: c, calendar: cal, reference: now) else {
+            guard let end = alignedDate(
+                minuteOfDay: c.endMinuteOfDay,
+                calendar: cal,
+                reference: now)
+            else {
                 return false
             }
             return end.timeIntervalSince(now) > upcomingThreshold
@@ -43,9 +40,9 @@ struct DefaultNextUpService: NextUpService {
         return upcoming
     }
 
-    private func alignedEndDate(for course: Course, calendar: Calendar, reference: Date) -> Date? {
-        let hour = calendar.component(.hour, from: course.endTime)
-        let minute = calendar.component(.minute, from: course.endTime)
+    private func alignedDate(minuteOfDay: Int, calendar: Calendar, reference: Date) -> Date? {
+        let hour = minuteOfDay / 60
+        let minute = minuteOfDay % 60
         return calendar.date(bySettingHour: hour, minute: minute, second: 0, of: reference)
     }
 }
