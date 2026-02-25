@@ -154,6 +154,7 @@
 		1857DB522E00273E008EFC8E /* Exceptions for "dauphin" folder in "CoursesWidgetExtension Beta" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Localizable.xcstrings,
 				Models/Course.swift,
 				Utilities/Constants.swift,
 				Utilities/Courses/CourseAPIClient.swift,
@@ -169,6 +170,7 @@
 		1857DB562E002754008EFC8E /* Exceptions for "dauphin" folder in "StdIDExtension Beta" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Localizable.xcstrings,
 				Models/Course.swift,
 				Utilities/Constants.swift,
 				Utilities/Courses/NextUpService.swift,
@@ -185,6 +187,7 @@
 		185C496E2CF6E97D00589C39 /* Exceptions for "dauphin" folder in "CoursesWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Localizable.xcstrings,
 				Models/Course.swift,
 				Utilities/Constants.swift,
 				Utilities/Courses/CourseAPIClient.swift,
@@ -221,6 +224,7 @@
 		18E8F2262DB6069800B2FB57 /* Exceptions for "dauphin" folder in "StdIDExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Localizable.xcstrings,
 				Models/Course.swift,
 				Utilities/Constants.swift,
 				Utilities/Courses/NextUpService.swift,

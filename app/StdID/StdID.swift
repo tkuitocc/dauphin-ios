@@ -53,8 +53,8 @@ struct StdIDEntryView: View {
                 VStack(spacing: 8) {
                     Image(systemName: "person.text.rectangle.trianglebadge.exclamationmark.fill")
                         .font(.system(size: 60, weight: .semibold))
-                    Text(LocalizedStringKey("widget.notLoggedIn")).font(.caption).fontWeight(
-                        .medium)
+                    Text(String(localized: "widget.notLoggedIn"))
+                        .font(.caption).fontWeight(.medium)
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }.padding(12).foregroundStyle(.black).background(Color.white)

@@ -9,6 +9,11 @@ import SwiftUI
 import WidgetKit
 import os
 
+private struct WidgetCourseCachePayloadV2: Decodable {
+    let version: Int
+    let courses: [Course]
+}
+
 struct Provider: TimelineProvider {
     private static let logger = Logger(
         subsystem: Constants.loggerSubsystem, category: "CoursesWidget")
@@ -16,14 +21,31 @@ struct Provider: TimelineProvider {
     // MARK: - Placeholder
 
     func placeholder(in _: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), ssoStuNo: "", courses: [], today: 0)
+        SimpleEntry(
+            date: Date(),
+            ssoStuNo: "",
+            courses: [],
+            today: 0,
+            showEnglishCourseName: false,
+            showEnglishTeacherName: false)
     }
 
     // MARK: - Snapshot
     func getSnapshot(in _: Context, completion: @escaping (SimpleEntry) -> Void) {
         let now = Date()
+        let showEnglishCourseName = loadShowEnglishCourseNamePreference()
+        let showEnglishTeacherName = loadShowEnglishTeacherNamePreference()
         guard let stdNo = getSsoStuNo() else {
-            return completion(SimpleEntry(date: now, ssoStuNo: "", courses: [], today: 0))
+            return completion(
+                SimpleEntry(
+                    date: now,
+                    ssoStuNo: "",
+                    courses: [],
+                    today: 0,
+                    showEnglishCourseName: showEnglishCourseName,
+                    showEnglishTeacherName: showEnglishTeacherName
+                )
+            )
         }
 
         let cached = loadCoursesFromCache() ?? []
@@ -34,12 +56,18 @@ struct Provider: TimelineProvider {
         completion(
             SimpleEntry(
                 date: now, ssoStuNo: stdNo, courses: service.nextUp(from: cached, now: now),
-                today: cached.filter { $0.weekday == today }.count))
+                today: cached.filter { $0.weekday == today }.count,
+                showEnglishCourseName: showEnglishCourseName,
+                showEnglishTeacherName: showEnglishTeacherName
+            )
+        )
     }
 
     // MARK: - Timeline
     func getTimeline(in _: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
         let now = Date()
+        let showEnglishCourseName = loadShowEnglishCourseNamePreference()
+        let showEnglishTeacherName = loadShowEnglishTeacherNamePreference()
         let refresh =
             Calendar.current.date(byAdding: .minute, value: 15, to: now)
             ?? now.addingTimeInterval(900)
@@ -47,7 +75,16 @@ struct Provider: TimelineProvider {
         guard let stdNo = getSsoStuNo() else {
             return completion(
                 Timeline(
-                    entries: [SimpleEntry(date: now, ssoStuNo: "", courses: [], today: 0)],
+                    entries: [
+                        SimpleEntry(
+                            date: now,
+                            ssoStuNo: "",
+                            courses: [],
+                            today: 0,
+                            showEnglishCourseName: showEnglishCourseName,
+                            showEnglishTeacherName: showEnglishTeacherName
+                        )
+                    ],
                     policy: .after(refresh)))
         }
 
@@ -56,7 +93,9 @@ struct Provider: TimelineProvider {
         let today = ((Calendar.current.component(.weekday, from: now) + 5) % 7) + 1  // 1=Mon…7=Sun
         let entry = SimpleEntry(
             date: now, ssoStuNo: stdNo, courses: svc.nextUp(from: cached, now: now),
-            today: cached.lazy.filter { $0.weekday == today }.count)
+            today: cached.lazy.filter { $0.weekday == today }.count,
+            showEnglishCourseName: showEnglishCourseName,
+            showEnglishTeacherName: showEnglishTeacherName)
 
         completion(Timeline(entries: [entry], policy: .after(refresh)))
     }
@@ -86,11 +125,36 @@ struct Provider: TimelineProvider {
         guard let data = defaults.data(forKey: Constants.courses) else { return nil }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
+        if let payload = try? decoder.decode(WidgetCourseCachePayloadV2.self, from: data),
+            payload.version == 2
+        {
+            return payload.courses
+        }
         do { return try decoder.decode([Course].self, from: data) } catch {
             Provider.logger.error(
                 "Failed to decode cached courses: \(String(describing: error), privacy: .private)")
             return nil
         }
+    }
+
+    private func loadShowEnglishCourseNamePreference() -> Bool {
+        guard let defaults = UserDefaults(suiteName: Constants.appGroupSuiteName) else {
+            return Course.defaultShowEnglishCourseName()
+        }
+        guard defaults.object(forKey: Constants.showEnglishCourseName) != nil else {
+            return Course.defaultShowEnglishCourseName()
+        }
+        return defaults.bool(forKey: Constants.showEnglishCourseName)
+    }
+
+    private func loadShowEnglishTeacherNamePreference() -> Bool {
+        guard let defaults = UserDefaults(suiteName: Constants.appGroupSuiteName) else {
+            return Course.defaultShowEnglishTeacherName()
+        }
+        guard defaults.object(forKey: Constants.showEnglishTeacherName) != nil else {
+            return Course.defaultShowEnglishTeacherName()
+        }
+        return defaults.bool(forKey: Constants.showEnglishTeacherName)
     }
 }
 struct CoursesNextUpWidgetEntryView: View {
@@ -113,6 +177,8 @@ struct SimpleEntry: TimelineEntry {
     let ssoStuNo: String
     let courses: [Course]
     let today: Int
+    let showEnglishCourseName: Bool
+    let showEnglishTeacherName: Bool
 }
 
 struct CoursesNextUpWidget: Widget {
@@ -121,7 +187,11 @@ struct CoursesNextUpWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             CoursesNextUpWidgetEntryView(entry: entry)
-        }.configurationDisplayName("Next Up").description("顯示下一堂課").supportedFamilies([
+        }.configurationDisplayName(
+            String(localized: "widget.courses.displayName")
+        ).description(
+            String(localized: "widget.courses.description")
+        ).supportedFamilies([
             .systemSmall, .accessoryRectangular,
         ])
     }

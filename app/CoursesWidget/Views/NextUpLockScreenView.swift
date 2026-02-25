@@ -5,13 +5,17 @@ struct CoursesNextUpViewLockScreenView: View {
     @Environment(\.colorScheme) var colorScheme
 
     var entry: Provider.Entry
+    private func courseNameFontSize(for course: Course) -> CGFloat {
+        course.isShowingEnglishName(showEnglish: entry.showEnglishCourseName) ? 13 : 15
+    }
+
     var body: some View {
         if entry.ssoStuNo.isEmpty {
             HStack(spacing: 10) {
                 Image(systemName: "person.text.rectangle.trianglebadge.exclamationmark.fill").font(
                     .system(size: 40, weight: .semibold))
 
-                Text(LocalizedStringKey("widget.notLoggedIn")).font(.caption).fontWeight(.medium)
+                Text(String(localized: "widget.notLoggedIn")).font(.caption).fontWeight(.medium)
             }.frame(maxWidth: .infinity, maxHeight: .infinity).containerBackground(for: .widget) {
                 Color(UIColor.systemBackground)
             }
@@ -20,7 +24,7 @@ struct CoursesNextUpViewLockScreenView: View {
                 HStack(spacing: 10) {
                     Image(systemName: "figure.wave").font(.system(size: 40, weight: .semibold))
 
-                    Text(LocalizedStringKey("widget.seeYouNextWeek")).font(.caption).fontWeight(
+                    Text(String(localized: "widget.seeYouNextWeek")).font(.caption).fontWeight(
                         .medium)
                 }.frame(maxWidth: .infinity, maxHeight: .infinity).containerBackground(for: .widget)
                 { Color(UIColor.systemBackground) }
@@ -32,11 +36,19 @@ struct CoursesNextUpViewLockScreenView: View {
                     Spacer()
 
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("\(entry.courses[0].name)").font(.system(size: 15, weight: .bold))
+                        Text(entry.courses[0].displayName(showEnglish: entry.showEnglishCourseName))
+                            .font(
+                                .system(
+                                    size: courseNameFontSize(for: entry.courses[0]), weight: .bold))
 
                         Text(
                             "\(formatTime(entry.courses[0].startTime)) - \(formatTime(entry.courses[0].endTime))"
                         ).font(.system(size: 12))
+
+                        Text(
+                            entry.courses[0].displayTeacher(
+                                showEnglish: entry.showEnglishTeacherName)
+                        ).font(.system(size: 11)).lineLimit(1)
 
                         HStack {
                             HStack(spacing: 0) {
@@ -74,9 +86,13 @@ struct CoursesNextUpViewLockScreenView: View {
 }
 
 #Preview(as: .accessoryRectangular) { CoursesNextUpWidget() } timeline: {
-    SimpleEntry(date: Date(), ssoStuNo: "123456789", courses: mockData, today: mockData.count)
+    SimpleEntry(
+        date: Date(), ssoStuNo: "123456789", courses: mockData, today: mockData.count,
+        showEnglishCourseName: false, showEnglishTeacherName: false)
 
-    SimpleEntry(date: Date(), ssoStuNo: "", courses: mockData, today: mockData.count)
+    SimpleEntry(
+        date: Date(), ssoStuNo: "", courses: mockData, today: mockData.count,
+        showEnglishCourseName: false, showEnglishTeacherName: false)
 
     SimpleEntry(
         date: Date(), ssoStuNo: "123456789",
@@ -84,6 +100,6 @@ struct CoursesNextUpViewLockScreenView: View {
             from: mockData,
             currentDate: Calendar.current.date(
                 from: DateComponents(year: 2025, month: 9, day: 27, hour: 22, minute: 0))!),
-        today: mockData.count)
+        today: mockData.count, showEnglishCourseName: false, showEnglishTeacherName: false)
 
 }

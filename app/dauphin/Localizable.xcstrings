@@ -980,6 +980,38 @@
         }
       }
     },
+    "widget.courses.description" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show your next class"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示下一堂課"
+          }
+        }
+      }
+    },
+    "widget.courses.displayName" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next Up"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下一堂"
+          }
+        }
+      }
+    },
     "widget.seeYouNextWeek" : {
       "localizations" : {
         "en" : {
