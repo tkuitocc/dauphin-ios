@@ -7,15 +7,12 @@ struct DayScheduleView: View {
     @State private var showBarcode = false
     @State private var selectedCourse: Course? = nil
     @AppStorage(
-        Constants.showEnglishCourseName,
-        store: UserDefaults(suiteName: Constants.appGroupSuiteName)
-    )
-    private var showEnglishCourseName = Course.defaultShowEnglishCourseName()
+        Constants.showEnglishCourseName, store: UserDefaults(suiteName: Constants.appGroupSuiteName)
+    ) private var showEnglishCourseName = Course.defaultShowEnglishCourseName()
     @AppStorage(
         Constants.showEnglishTeacherName,
-        store: UserDefaults(suiteName: Constants.appGroupSuiteName)
-    )
-    private var showEnglishTeacherName = Course.defaultShowEnglishTeacherName()
+        store: UserDefaults(suiteName: Constants.appGroupSuiteName)) private
+        var showEnglishTeacherName = Course.defaultShowEnglishTeacherName()
 
     private func getFormattedDate() -> String { Date.now.formatted(Self.monthYearStyle) }
 
@@ -70,12 +67,12 @@ struct DayScheduleView: View {
                         ForEach(todaysCourses) { course in
                             CourseCardView(
                                 courseName: course.displayName(showEnglish: showEnglishCourseName),
-                                roomNumber: course.room,
+                                useCompactCourseNameFont: course.isShowingEnglishName(
+                                    showEnglish: showEnglishCourseName), roomNumber: course.room,
                                 teacherName: course.displayTeacher(
-                                    showEnglish: showEnglishTeacherName
-                                ), startTime: course.startTime,
-                                endTime: course.endTime, stdNo: course.stdNo,
-                                weekday: course.weekday
+                                    showEnglish: showEnglishTeacherName),
+                                startTime: course.startTime, endTime: course.endTime,
+                                stdNo: course.stdNo, weekday: course.weekday
                             ).shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
                                 .scaleEffect(1.0).animation(
                                     .spring(response: 0.3, dampingFraction: 0.7), value: course.id

@@ -34,6 +34,10 @@ struct CoursesNextUpSmallView: View {
         return formatter.weekdaySymbols
     }()
 
+    private func courseNameFontSize(for course: Course) -> CGFloat {
+        course.isShowingEnglishName(showEnglish: entry.showEnglishCourseName) ? 12 : 15
+    }
+
     var body: some View {
         if entry.ssoStuNo.isEmpty {
             VStack(spacing: 8) {
@@ -60,16 +64,18 @@ struct CoursesNextUpSmallView: View {
                         VStack(alignment: .leading, spacing: 0) {
                             Text(
                                 entry.courses[0].displayName(
-                                    showEnglish: entry.showEnglishCourseName
-                                )
-                            ).lineLimit(1).font(.subheadline).foregroundColor(.primary)
+                                    showEnglish: entry.showEnglishCourseName)
+                            ).lineLimit(1).font(
+                                .system(
+                                    size: courseNameFontSize(for: entry.courses[0]),
+                                    weight: .semibold)
+                            ).foregroundColor(.primary)
                             Text(
                                 "\(formatTime(entry.courses[0].startTime)) - \(formatTime(entry.courses[0].endTime))"
                             ).font(.footnote).foregroundColor(.secondary)
                             Text(
                                 entry.courses[0].displayTeacher(
-                                    showEnglish: entry.showEnglishTeacherName
-                                )
+                                    showEnglish: entry.showEnglishTeacherName)
                             ).lineLimit(1).font(.caption2).foregroundColor(.secondary)
                         }
 
@@ -104,16 +110,18 @@ struct CoursesNextUpSmallView: View {
                                 VStack(alignment: .leading, spacing: 0) {
                                     Text(
                                         entry.courses[1].displayName(
-                                            showEnglish: entry.showEnglishCourseName
-                                        )
-                                    ).lineLimit(1).font(.subheadline).foregroundColor(.primary)
+                                            showEnglish: entry.showEnglishCourseName)
+                                    ).lineLimit(1).font(
+                                        .system(
+                                            size: courseNameFontSize(for: entry.courses[1]),
+                                            weight: .semibold)
+                                    ).foregroundColor(.primary)
                                     Text(
                                         "\(formatTime(entry.courses[1].startTime)) - \(formatTime(entry.courses[1].endTime))"
                                     ).font(.footnote).foregroundColor(.secondary)
                                     Text(
                                         entry.courses[1].displayTeacher(
-                                            showEnglish: entry.showEnglishTeacherName
-                                        )
+                                            showEnglish: entry.showEnglishTeacherName)
                                     ).lineLimit(1).font(.caption2).foregroundColor(.secondary)
                                 }
 
@@ -142,16 +150,18 @@ struct CoursesNextUpSmallView: View {
                                 VStack(alignment: .leading, spacing: 0) {
                                     Text(
                                         entry.courses[1].displayName(
-                                            showEnglish: entry.showEnglishCourseName
-                                        )
-                                    ).font(.subheadline).foregroundColor(.primary).lineLimit(1)
+                                            showEnglish: entry.showEnglishCourseName)
+                                    ).font(
+                                        .system(
+                                            size: courseNameFontSize(for: entry.courses[1]),
+                                            weight: .semibold)
+                                    ).foregroundColor(.primary).lineLimit(1)
                                     Text(
                                         "\(formatTime(entry.courses[1].startTime)) - \(formatTime(entry.courses[1].endTime))"
                                     ).font(.caption).foregroundColor(.secondary)
                                     Text(
                                         entry.courses[1].displayTeacher(
-                                            showEnglish: entry.showEnglishTeacherName
-                                        )
+                                            showEnglish: entry.showEnglishTeacherName)
                                     ).lineLimit(1).font(.caption2).foregroundColor(.secondary)
                                 }.padding(.bottom, 2).overlay(
                                     Capsule().fill(isSameDay ? Color.blue : Color.orange).frame(

@@ -5,10 +5,11 @@ struct CourseView: View {
     let height: CGFloat
     let yOffset: CGFloat
     @AppStorage(
-        Constants.showEnglishCourseName,
-        store: UserDefaults(suiteName: Constants.appGroupSuiteName)
-    )
-    private var showEnglishCourseName = Course.defaultShowEnglishCourseName()
+        Constants.showEnglishCourseName, store: UserDefaults(suiteName: Constants.appGroupSuiteName)
+    ) private var showEnglishCourseName = Course.defaultShowEnglishCourseName()
+    private var courseNameFontSize: CGFloat {
+        course.isShowingEnglishName(showEnglish: showEnglishCourseName) ? 13 : 15
+    }
 
     var body: some View {
         RoundedRectangle(cornerRadius: 8).fill(Color(UIColor.secondarySystemBackground)).overlay(
@@ -17,7 +18,7 @@ struct CourseView: View {
             VStack(alignment: .leading, spacing: 3) {
                 HStack(alignment: .top, spacing: 0) {
                     Text(course.displayName(showEnglish: showEnglishCourseName)).font(
-                        .system(size: 15, weight: .semibold)
+                        .system(size: courseNameFontSize, weight: .semibold)
                     ).foregroundColor(Color(UIColor.label)).lineLimit(2)
                 }
 

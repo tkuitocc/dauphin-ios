@@ -11,20 +11,22 @@ struct CourseDetailView: View {
     let course: Course
     @Environment(\.dismiss) var dismiss
     @AppStorage(
-        Constants.showEnglishCourseName,
-        store: UserDefaults(suiteName: Constants.appGroupSuiteName)
-    )
-    private var showEnglishCourseName = Course.defaultShowEnglishCourseName()
+        Constants.showEnglishCourseName, store: UserDefaults(suiteName: Constants.appGroupSuiteName)
+    ) private var showEnglishCourseName = Course.defaultShowEnglishCourseName()
     @AppStorage(
         Constants.showEnglishTeacherName,
-        store: UserDefaults(suiteName: Constants.appGroupSuiteName)
-    )
-    private var showEnglishTeacherName = Course.defaultShowEnglishTeacherName()
+        store: UserDefaults(suiteName: Constants.appGroupSuiteName)) private
+        var showEnglishTeacherName = Course.defaultShowEnglishTeacherName()
 
     // Cache expensive computations
     private let dayOfWeek: String
     private let timeRange: String
     private let hasNote: Bool
+
+    private var displayName: String { course.displayName(showEnglish: showEnglishCourseName) }
+    private var useCompactTitle: Bool {
+        course.isShowingEnglishName(showEnglish: showEnglishCourseName)
+    }
 
     init(course: Course) {
         self.course = course
@@ -60,8 +62,7 @@ struct CourseDetailView: View {
                     Divider()
                     detailRow(
                         title: "Instructor",
-                        content: course.displayTeacher(showEnglish: showEnglishTeacherName)
-                    )
+                        content: course.displayTeacher(showEnglish: showEnglishTeacherName))
 
                     if hasNote {
                         Divider()
@@ -76,8 +77,12 @@ struct CourseDetailView: View {
 
                 }.padding(24)
 
-            }.navigationTitle(course.displayName(showEnglish: showEnglishCourseName))
-                .navigationBarTitleDisplayMode(.large).toolbar {
+            }.navigationBarTitleDisplayMode(.inline).toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text(displayName).font(
+                        .system(size: useCompactTitle ? 15 : 17, weight: .semibold)
+                    ).lineLimit(1)
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         dismiss()

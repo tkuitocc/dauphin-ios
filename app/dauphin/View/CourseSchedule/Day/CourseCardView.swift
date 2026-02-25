@@ -2,12 +2,15 @@ import SwiftUI
 
 struct CourseCardView: View {
     let courseName: String
+    let useCompactCourseNameFont: Bool
     let roomNumber: String
     let teacherName: String
     let startTime: Date
     let endTime: Date
     let stdNo: String
     let weekday: Int
+
+    private var courseNameFontSize: CGFloat { useCompactCourseNameFont ? 18 : 20 }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -21,8 +24,8 @@ struct CourseCardView: View {
             }
 
             // Course Name
-            Text(courseName).font(.system(size: 20, weight: .semibold)).foregroundColor(.primary)
-                .lineLimit(2).fixedSize(horizontal: false, vertical: true)
+            Text(courseName).font(.system(size: courseNameFontSize, weight: .semibold))
+                .foregroundColor(.primary).lineLimit(2).fixedSize(horizontal: false, vertical: true)
 
             VStack(alignment: .leading, spacing: 8) {
                 // Course Details
@@ -65,7 +68,7 @@ struct CourseCardView: View {
 
 #Preview {
     CourseCardView(
-        courseName: "計算機組織", roomNumber: "E305", teacherName: "我", startTime: stringToTime("8:10")!,
-        endTime: stringToTime("9:00")!, stdNo: "178", weekday: 1
+        courseName: "計算機組織", useCompactCourseNameFont: false, roomNumber: "E305", teacherName: "我",
+        startTime: stringToTime("8:10")!, endTime: stringToTime("9:00")!, stdNo: "178", weekday: 1
     ).padding()
 }

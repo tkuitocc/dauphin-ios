@@ -36,11 +36,10 @@ struct Course: Identifiable, Hashable, Codable {
     init(
         id: String? = nil, name: String, enName: String? = nil, cosNo: String? = nil,
         cosEleSeq: String? = nil, room: String, teacher: String, teacherEn: String? = nil,
-        teachers: [String]? = nil,
-        time: String, sessionNumbers: [Int] = [], startTime: Date, endTime: Date, stdNo: String,
-        weekday: Int, note: String = "", remark: String? = nil, startMinuteOfDay: Int? = nil,
-        endMinuteOfDay: Int? = nil, durationMinutes: Int? = nil, sortKey: Int? = nil,
-        sourceProvider: String = "stuelelist"
+        teachers: [String]? = nil, time: String, sessionNumbers: [Int] = [], startTime: Date,
+        endTime: Date, stdNo: String, weekday: Int, note: String = "", remark: String? = nil,
+        startMinuteOfDay: Int? = nil, endMinuteOfDay: Int? = nil, durationMinutes: Int? = nil,
+        sortKey: Int? = nil, sourceProvider: String = "stuelelist"
     ) {
         self.name = name
         self.enName = enName
@@ -204,23 +203,22 @@ struct Course: Identifiable, Hashable, Codable {
 }
 
 extension Course {
-    func displayName(showEnglish: Bool) -> String {
-        guard showEnglish,
-            let enName,
+    func isShowingEnglishName(showEnglish: Bool) -> Bool {
+        guard showEnglish, let enName,
             !enName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        else {
-            return name
-        }
-        return enName
+        else { return false }
+        return true
+    }
+
+    func displayName(showEnglish: Bool) -> String {
+        if isShowingEnglishName(showEnglish: showEnglish) { return enName ?? name }
+        return name
     }
 
     func displayTeacher(showEnglish: Bool) -> String {
-        guard showEnglish,
-            let teacherEn,
+        guard showEnglish, let teacherEn,
             !teacherEn.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        else {
-            return teacher
-        }
+        else { return teacher }
         return teacherEn
     }
 
@@ -232,7 +230,8 @@ extension Course {
         shouldShowEnglishCourseName(forPreferredLanguage: Locale.preferredLanguages.first)
     }
 
-    static func shouldShowEnglishCourseName(forPreferredLanguage preferredLanguage: String?) -> Bool {
+    static func shouldShowEnglishCourseName(forPreferredLanguage preferredLanguage: String?) -> Bool
+    {
         guard let preferredLanguage else { return true }
         let normalized = preferredLanguage.lowercased().replacingOccurrences(of: "_", with: "-")
         let isTraditionalChinese =

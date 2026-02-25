@@ -19,42 +19,28 @@ import Testing
     @Test("displayName prefers English when enabled and available")
     func displayNamePrefersEnglishWhenEnabled() {
         let course = Course(
-            name: "線性代數",
-            enName: "LINEAR ALGEBRA",
-            room: "B101",
-            teacher: "Dr. Lin",
-            teacherEn: "DR. LIN",
-            time: "2, 3",
-            startTime: Date(),
-            endTime: Date().addingTimeInterval(3600),
-            stdNo: "001",
-            weekday: 1
-        )
+            name: "線性代數", enName: "LINEAR ALGEBRA", room: "B101", teacher: "Dr. Lin",
+            teacherEn: "DR. LIN", time: "2, 3", startTime: Date(),
+            endTime: Date().addingTimeInterval(3600), stdNo: "001", weekday: 1)
 
         #expect(course.displayName(showEnglish: false) == "線性代數")
         #expect(course.displayName(showEnglish: true) == "LINEAR ALGEBRA")
+        #expect(course.isShowingEnglishName(showEnglish: true) == true)
+        #expect(course.isShowingEnglishName(showEnglish: false) == false)
         #expect(course.displayTeacher(showEnglish: false) == "Dr. Lin")
         #expect(course.displayTeacher(showEnglish: true) == "DR. LIN")
 
         let noEnglish = Course(
-            name: "微積分",
-            enName: "   ",
-            room: "A101",
-            teacher: "王老師",
-            teacherEn: "",
-            time: "3, 4",
-            startTime: Date(),
-            endTime: Date().addingTimeInterval(3600),
-            stdNo: "002",
-            weekday: 2
-        )
+            name: "微積分", enName: "   ", room: "A101", teacher: "王老師", teacherEn: "", time: "3, 4",
+            startTime: Date(), endTime: Date().addingTimeInterval(3600), stdNo: "002", weekday: 2)
 
         #expect(noEnglish.displayName(showEnglish: true) == "微積分")
+        #expect(noEnglish.isShowingEnglishName(showEnglish: true) == false)
         #expect(noEnglish.displayTeacher(showEnglish: true) == "王老師")
     }
 
-    @Test("default language rule only keeps Chinese for zh-Hant locales")
-    func defaultLanguageRule() {
+    @Test("default language rule only keeps Chinese for zh-Hant locales") func defaultLanguageRule()
+    {
         #expect(Course.shouldShowEnglishCourseName(forPreferredLanguage: "en-US") == true)
         #expect(Course.shouldShowEnglishCourseName(forPreferredLanguage: "ja-JP") == true)
         #expect(Course.shouldShowEnglishCourseName(forPreferredLanguage: "zh-Hant-TW") == false)

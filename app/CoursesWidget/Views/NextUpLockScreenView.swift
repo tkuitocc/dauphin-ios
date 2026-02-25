@@ -5,6 +5,10 @@ struct CoursesNextUpViewLockScreenView: View {
     @Environment(\.colorScheme) var colorScheme
 
     var entry: Provider.Entry
+    private func courseNameFontSize(for course: Course) -> CGFloat {
+        course.isShowingEnglishName(showEnglish: entry.showEnglishCourseName) ? 13 : 15
+    }
+
     var body: some View {
         if entry.ssoStuNo.isEmpty {
             HStack(spacing: 10) {
@@ -32,9 +36,10 @@ struct CoursesNextUpViewLockScreenView: View {
                     Spacer()
 
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(
-                            entry.courses[0].displayName(showEnglish: entry.showEnglishCourseName)
-                        ).font(.system(size: 15, weight: .bold))
+                        Text(entry.courses[0].displayName(showEnglish: entry.showEnglishCourseName))
+                            .font(
+                                .system(
+                                    size: courseNameFontSize(for: entry.courses[0]), weight: .bold))
 
                         Text(
                             "\(formatTime(entry.courses[0].startTime)) - \(formatTime(entry.courses[0].endTime))"
@@ -42,8 +47,7 @@ struct CoursesNextUpViewLockScreenView: View {
 
                         Text(
                             entry.courses[0].displayTeacher(
-                                showEnglish: entry.showEnglishTeacherName
-                            )
+                                showEnglish: entry.showEnglishTeacherName)
                         ).font(.system(size: 11)).lineLimit(1)
 
                         HStack {
