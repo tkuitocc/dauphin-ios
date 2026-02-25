@@ -102,8 +102,8 @@ import Testing
         #expect(courses[0].teachers == ["A", "B"])
     }
 
-    @Test("falls back to sess fields when timePlase is missing")
-    func fallsBackToSessFields() throws {
+    @Test("falls back to sess fields when timePlase is missing") func fallsBackToSessFields() throws
+    {
         let json = """
             {
               "stuelelist": [
@@ -133,8 +133,9 @@ import Testing
         #expect(courses[0].time == "6, 7")
     }
 
-    @Test("merges contiguous rows from cells fallback")
-    func mergesContiguousRowsFromCellsFallback() throws {
+    @Test("merges contiguous rows from cells fallback") func mergesContiguousRowsFromCellsFallback()
+        throws
+    {
         let json = """
             {
               "stuelelist": [],

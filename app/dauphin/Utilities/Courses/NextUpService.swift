@@ -20,13 +20,9 @@ struct DefaultNextUpService: NextUpService {
         let upcoming = sorted.filter { c in
             if c.weekday < today { return false }
             if c.weekday > today { return true }
-            guard let end = alignedDate(
-                minuteOfDay: c.endMinuteOfDay,
-                calendar: cal,
-                reference: now)
-            else {
-                return false
-            }
+            guard
+                let end = alignedDate(minuteOfDay: c.endMinuteOfDay, calendar: cal, reference: now)
+            else { return false }
             return end.timeIntervalSince(now) > upcomingThreshold
         }
 

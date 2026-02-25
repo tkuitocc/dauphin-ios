@@ -1,8 +1,6 @@
 import Foundation
 
-private enum CourseCacheVersion {
-    static let v2 = 2
-}
+private enum CourseCacheVersion { static let v2 = 2 }
 
 struct CourseCachePayloadV2: Codable {
     let version: Int
@@ -34,16 +32,11 @@ func decodeCoursesFromCacheData(_ data: Data) -> [Course]? {
 
 private func makeCachePayloadV2(courses: [Course]) -> CourseCachePayloadV2 {
     CourseCachePayloadV2(
-        version: CourseCacheVersion.v2,
-        generatedAt: Date(),
-        courses: courses,
+        version: CourseCacheVersion.v2, generatedAt: Date(), courses: courses,
         meetingsFlat: courses.map {
             CourseMeetingDigest(
-                courseId: $0.id,
-                weekday: $0.weekday,
-                startMinuteOfDay: $0.startMinuteOfDay,
-                endMinuteOfDay: $0.endMinuteOfDay,
-                sortKey: $0.sortKey)
+                courseId: $0.id, weekday: $0.weekday, startMinuteOfDay: $0.startMinuteOfDay,
+                endMinuteOfDay: $0.endMinuteOfDay, sortKey: $0.sortKey)
         })
 }
 

@@ -79,9 +79,7 @@ struct DefaultCourseParser: CourseParser {
             stueItems.append(course)
         }
 
-        if !stueItems.isEmpty {
-            return dedupeAndMerge(stueItems)
-        }
+        if !stueItems.isEmpty { return dedupeAndMerge(stueItems) }
 
         var cellItems: [Course] = []
         for row in api.cells ?? [] {
@@ -115,25 +113,13 @@ struct DefaultCourseParser: CourseParser {
         let endMinute = minuteOfDay(from: end)
 
         return Course(
-            name: name,
-            enName: enName,
-            cosNo: cosNo,
-            cosEleSeq: cosEleSeq,
-            room: room,
-            teacher: teacher,
-            teachers: [teacher],
-            time: sessions.map(String.init).joined(separator: ", "),
-            sessionNumbers: sessions,
-            startTime: start,
-            endTime: end,
-            stdNo: seatNo ?? "",
-            weekday: week,
-            note: note,
+            name: name, enName: enName, cosNo: cosNo, cosEleSeq: cosEleSeq, room: room,
+            teacher: teacher, teachers: [teacher],
+            time: sessions.map(String.init).joined(separator: ", "), sessionNumbers: sessions,
+            startTime: start, endTime: end, stdNo: seatNo ?? "", weekday: week, note: note,
             remark: [remark, teachNameEn].compactMap { $0 }.joined(separator: " | "),
-            startMinuteOfDay: startMinute,
-            endMinuteOfDay: endMinute,
-            durationMinutes: max(0, endMinute - startMinute),
-            sortKey: week * 10_000 + startMinute,
+            startMinuteOfDay: startMinute, endMinuteOfDay: endMinute,
+            durationMinutes: max(0, endMinute - startMinute), sortKey: week * 10_000 + startMinute,
             sourceProvider: "stuelelist")
     }
 
@@ -159,23 +145,11 @@ struct DefaultCourseParser: CourseParser {
         let endMinute = minuteOfDay(from: end)
 
         return Course(
-            name: name,
-            enName: enName,
-            room: room,
-            teacher: teacher,
-            teachers: [teacher],
-            time: String(sess),
-            sessionNumbers: [sess],
-            startTime: start,
-            endTime: end,
-            stdNo: seatNo ?? "",
-            weekday: week,
-            note: note,
-            remark: teachNameEn,
-            startMinuteOfDay: startMinute,
-            endMinuteOfDay: endMinute,
-            durationMinutes: max(0, endMinute - startMinute),
-            sortKey: week * 10_000 + startMinute,
+            name: name, enName: enName, room: room, teacher: teacher, teachers: [teacher],
+            time: String(sess), sessionNumbers: [sess], startTime: start, endTime: end,
+            stdNo: seatNo ?? "", weekday: week, note: note, remark: teachNameEn,
+            startMinuteOfDay: startMinute, endMinuteOfDay: endMinute,
+            durationMinutes: max(0, endMinute - startMinute), sortKey: week * 10_000 + startMinute,
             sourceProvider: "cells")
     }
 
@@ -206,9 +180,7 @@ struct DefaultCourseParser: CourseParser {
         return Array(Set(numbers)).sorted()
     }
 
-    private func cleanCourseName(_ raw: String?) -> String {
-        cleanOptional(raw) ?? ""
-    }
+    private func cleanCourseName(_ raw: String?) -> String { cleanOptional(raw) ?? "" }
 
     private func cleanPrimaryToken(_ raw: String?) -> String? {
         guard let cleaned = cleanOptional(raw) else { return nil }
@@ -217,10 +189,8 @@ struct DefaultCourseParser: CourseParser {
 
     private func cleanOptional(_ raw: String?) -> String? {
         guard let raw else { return nil }
-        let noHtml = htmlStrip(raw)
-            .replacingOccurrences(of: "&nbsp;", with: " ")
-            .replacingOccurrences(of: "\n", with: " ")
-            .replacingOccurrences(of: "\r", with: " ")
+        let noHtml = htmlStrip(raw).replacingOccurrences(of: "&nbsp;", with: " ")
+            .replacingOccurrences(of: "\n", with: " ").replacingOccurrences(of: "\r", with: " ")
         let trimmed = noHtml.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmed.isEmpty { return nil }
         return trimmed
@@ -292,20 +262,11 @@ struct DefaultCourseParser: CourseParser {
         var mergedByKey: [MergeKey: Course] = [:]
         for course in unique {
             let key = MergeKey(
-                name: course.name,
-                enName: course.enName,
-                cosNo: course.cosNo,
-                cosEleSeq: course.cosEleSeq,
-                room: course.room,
-                time: course.time,
-                sessionNumbers: course.sessionNumbers,
-                startTime: course.startTime,
-                endTime: course.endTime,
-                seatNo: course.seatNo,
-                weekday: course.weekday,
-                note: course.note,
-                remark: course.remark,
-                sourceProvider: course.sourceProvider)
+                name: course.name, enName: course.enName, cosNo: course.cosNo,
+                cosEleSeq: course.cosEleSeq, room: course.room, time: course.time,
+                sessionNumbers: course.sessionNumbers, startTime: course.startTime,
+                endTime: course.endTime, seatNo: course.seatNo, weekday: course.weekday,
+                note: course.note, remark: course.remark, sourceProvider: course.sourceProvider)
 
             if var existing = mergedByKey[key] {
                 var set = Set(existing.teachers)
@@ -354,17 +315,9 @@ struct DefaultCourseParser: CourseParser {
 
         let grouped = Dictionary(grouping: courses) {
             MergeLineKey(
-                name: $0.name,
-                enName: $0.enName,
-                cosNo: $0.cosNo,
-                cosEleSeq: $0.cosEleSeq,
-                room: $0.room,
-                teacher: $0.teacher,
-                teachers: $0.teachers,
-                seatNo: $0.seatNo,
-                weekday: $0.weekday,
-                note: $0.note,
-                remark: $0.remark,
+                name: $0.name, enName: $0.enName, cosNo: $0.cosNo, cosEleSeq: $0.cosEleSeq,
+                room: $0.room, teacher: $0.teacher, teachers: $0.teachers, seatNo: $0.seatNo,
+                weekday: $0.weekday, note: $0.note, remark: $0.remark,
                 sourceProvider: $0.sourceProvider)
         }
 
@@ -414,28 +367,17 @@ struct DefaultCourseParser: CourseParser {
         let sessions = Array(Set(lhs.sessionNumbers + rhs.sessionNumbers)).sorted()
         let start = lhs.startMinuteOfDay <= rhs.startMinuteOfDay ? lhs : rhs
         let end = lhs.endMinuteOfDay >= rhs.endMinuteOfDay ? lhs : rhs
-        let teachers = Array(Set(lhs.teachers + rhs.teachers + [lhs.teacher, rhs.teacher]))
-            .filter { !$0.isEmpty }
-            .sorted()
+        let teachers = Array(Set(lhs.teachers + rhs.teachers + [lhs.teacher, rhs.teacher])).filter {
+            !$0.isEmpty
+        }.sorted()
 
         return Course(
-            name: lhs.name,
-            enName: lhs.enName,
-            cosNo: lhs.cosNo,
-            cosEleSeq: lhs.cosEleSeq,
-            room: lhs.room,
-            teacher: teachers.joined(separator: ", "),
-            teachers: teachers,
-            time: sessions.map(String.init).joined(separator: ", "),
-            sessionNumbers: sessions,
-            startTime: start.startTime,
-            endTime: end.endTime,
-            stdNo: lhs.seatNo ?? "",
-            weekday: lhs.weekday,
-            note: lhs.note,
-            remark: lhs.remark,
-            startMinuteOfDay: start.startMinuteOfDay,
-            endMinuteOfDay: end.endMinuteOfDay,
+            name: lhs.name, enName: lhs.enName, cosNo: lhs.cosNo, cosEleSeq: lhs.cosEleSeq,
+            room: lhs.room, teacher: teachers.joined(separator: ", "), teachers: teachers,
+            time: sessions.map(String.init).joined(separator: ", "), sessionNumbers: sessions,
+            startTime: start.startTime, endTime: end.endTime, stdNo: lhs.seatNo ?? "",
+            weekday: lhs.weekday, note: lhs.note, remark: lhs.remark,
+            startMinuteOfDay: start.startMinuteOfDay, endMinuteOfDay: end.endMinuteOfDay,
             durationMinutes: max(0, end.endMinuteOfDay - start.startMinuteOfDay),
             sortKey: lhs.weekday * 10_000 + start.startMinuteOfDay,
             sourceProvider: lhs.sourceProvider)

@@ -33,26 +33,11 @@ struct Course: Identifiable, Hashable, Codable {
     var stdNo: String { seatNo ?? "" }
 
     init(
-        id: String? = nil,
-        name: String,
-        enName: String? = nil,
-        cosNo: String? = nil,
-        cosEleSeq: String? = nil,
-        room: String,
-        teacher: String,
-        teachers: [String]? = nil,
-        time: String,
-        sessionNumbers: [Int] = [],
-        startTime: Date,
-        endTime: Date,
-        stdNo: String,
-        weekday: Int,
-        note: String = "",
-        remark: String? = nil,
-        startMinuteOfDay: Int? = nil,
-        endMinuteOfDay: Int? = nil,
-        durationMinutes: Int? = nil,
-        sortKey: Int? = nil,
+        id: String? = nil, name: String, enName: String? = nil, cosNo: String? = nil,
+        cosEleSeq: String? = nil, room: String, teacher: String, teachers: [String]? = nil,
+        time: String, sessionNumbers: [Int] = [], startTime: Date, endTime: Date, stdNo: String,
+        weekday: Int, note: String = "", remark: String? = nil, startMinuteOfDay: Int? = nil,
+        endMinuteOfDay: Int? = nil, durationMinutes: Int? = nil, sortKey: Int? = nil,
         sourceProvider: String = "stuelelist"
     ) {
         self.name = name
@@ -83,14 +68,9 @@ struct Course: Identifiable, Hashable, Codable {
         self.id =
             id
             ?? Self.makeStableID(
-                name: name,
-                weekday: weekday,
-                sessionNumbers: sessionNumbers,
-                startMinuteOfDay: computedStartMinute,
-                endMinuteOfDay: computedEndMinute,
-                room: room,
-                cosEleSeq: cosEleSeq,
-                seatNo: normalizedSeat)
+                name: name, weekday: weekday, sessionNumbers: sessionNumbers,
+                startMinuteOfDay: computedStartMinute, endMinuteOfDay: computedEndMinute,
+                room: room, cosEleSeq: cosEleSeq, seatNo: normalizedSeat)
     }
 
     private static func minuteOfDay(_ date: Date) -> Int {
@@ -118,24 +98,12 @@ struct Course: Identifiable, Hashable, Codable {
     }
 
     private static func makeStableID(
-        name: String,
-        weekday: Int,
-        sessionNumbers: [Int],
-        startMinuteOfDay: Int,
-        endMinuteOfDay: Int,
-        room: String,
-        cosEleSeq: String?,
-        seatNo: String?
+        name: String, weekday: Int, sessionNumbers: [Int], startMinuteOfDay: Int,
+        endMinuteOfDay: Int, room: String, cosEleSeq: String?, seatNo: String?
     ) -> String {
         let base = [
-            name,
-            String(weekday),
-            sessionNumbers.map(String.init).joined(separator: ","),
-            String(startMinuteOfDay),
-            String(endMinuteOfDay),
-            room,
-            cosEleSeq ?? "",
-            seatNo ?? "",
+            name, String(weekday), sessionNumbers.map(String.init).joined(separator: ","),
+            String(startMinuteOfDay), String(endMinuteOfDay), room, cosEleSeq ?? "", seatNo ?? "",
         ].joined(separator: "|")
         return "course_\(fnv1a64Hex(base))"
     }
@@ -184,24 +152,22 @@ struct Course: Identifiable, Hashable, Codable {
         let fallbackEndMinute = Self.minuteOfDay(endTime)
         startMinuteOfDay =
             try c.decodeIfPresent(Int.self, forKey: .startMinuteOfDay) ?? fallbackStartMinute
-        endMinuteOfDay = try c.decodeIfPresent(Int.self, forKey: .endMinuteOfDay) ?? fallbackEndMinute
+        endMinuteOfDay =
+            try c.decodeIfPresent(Int.self, forKey: .endMinuteOfDay) ?? fallbackEndMinute
         durationMinutes =
             try c.decodeIfPresent(Int.self, forKey: .durationMinutes)
             ?? max(0, endMinuteOfDay - startMinuteOfDay)
-        sortKey = try c.decodeIfPresent(Int.self, forKey: .sortKey) ?? (weekday * 10_000 + startMinuteOfDay)
+        sortKey =
+            try c.decodeIfPresent(Int.self, forKey: .sortKey)
+            ?? (weekday * 10_000 + startMinuteOfDay)
         sourceProvider = try c.decodeIfPresent(String.self, forKey: .sourceProvider) ?? "legacy"
 
         id =
             try c.decodeIfPresent(String.self, forKey: .id)
             ?? Self.makeStableID(
-                name: name,
-                weekday: weekday,
-                sessionNumbers: sessionNumbers,
-                startMinuteOfDay: startMinuteOfDay,
-                endMinuteOfDay: endMinuteOfDay,
-                room: room,
-                cosEleSeq: cosEleSeq,
-                seatNo: seatNo)
+                name: name, weekday: weekday, sessionNumbers: sessionNumbers,
+                startMinuteOfDay: startMinuteOfDay, endMinuteOfDay: endMinuteOfDay, room: room,
+                cosEleSeq: cosEleSeq, seatNo: seatNo)
     }
 
     func encode(to encoder: Encoder) throws {
