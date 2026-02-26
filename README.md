@@ -44,3 +44,6 @@ xcrun simctl install booted build/Debug-iphonesimulator/dauphin.app
 - Keep SwiftLint warnings at zero.
 - Add or update tests for behavior changes.
 - Run lint and tests before opening a PR.
+
+
+All rights are reserved by all author.
