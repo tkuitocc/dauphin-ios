@@ -834,7 +834,7 @@
 				MARKETING_VERSION = 2.0.67;
 				NEW_SETTING = "";
 				NEW_SETTING1 = "";
-				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = club.ntut.tkuitocc.dauphin.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -882,7 +882,7 @@
 				MARKETING_VERSION = 2.0.67;
 				NEW_SETTING = "";
 				NEW_SETTING1 = "";
-				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = club.ntut.tkuitocc.dauphin.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -913,7 +913,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 2.0.67;
-				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.dev.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = club.ntut.tkuitocc.dauphin.dev.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -946,7 +946,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 2.0.67;
-				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.dev.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = club.ntut.tkuitocc.dauphin.dev.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -980,7 +980,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 2.0.67;
-				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.dev.StdID;
+				PRODUCT_BUNDLE_IDENTIFIER = club.ntut.tkuitocc.dauphin.dev.StdID;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1013,7 +1013,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 2.0.67;
-				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.dev.StdID;
+				PRODUCT_BUNDLE_IDENTIFIER = club.ntut.tkuitocc.dauphin.dev.StdID;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1047,7 +1047,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 2.0.67;
-				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = club.ntut.tkuitocc.dauphin.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1080,7 +1080,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 2.0.67;
-				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = club.ntut.tkuitocc.dauphin.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1104,7 +1104,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cantpr09rma.ModelsTests;
+				PRODUCT_BUNDLE_IDENTIFIER = club.ntut.npc.ModelsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -1130,7 +1130,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cantpr09rma.ModelsTests;
+				PRODUCT_BUNDLE_IDENTIFIER = club.ntut.npc.ModelsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -1153,11 +1153,11 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = J7DG8X424B;
+				DEVELOPMENT_TEAM = G582M7KCHL;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cantpr09rma.FeaturesTests;
+				PRODUCT_BUNDLE_IDENTIFIER = club.ntut.npc.FeaturesTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -1179,11 +1179,11 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = J7DG8X424B;
+				DEVELOPMENT_TEAM = G582M7KCHL;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cantpr09rma.FeaturesTests;
+				PRODUCT_BUNDLE_IDENTIFIER = club.ntut.npc.FeaturesTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -1238,7 +1238,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = J7DG8X424B;
+				DEVELOPMENT_TEAM = G582M7KCHL;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -1306,7 +1306,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = J7DG8X424B;
+				DEVELOPMENT_TEAM = G582M7KCHL;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -1364,7 +1364,7 @@
 				MARKETING_VERSION = 2.0.67;
 				NEW_SETTING = "";
 				NEW_SETTING1 = "";
-				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin;
+				PRODUCT_BUNDLE_IDENTIFIER = club.ntut.tkuitocc.dauphin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1411,7 +1411,7 @@
 				MARKETING_VERSION = 2.0.67;
 				NEW_SETTING = "";
 				NEW_SETTING1 = "";
-				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin;
+				PRODUCT_BUNDLE_IDENTIFIER = club.ntut.tkuitocc.dauphin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1442,7 +1442,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 2.0.67;
-				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.StdID;
+				PRODUCT_BUNDLE_IDENTIFIER = club.ntut.tkuitocc.dauphin.StdID;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1475,7 +1475,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 2.0.67;
-				PRODUCT_BUNDLE_IDENTIFIER = cantpr09ram.dauphin.StdID;
+				PRODUCT_BUNDLE_IDENTIFIER = club.ntut.tkuitocc.dauphin.StdID;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;

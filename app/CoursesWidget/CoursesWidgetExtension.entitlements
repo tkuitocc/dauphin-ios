@@ -4,11 +4,11 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.cantpr09ram.dauphin</string>
+		<string>group.club.ntut.tkuitocc.dauphin</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)cantpr09ram.dauphin</string>
+		<string>$(AppIdentifierPrefix)club.ntut.tkuitocc.dauphin</string>
 	</array>
 </dict>
 </plist>
