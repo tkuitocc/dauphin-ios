@@ -129,6 +129,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				api.example.plist,
+				api.plist,
 				AppIcon.icon,
 				Assets.xcassets,
 				Info.plist,

@@ -33,6 +33,16 @@
         }
       }
     },
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
     "%lld" : {
       "localizations" : {
         "en" : {
@@ -274,6 +284,9 @@
         }
       }
     },
+    "Close" : {
+
+    },
     "Coming Soon" : {
       "localizations" : {
         "en" : {
@@ -322,7 +335,40 @@
         }
       }
     },
+    "course.cache.cleared" : {
+
+    },
+    "course.cache.refreshed" : {
+
+    },
+    "course.cache.refreshFailed" : {
+
+    },
+    "course.cache.updated" : {
+
+    },
+    "course.cache.updating" : {
+
+    },
+    "course.detail.day" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Day"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "星期"
+          }
+        }
+      }
+    },
     "course.detail.instructor" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -339,6 +385,7 @@
       }
     },
     "course.detail.location" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -355,6 +402,7 @@
       }
     },
     "course.detail.note" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -371,6 +419,7 @@
       }
     },
     "course.detail.seatNumber" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -386,39 +435,8 @@
         }
       }
     },
-    "course.detail.time" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Time"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "時間"
-          }
-        }
-      }
-    },
-    "course.detail.day" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Day"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "星期"
-          }
-        }
-      }
-    },
     "course.detail.section.details" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -435,6 +453,7 @@
       }
     },
     "course.detail.section.map" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -451,6 +470,7 @@
       }
     },
     "course.detail.section.note" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -467,6 +487,7 @@
       }
     },
     "course.detail.section.schedule" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -481,6 +502,32 @@
           }
         }
       }
+    },
+    "course.detail.time" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時間"
+          }
+        }
+      }
+    },
+    "course.error.fetchFailed" : {
+
+    },
+    "course.error.noInternet" : {
+
+    },
+    "course.error.noInternetNoCache" : {
+
     },
     "Data Management" : {
       "localizations" : {
@@ -561,6 +608,12 @@
           }
         }
       }
+    },
+    "launch.failedToLoadKeys" : {
+
+    },
+    "launch.retry" : {
+
     },
     "Library" : {
       "localizations" : {
@@ -660,6 +713,7 @@
       }
     },
     "Open in Apple Maps" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -676,6 +730,7 @@
       }
     },
     "Open in Google Maps" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -738,6 +793,9 @@
           }
         }
       }
+    },
+    "Return to List" : {
+
     },
     "Select a setting" : {
       "localizations" : {
@@ -802,6 +860,15 @@
           }
         }
       }
+    },
+    "Show English Course Name" : {
+
+    },
+    "Show English Teacher Name" : {
+
+    },
+    "Show location details" : {
+
     },
     "stdID:%@" : {
       "extractionState" : "manual",
@@ -948,38 +1015,6 @@
         }
       }
     },
-    "Your student ID is %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your student ID is %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你的學號是 %@"
-          }
-        }
-      }
-    },
-    "widget.notLoggedIn" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Not logged in"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "尚未登入"
-          }
-        }
-      }
-    },
     "widget.courses.description" : {
       "localizations" : {
         "en" : {
@@ -1008,6 +1043,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "下一堂"
+          }
+        }
+      }
+    },
+    "widget.notLoggedIn" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not logged in"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尚未登入"
           }
         }
       }
@@ -1056,6 +1107,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "學生條碼"
+          }
+        }
+      }
+    },
+    "Your student ID is %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your student ID is %@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的學號是 %@"
           }
         }
       }
