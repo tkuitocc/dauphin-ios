@@ -1,0 +1,59 @@
+name: Build iOS app
+
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: macOS-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 21
+      - name: Set Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_16.4.app/Contents/Developer
+      - name: iOS debug build
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 15
+          max_attempts: 5
+          command: cd app && xcodebuild -scheme dauphin -configuration Debug -sdk iphoneos -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED='NO' CODE_SIGNING_REQUIRED='NO' ONLY_ACTIVE_ARCH='NO' SYMROOT=$(pwd)/build clean build
+      - name: iOS generate IPA file
+        run: |
+          rm -rf Payload
+          mkdir -p Payload
+          cp -r "$(pwd)/app/build/Debug-iphoneos/dauphin.app" Payload/
+          zip -r iosApp_debug.ipa Payload
+          rm -rf Payload
+      - name: Upload artifacts - iosapp_debug.ipa
+        uses: actions/upload-artifact@v4
+        with:
+          name: iosapp_debug.ipa
+          path: ./iosApp_debug.ipa
+          if-no-files-found: ignore
+      - name: iOS release build
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 15
+          max_attempts: 5
+          command: cd app && xcodebuild -scheme dauphin -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED='NO' CODE_SIGNING_REQUIRED='NO' ONLY_ACTIVE_ARCH='NO' SYMROOT=$(pwd)/build clean build
+      - name: iOS generate IPA file
+        run: |
+          rm -rf Payload
+          mkdir -p Payload
+          cp -r "$(pwd)/app/build/Release-iphoneos/dauphin.app" Payload/
+          zip -r iosApp_release.ipa Payload
+          rm -rf Payload
+      - name: Upload artifacts - iosApp_release.ipa
+        uses: actions/upload-artifact@v4
+        with:
+          name: iosapp_release.ipa
+          path: ./iosApp_release.ipa
+          if-no-files-found: ignore
