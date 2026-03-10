@@ -27,7 +27,7 @@ struct MarkerSheetView: View {
 #Preview("MarkerSheetView") {
     MarkerSheetView(
         location: L2GData(
-            code: "A", name: "書卷廣場",
+            code: "ZZZ", name: "書卷廣場",
             coordinate: CLLocationCoordinate2D(latitude: 25.17553, longitude: 121.45063)),
         didClearSelection: {}, didReturnToList: {})
 }

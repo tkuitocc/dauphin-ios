@@ -23,12 +23,17 @@ struct LocationListView: View {
                     HStack {
                         Image(systemName: "building.columns.circle.fill").font(.title3)
                             .foregroundStyle(.tint)
-                        Text("\(loc.name) \(loc.code)").font(.headline)
+                        Text("\(loc.code == "ZZZ" ? "" : loc.code)").font(.headline)
+                            .frame(
+                                width: UIFont.preferredFont(forTextStyle: .headline).pointSize * 2,
+                                alignment: .leading
+                            )
+                        Text("\(loc.name)").font(.headline)
                         Spacer()
                         Image(systemName: "chevron.right").font(.footnote).foregroundStyle(
                             .tertiary)
                     }.padding(2)
-                }.accessibilityLabel(Text("\(loc.name) \(loc.code)")).accessibilityHint(
+                }.accessibilityLabel(Text("\(loc.code) \(loc.name)")).accessibilityHint(
                     Text("Show location details")
                 ).accessibilityIdentifier("map.location.\(loc.code)")
             }.navigationTitle("Locations").navigationBarTitleDisplayMode(.inline).listStyle(.plain)
