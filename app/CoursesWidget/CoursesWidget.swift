@@ -165,7 +165,7 @@ struct CoursesNextUpWidgetEntryView: View {
 
     var body: some View {
         switch widgetFamily {
-        case .systemSmall, .systemMedium: CoursesNextUpSmallView(entry: entry)
+        case .systemSmall, .systemMedium, .systemLarge: CoursesNextUpSmallView(entry: entry)
         case .accessoryRectangular: CoursesNextUpViewLockScreenView(entry: entry)
         default: EmptyView()
         }
@@ -192,7 +192,7 @@ struct CoursesNextUpWidget: Widget {
         ).description(
             String(localized: "widget.courses.description")
         ).supportedFamilies([
-            .systemSmall, .systemMedium, .accessoryRectangular,
+            .systemSmall, .systemMedium, .systemLarge, .accessoryRectangular,
         ])
     }
 }

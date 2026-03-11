@@ -10,6 +10,7 @@ import WidgetKit
 
 struct CoursesNextUpSmallView: View {
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.widgetFamily) var widgetFamily
     var entry: Provider.Entry
     private let calendar = Calendar(identifier: .gregorian)
 
@@ -167,6 +168,154 @@ struct CoursesNextUpSmallView: View {
                                     Capsule().fill(isSameDay ? Color.blue : Color.orange).frame(
                                         width: 4
                                     ).padding(.leading, -8), alignment: .leading)
+                            }
+                        }
+
+                        if widgetFamily == .systemLarge {
+                            // Third Event
+                            if entry.courses.count > 2 {
+                                let isSameDay = entry.courses[1].weekday == entry.courses[2].weekday
+                                let secondCourseWeekday = weekdayName(for: entry.courses[2].weekday)
+
+                                if isSameDay {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        VStack(alignment: .leading, spacing: 0) {
+                                            Text(
+                                                entry.courses[2].displayName(
+                                                    showEnglish: entry.showEnglishCourseName)
+                                            ).lineLimit(1).font(
+                                                .system(
+                                                    size: courseNameFontSize(for: entry.courses[2]),
+                                                    weight: .semibold)
+                                            ).foregroundColor(.primary)
+                                            Text(
+                                                "\(formatTime(entry.courses[2].startTime)) - \(formatTime(entry.courses[2].endTime))"
+                                            ).font(.footnote).foregroundColor(.secondary)
+                                            Text(
+                                                entry.courses[2].displayTeacher(
+                                                    showEnglish: entry.showEnglishTeacherName)
+                                            ).lineLimit(1).font(.caption2).foregroundColor(.secondary)
+                                        }
+
+                                        HStack(spacing: 3) {
+                                            HStack(spacing: 2) {
+                                                Image(systemName: "location.circle.fill").font(
+                                                    .system(size: 8))
+                                                Text("\(entry.courses[2].room)").font(.system(size: 10))
+                                            }.lineLimit(1).padding(.vertical, 2).padding(.horizontal, 5)
+                                                .background(Color.blue.opacity(0.6)).cornerRadius(4)
+
+                                            HStack(spacing: 0) {
+                                                Image(systemName: "graduationcap").font(.system(size: 8))
+                                                Text("\(entry.courses[2].stdNo)").font(.system(size: 10))
+                                            }.lineLimit(1).padding(.vertical, 2).padding(.horizontal, 5)
+                                                .background(Color.blue.opacity(0.6)).cornerRadius(4)
+                                        }
+                                    }.padding(.bottom, 3).overlay(
+                                        Capsule().fill(Color.blue).frame(width: 4).padding(.leading, -8),
+                                        alignment: .leading)
+                                } else {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(secondCourseWeekday).font(.caption).foregroundColor(.secondary)
+                                            .padding(.leading, -10)
+
+                                        VStack(alignment: .leading, spacing: 0) {
+                                            Text(
+                                                entry.courses[2].displayName(
+                                                    showEnglish: entry.showEnglishCourseName)
+                                            ).font(
+                                                .system(
+                                                    size: courseNameFontSize(for: entry.courses[2]),
+                                                    weight: .semibold)
+                                            ).foregroundColor(.primary).lineLimit(1)
+                                            Text(
+                                                "\(formatTime(entry.courses[2].startTime)) - \(formatTime(entry.courses[2].endTime))"
+                                            ).font(.caption).foregroundColor(.secondary)
+                                            Text(
+                                                entry.courses[2].displayTeacher(
+                                                    showEnglish: entry.showEnglishTeacherName)
+                                            ).lineLimit(1).font(.caption2).foregroundColor(.secondary)
+                                        }.padding(.bottom, 2).overlay(
+                                            Capsule().fill(isSameDay ? Color.blue : Color.orange).frame(
+                                                width: 4
+                                            ).padding(.leading, -8), alignment: .leading)
+                                    }
+                                }
+
+                                // Fourth Event
+                                if entry.courses.count > 4 {
+                                    let isSameDay = entry.courses[2].weekday == entry.courses[3].weekday
+                                    let secondCourseWeekday = weekdayName(for: entry.courses[3].weekday)
+
+                                    if isSameDay {
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            VStack(alignment: .leading, spacing: 0) {
+                                                Text(
+                                                    entry.courses[3].displayName(
+                                                        showEnglish: entry.showEnglishCourseName)
+                                                ).lineLimit(1).font(
+                                                    .system(
+                                                        size: courseNameFontSize(for: entry.courses[3]),
+                                                        weight: .semibold)
+                                                ).foregroundColor(.primary)
+                                                Text(
+                                                    "\(formatTime(entry.courses[3].startTime)) - \(formatTime(entry.courses[3].endTime))"
+                                                ).font(.footnote).foregroundColor(.secondary)
+                                                Text(
+                                                    entry.courses[3].displayTeacher(
+                                                        showEnglish: entry.showEnglishTeacherName)
+                                                ).lineLimit(1).font(.caption2).foregroundColor(.secondary)
+                                            }
+
+                                            HStack(spacing: 3) {
+                                                HStack(spacing: 2) {
+                                                    Image(systemName: "location.circle.fill").font(
+                                                        .system(size: 8))
+                                                    Text("\(entry.courses[3].room)").font(.system(size: 10))
+                                                }.lineLimit(1).padding(.vertical, 2).padding(.horizontal, 5)
+                                                    .background(Color.blue.opacity(0.6)).cornerRadius(4)
+
+                                                HStack(spacing: 0) {
+                                                    Image(systemName: "graduationcap").font(.system(size: 8))
+                                                    Text("\(entry.courses[3].stdNo)").font(.system(size: 10))
+                                                }.lineLimit(1).padding(.vertical, 2).padding(.horizontal, 5)
+                                                    .background(Color.blue.opacity(0.6)).cornerRadius(4)
+                                            }
+                                        }.padding(.bottom, 3).overlay(
+                                            Capsule().fill(Color.blue).frame(width: 4).padding(.leading, -8),
+                                            alignment: .leading)
+                                    } else {
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text(secondCourseWeekday).font(.caption).foregroundColor(.secondary)
+                                                .padding(.leading, -10)
+
+                                            VStack(alignment: .leading, spacing: 0) {
+                                                Text(
+                                                    entry.courses[3].displayName(
+                                                        showEnglish: entry.showEnglishCourseName)
+                                                ).font(
+                                                    .system(
+                                                        size: courseNameFontSize(for: entry.courses[3]),
+                                                        weight: .semibold)
+                                                ).foregroundColor(.primary).lineLimit(1)
+                                                Text(
+                                                    "\(formatTime(entry.courses[3].startTime)) - \(formatTime(entry.courses[3].endTime))"
+                                                ).font(.caption).foregroundColor(.secondary)
+                                                Text(
+                                                    entry.courses[3].displayTeacher(
+                                                        showEnglish: entry.showEnglishTeacherName)
+                                                ).lineLimit(1).font(.caption2).foregroundColor(.secondary)
+                                            }.padding(.bottom, 2).overlay(
+                                                Capsule().fill(isSameDay ? Color.blue : Color.orange).frame(
+                                                    width: 4
+                                                ).padding(.leading, -8), alignment: .leading)
+                                        }
+                                    }
+                                } else {
+                                    Color.clear.frame(height: 50)
+                                }
+                            } else {
+                                Color.clear.frame(height: 100)
                             }
                         }
                     } else {
