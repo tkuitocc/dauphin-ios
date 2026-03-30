@@ -33,7 +33,7 @@ extension WeekdaysView {
             Text(label).font(.system(size: 10, weight: .medium)).foregroundColor(
                 isToday ? Color.blue : Color(UIColor.tertiaryLabel))
 
-            Text("\(date)").font(.system(size: 13, weight: isToday ? .semibold : .regular))
+            Text(verbatim: "\(date)").font(.system(size: 13, weight: isToday ? .semibold : .regular))
                 .foregroundColor(isToday ? Color.blue : Color(UIColor.label).opacity(0.7))
         }.frame(height: 20).frame(width: width, height: 20)
     }

@@ -18,7 +18,7 @@ struct CourseCardView: View {
                 // Time Badge
                 HStack {
                     Image(systemName: "clock.fill").font(.system(size: 11))
-                    Text("\(formatTime(startTime)) - \(formatTime(endTime))").font(
+                    Text(verbatim: "\(formatTime(startTime)) - \(formatTime(endTime))").font(
                         .system(size: 11, weight: .medium))
                 }.padding(.vertical, 4).clipShape(Capsule())
             }

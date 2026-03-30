@@ -36,7 +36,7 @@ struct WeekScheduleView: View {
                         VStack(spacing: 0) {
                             ForEach(ScheduleLayout.startHour ... ScheduleLayout.endHour, id: \.self)
                             { hour in
-                                Text("\(hour):00").font(.caption).foregroundColor(
+                                Text(verbatim: "\(hour):00").font(.caption).foregroundColor(
                                     Color(UIColor.secondaryLabel)
                                 ).frame(height: ScheduleLayout.slotHeight).offset(
                                     y: -ScheduleLayout.slotHeight * 0.4)

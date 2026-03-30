@@ -25,7 +25,7 @@ struct MapView: View {
                         Image(systemName: "mappin.circle.fill").font(isSelected ? .title : .title2)
                             .foregroundStyle(isSelected ? .red : .secondary).shadow(
                                 radius: isSelected ? 3 : 1)
-                    }.accessibilityLabel(Text("\(location.name) \(location.code)"))
+                    }.accessibilityLabel(Text(verbatim: "\(location.name) \(location.code)"))
                         .accessibilityHint(Text("Show location details")).accessibilityIdentifier(
                             "map.annotation.\(location.code)"
                         ).buttonStyle(.plain)

@@ -30,10 +30,20 @@ struct CourseDetailView: View {
 
     init(course: Course) {
         self.course = course
+        
+        let calendar = {
+            var c = Calendar(identifier: .gregorian)
+            c.locale = .autoupdatingCurrent
+            return c
+        }()
 
-        let days = [
-            "", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
-        ]
+        let days = {
+            var symbols = calendar.weekdaySymbols
+            let sunday = symbols.removeFirst()
+            symbols.append(sunday)
+            return [""] + symbols
+        }()
+
         dayOfWeek = days[min(max(course.weekday, 0), days.count - 1)]
 
         let formatter = CourseDetailView.timeFormatter
@@ -54,19 +64,48 @@ struct CourseDetailView: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
-                    detailRow(title: "Time", content: timeRange, subcontent: dayOfWeek)
-                    Divider()
-                    detailRow(title: "Location", content: course.room)
-                    Divider()
-                    detailRow(title: "Seat Number", content: course.stdNo)
+                    detailRow(
+                        title: String(
+                            localized: "course.detail.time",
+                            defaultValue: "Time"
+                        ),
+                        content: timeRange,
+                        subcontent: dayOfWeek
+                    )
                     Divider()
                     detailRow(
-                        title: "Instructor",
+                        title: String(
+                            localized: "course.detail.location",
+                            defaultValue: "Location"
+                        ),
+                        content: course.room
+                    )
+                    Divider()
+                    detailRow(
+                        title: String(
+                            localized: "course.detail.seatNumber",
+                            defaultValue: "Seat Number"
+                        ),
+                        content: course.stdNo
+                    )
+                    Divider()
+                    detailRow(
+                        title: String(
+                            localized: "course.detail.instructor",
+                            defaultValue: "Instructor"
+                        ),
                         content: course.displayTeacher(showEnglish: showEnglishTeacherName))
 
                     if hasNote {
                         Divider()
-                        detailRow(title: "Note", content: course.note, isNote: true)
+                        detailRow(
+                            title: String(
+                                localized: "course.detail.note",
+                                defaultValue: "Note"
+                            ),
+                            content: course.note,
+                            isNote: true
+                        )
                     }
                     let code =
                         course.room.range(of: #"^[A-Za-z]+"#, options: .regularExpression).map {

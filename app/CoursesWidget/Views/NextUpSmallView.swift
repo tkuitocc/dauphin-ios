@@ -72,7 +72,7 @@ struct CoursesNextUpSmallView: View {
                                     weight: .semibold)
                             ).foregroundColor(.primary)
                             Text(
-                                "\(formatTime(entry.courses[0].startTime)) - \(formatTime(entry.courses[0].endTime))"
+                                verbatim: "\(formatTime(entry.courses[0].startTime)) - \(formatTime(entry.courses[0].endTime))"
                             ).font(.footnote).foregroundColor(.secondary)
                             Text(
                                 entry.courses[0].displayTeacher(
@@ -83,14 +83,14 @@ struct CoursesNextUpSmallView: View {
                         HStack(spacing: 3) {
                             HStack(spacing: 2) {
                                 Image(systemName: "location.circle.fill").font(.system(size: 8))
-                                Text("\(entry.courses[0].room)").font(.system(size: 10))
+                                Text(verbatim: "\(entry.courses[0].room)").font(.system(size: 10))
                             }.lineLimit(1).padding(.vertical, 2).padding(.horizontal, 5).background(
                                 Color.blue.opacity(0.6)
                             ).cornerRadius(4)
 
                             HStack(spacing: 0) {
                                 Image(systemName: "graduationcap").font(.system(size: 8))
-                                Text("\(entry.courses[0].stdNo)").font(.system(size: 10))
+                                Text(verbatim: "\(entry.courses[0].stdNo)").font(.system(size: 10))
                             }.lineLimit(1).padding(.vertical, 2).padding(.horizontal, 5).background(
                                 Color.blue.opacity(0.6)
                             ).cornerRadius(4)
@@ -118,7 +118,7 @@ struct CoursesNextUpSmallView: View {
                                             weight: .semibold)
                                     ).foregroundColor(.primary)
                                     Text(
-                                        "\(formatTime(entry.courses[1].startTime)) - \(formatTime(entry.courses[1].endTime))"
+                                        verbatim: "\(formatTime(entry.courses[1].startTime)) - \(formatTime(entry.courses[1].endTime))"
                                     ).font(.footnote).foregroundColor(.secondary)
                                     Text(
                                         entry.courses[1].displayTeacher(
@@ -130,13 +130,13 @@ struct CoursesNextUpSmallView: View {
                                     HStack(spacing: 2) {
                                         Image(systemName: "location.circle.fill").font(
                                             .system(size: 8))
-                                        Text("\(entry.courses[1].room)").font(.system(size: 10))
+                                        Text(verbatim: "\(entry.courses[1].room)").font(.system(size: 10))
                                     }.lineLimit(1).padding(.vertical, 2).padding(.horizontal, 5)
                                         .background(Color.blue.opacity(0.6)).cornerRadius(4)
 
                                     HStack(spacing: 0) {
                                         Image(systemName: "graduationcap").font(.system(size: 8))
-                                        Text("\(entry.courses[1].stdNo)").font(.system(size: 10))
+                                        Text(verbatim: "\(entry.courses[1].stdNo)").font(.system(size: 10))
                                     }.lineLimit(1).padding(.vertical, 2).padding(.horizontal, 5)
                                         .background(Color.blue.opacity(0.6)).cornerRadius(4)
                                 }
@@ -158,7 +158,7 @@ struct CoursesNextUpSmallView: View {
                                             weight: .semibold)
                                     ).foregroundColor(.primary).lineLimit(1)
                                     Text(
-                                        "\(formatTime(entry.courses[1].startTime)) - \(formatTime(entry.courses[1].endTime))"
+                                        verbatim: "\(formatTime(entry.courses[1].startTime)) - \(formatTime(entry.courses[1].endTime))"
                                     ).font(.caption).foregroundColor(.secondary)
                                     Text(
                                         entry.courses[1].displayTeacher(
@@ -189,7 +189,7 @@ struct CoursesNextUpSmallView: View {
                                                     weight: .semibold)
                                             ).foregroundColor(.primary)
                                             Text(
-                                                "\(formatTime(entry.courses[2].startTime)) - \(formatTime(entry.courses[2].endTime))"
+                                                verbatim: "\(formatTime(entry.courses[2].startTime)) - \(formatTime(entry.courses[2].endTime))"
                                             ).font(.footnote).foregroundColor(.secondary)
                                             Text(
                                                 entry.courses[2].displayTeacher(
@@ -201,13 +201,13 @@ struct CoursesNextUpSmallView: View {
                                             HStack(spacing: 2) {
                                                 Image(systemName: "location.circle.fill").font(
                                                     .system(size: 8))
-                                                Text("\(entry.courses[2].room)").font(.system(size: 10))
+                                                Text(verbatim: "\(entry.courses[2].room)").font(.system(size: 10))
                                             }.lineLimit(1).padding(.vertical, 2).padding(.horizontal, 5)
                                                 .background(Color.blue.opacity(0.6)).cornerRadius(4)
 
                                             HStack(spacing: 0) {
                                                 Image(systemName: "graduationcap").font(.system(size: 8))
-                                                Text("\(entry.courses[2].stdNo)").font(.system(size: 10))
+                                                Text(verbatim: "\(entry.courses[2].stdNo)").font(.system(size: 10))
                                             }.lineLimit(1).padding(.vertical, 2).padding(.horizontal, 5)
                                                 .background(Color.blue.opacity(0.6)).cornerRadius(4)
                                         }
@@ -229,7 +229,7 @@ struct CoursesNextUpSmallView: View {
                                                     weight: .semibold)
                                             ).foregroundColor(.primary).lineLimit(1)
                                             Text(
-                                                "\(formatTime(entry.courses[2].startTime)) - \(formatTime(entry.courses[2].endTime))"
+                                                verbatim: "\(formatTime(entry.courses[2].startTime)) - \(formatTime(entry.courses[2].endTime))"
                                             ).font(.caption).foregroundColor(.secondary)
                                             Text(
                                                 entry.courses[2].displayTeacher(
@@ -259,7 +259,7 @@ struct CoursesNextUpSmallView: View {
                                                         weight: .semibold)
                                                 ).foregroundColor(.primary)
                                                 Text(
-                                                    "\(formatTime(entry.courses[3].startTime)) - \(formatTime(entry.courses[3].endTime))"
+                                                    verbatim: "\(formatTime(entry.courses[3].startTime)) - \(formatTime(entry.courses[3].endTime))"
                                                 ).font(.footnote).foregroundColor(.secondary)
                                                 Text(
                                                     entry.courses[3].displayTeacher(
@@ -271,13 +271,13 @@ struct CoursesNextUpSmallView: View {
                                                 HStack(spacing: 2) {
                                                     Image(systemName: "location.circle.fill").font(
                                                         .system(size: 8))
-                                                    Text("\(entry.courses[3].room)").font(.system(size: 10))
+                                                    Text(verbatim: "\(entry.courses[3].room)").font(.system(size: 10))
                                                 }.lineLimit(1).padding(.vertical, 2).padding(.horizontal, 5)
                                                     .background(Color.blue.opacity(0.6)).cornerRadius(4)
 
                                                 HStack(spacing: 0) {
                                                     Image(systemName: "graduationcap").font(.system(size: 8))
-                                                    Text("\(entry.courses[3].stdNo)").font(.system(size: 10))
+                                                    Text(verbatim: "\(entry.courses[3].stdNo)").font(.system(size: 10))
                                                 }.lineLimit(1).padding(.vertical, 2).padding(.horizontal, 5)
                                                     .background(Color.blue.opacity(0.6)).cornerRadius(4)
                                             }
@@ -299,7 +299,7 @@ struct CoursesNextUpSmallView: View {
                                                         weight: .semibold)
                                                 ).foregroundColor(.primary).lineLimit(1)
                                                 Text(
-                                                    "\(formatTime(entry.courses[3].startTime)) - \(formatTime(entry.courses[3].endTime))"
+                                                    verbatim: "\(formatTime(entry.courses[3].startTime)) - \(formatTime(entry.courses[3].endTime))"
                                                 ).font(.caption).foregroundColor(.secondary)
                                                 Text(
                                                     entry.courses[3].displayTeacher(

@@ -2,7 +2,13 @@ import SwiftUI
 
 struct DateSelectorView: View {
     @Binding var selectedIndex: Int
-    private let calendar = Calendar(identifier: .gregorian)
+
+    private let calendar = {
+        var c = Calendar(identifier: .gregorian)
+        c.locale = .autoupdatingCurrent
+        return c
+    }()
+
     private let items: [DateItem]
 
     init(selectedIndex: Binding<Int>) {
@@ -75,7 +81,7 @@ private struct DateCell: View {
 
     var body: some View {
         VStack(spacing: 4) {
-            Text("\(dayOfMonth)").font(.system(size: 20, weight: isSelected ? .semibold : .regular))
+            Text(verbatim: "\(dayOfMonth)").font(.system(size: 20, weight: isSelected ? .semibold : .regular))
                 .foregroundColor(isSelected ? .white : (isToday ? .accentColor : .primary))
 
             Text(weekdayText).font(.system(size: 14, weight: isSelected ? .medium : .regular))

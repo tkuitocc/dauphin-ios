@@ -48,7 +48,7 @@ struct StdIDEntryView: View {
             if entry.ssoStuNo.count > 3 {
                 Code39View(entry.ssoStuNo).frame(width: 296, height: 96).padding(
                     .init(top: 5, leading: 20, bottom: 5, trailing: 20))
-                Text("\(entry.ssoStuNo)").foregroundStyle(.black)
+                Text(verbatim: "\(entry.ssoStuNo)").foregroundStyle(.black)
             } else {
                 VStack(spacing: 8) {
                     Image(systemName: "person.text.rectangle.trianglebadge.exclamationmark.fill")

@@ -42,7 +42,7 @@ struct CoursesNextUpViewLockScreenView: View {
                                     size: courseNameFontSize(for: entry.courses[0]), weight: .bold))
 
                         Text(
-                            "\(formatTime(entry.courses[0].startTime)) - \(formatTime(entry.courses[0].endTime))"
+                            verbatim: "\(formatTime(entry.courses[0].startTime)) - \(formatTime(entry.courses[0].endTime))"
                         ).font(.system(size: 12))
 
                         Text(

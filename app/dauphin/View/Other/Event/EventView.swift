@@ -68,18 +68,21 @@ struct EventView: View {
     }
 
     private func dateRangeText(_ e: CalendarEvent) -> String {
-        let f = Self.fmt
         return Calendar.current.isDate(e.startDate, inSameDayAs: e.endDate)
-            ? f.string(from: e.startDate)
-            : "\(f.string(from: e.startDate)) - \(f.string(from: e.endDate))"
+        ? e.startDate.formatted(EventView.dateFormat)
+            : "\(e.startDate.formatted(EventView.dateFormat))\n- \(e.endDate.formatted(EventView.dateFormat))"
     }
 
-    private static let fmt: DateFormatter = {
-        let f = DateFormatter()
-        f.dateFormat = "yyyy M d EEEE"
-        f.locale = .autoupdatingCurrent
-        return f
-    }()
+    private static let dateFormat = Date
+        .FormatStyle(
+            date: .none,
+            time: .none,
+            locale: .autoupdatingCurrent
+        )
+        .year(.defaultDigits)
+        .month(.wide)
+        .day(.defaultDigits)
+        .weekday(.wide)
 }
 
 #Preview { NavigationStack { EventView() } }
