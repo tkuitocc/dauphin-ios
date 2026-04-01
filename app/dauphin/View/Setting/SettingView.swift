@@ -18,6 +18,10 @@ struct SettingView: View {
     @State private var selectedSection: SettingsSection? = .account
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @AppStorage(
+        Constants.userInterfaceStyle
+    )
+    var userInterfaceStyle = UIUserInterfaceStyle.unspecified
+    @AppStorage(
         Constants.showEnglishCourseName,
         store: UserDefaults(suiteName: Constants.appGroupSuiteName)
     )
@@ -36,6 +40,20 @@ struct SettingView: View {
                     Label("Account", systemImage: "person.crop.circle").tag(SettingsSection.account)
 
                     Label("About Us", systemImage: "figure.wave").tag(SettingsSection.about)
+
+                    Section("Appearance") {
+                        Picker(
+                            selection: $userInterfaceStyle,
+                            content: {
+                                Text("System").tag(UIUserInterfaceStyle.unspecified)
+                                Text("Light").tag(UIUserInterfaceStyle.light)
+                                Text("Dark").tag(UIUserInterfaceStyle.dark)
+                            },
+                            label: {
+                                Label("Color Scheme", systemImage: "sun.horizon.fill")
+                            }
+                        )
+                    }
 
                     Section("Data Management") {
                         Label("Clear Cache", systemImage: "trash").tag(SettingsSection.cache)
@@ -75,6 +93,20 @@ struct SettingView: View {
 
                     NavigationLink(destination: AboutUsView()) {
                         Label("About Us", systemImage: "figure.wave")
+                    }
+
+                    Section("Appearance") {
+                        Picker(
+                            selection: $userInterfaceStyle,
+                            content: {
+                                Text("System").tag(UIUserInterfaceStyle.unspecified)
+                                Text("Light").tag(UIUserInterfaceStyle.light)
+                                Text("Dark").tag(UIUserInterfaceStyle.dark)
+                            },
+                            label: {
+                                Label("Color Scheme", systemImage: "sun.horizon.fill")
+                            }
+                        )
                     }
 
                     Section("Data Management") {
