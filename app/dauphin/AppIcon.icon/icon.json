@@ -35,7 +35,7 @@
             {
               "appearance" : "dark",
               "value" : {
-                "solid" : "srgb:1.00000,0.14913,0.00000,1.00000"
+                "solid" : "extended-gray:1.00000,1.00000"
               }
             }
           ],
