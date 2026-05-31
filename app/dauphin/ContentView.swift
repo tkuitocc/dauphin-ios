@@ -8,37 +8,30 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var viewModel = AuthViewModel()
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @AppStorage("isFirstTime") private var isFirstTime: Bool = true
 
     var body: some View {
-        if #available(iOS 18.0, *) {
-            TabView {
-                Tab("Course", systemImage: "calendar.day.timeline.left") {
-                    CourseScheduleView(authViewModel: viewModel)
+        switch horizontalSizeClass {
+        case .compact:
+            MainScreen()
+                .fullScreenCover(isPresented: $isFirstTime) {
+                    IntroScreen()
+                        .preferredColorScheme(colorScheme)
+                        .interactiveDismissDisabled()
                 }
-                Tab("Other", systemImage: "chart.line.text.clipboard") {
-                    OtherView(authViewModel: viewModel)
+        default:
+            MainScreen()
+                .sheet(isPresented: $isFirstTime) {
+                    IntroScreen()
+                        .preferredColorScheme(colorScheme)
+                        .interactiveDismissDisabled()
                 }
-
-                Tab("Setting", systemImage: "gear") { SettingView(viewModel: viewModel) }
-            }.sheet(
-                isPresented: $isFirstTime, content: { IntroScreen().interactiveDismissDisabled() })
-
-        } else {
-            TabView {
-                CourseScheduleView(authViewModel: viewModel).tabItem {
-                    Label("Course", systemImage: "calendar.day.timeline.left")
-                }
-                OtherView(authViewModel: viewModel).tabItem {
-                    Label("Other", systemImage: "chart.line.text.clipboard")
-                }
-                SettingView(viewModel: viewModel).tabItem { Label("Setting", systemImage: "gear") }
-            }.sheet(
-                isPresented: $isFirstTime, content: { IntroScreen().interactiveDismissDisabled() })
         }
     }
 }
 
-#Preview { ContentView() }
+#Preview {
+    ContentView()
+}
