@@ -1,4 +1,5 @@
 import SwiftUI
+import WidgetKit
 
 struct ShowEnglishNameView: View {
     @Binding var selection: Bool?
@@ -9,6 +10,7 @@ struct ShowEnglishNameView: View {
             Button(
                 action: {
                     selection = nil
+                    WidgetCenter.shared.reloadAllTimelines()
                     dismiss()
                 }
             ) {
@@ -22,12 +24,14 @@ struct ShowEnglishNameView: View {
                             .foregroundStyle(.tint)
                     }
                 }
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
 
             Button(
                 action: {
                     selection = true
+                    WidgetCenter.shared.reloadAllTimelines()
                     dismiss()
                 }
             ) {
@@ -41,12 +45,14 @@ struct ShowEnglishNameView: View {
                             .foregroundStyle(.tint)
                     }
                 }
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
 
             Button(
                 action: {
                     selection = false
+                    WidgetCenter.shared.reloadAllTimelines()
                     dismiss()
                 }
             ) {
@@ -60,6 +66,7 @@ struct ShowEnglishNameView: View {
                             .foregroundStyle(.tint)
                     }
                 }
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
         }
