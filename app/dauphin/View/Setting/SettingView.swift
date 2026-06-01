@@ -11,6 +11,8 @@ enum SettingsSection: String, CaseIterable {
     case account
     case about
     case cache
+    case showEnglishCourseName
+    case showEnglishTeacherName
 }
 
 struct SettingView: View {
@@ -60,24 +62,25 @@ struct SettingView: View {
                     }
 
                     Section("Course") {
-                        NavigationLink(
-                            destination: ShowEnglishNameView(selection: $showEnglishCourseName)
-                        ) {
-                            Label("Show English Course Name", systemImage: "character.book.closed")
-                        }
-                        NavigationLink(
-                            destination: ShowEnglishNameView(selection: $showEnglishTeacherName)
-                        ) {
-                            Label("Show English Teacher Name", systemImage: "person.text.rectangle")
-                        }
+                        Label("Show English Course Name", systemImage: "character.book.closed")
+                            .tag(SettingsSection.showEnglishCourseName)
+                        Label("Show English Teacher Name", systemImage: "person.text.rectangle")
+                            .tag(SettingsSection.showEnglishTeacherName)
                     }
                 }.navigationTitle("Settings").listStyle(SidebarListStyle())
             } detail: {
                 Group {
                     switch selectedSection {
-                    case .account: LibMainView(viewModel: viewModel)
-                    case .about: AboutUsView()
-                    case .cache: ClearCacheView()
+                    case .account:
+                        LibMainView(viewModel: viewModel)
+                    case .about:
+                        AboutUsView()
+                    case .cache:
+                        ClearCacheView()
+                    case .showEnglishCourseName:
+                        ShowEnglishNameView(selection: $showEnglishCourseName)
+                    case .showEnglishTeacherName:
+                        ShowEnglishNameView(selection: $showEnglishTeacherName)
                     case .none:
                         VStack(spacing: 20) {
                             Image(systemName: "gear").font(.system(size: 60)).foregroundColor(.gray)

@@ -62,8 +62,6 @@ struct ShowEnglishNameView: View {
                 }
             }
             .buttonStyle(.plain)
-
-
         }
     }
 }
