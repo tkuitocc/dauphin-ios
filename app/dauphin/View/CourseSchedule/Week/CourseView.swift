@@ -5,10 +5,14 @@ struct CourseView: View {
     let height: CGFloat
     let yOffset: CGFloat
     @AppStorage(
-        Constants.showEnglishCourseName, store: UserDefaults(suiteName: Constants.appGroupSuiteName)
-    ) private var showEnglishCourseName = Course.defaultShowEnglishCourseName()
+        Constants.showEnglishCourseName,
+        store: UserDefaults(suiteName: Constants.appGroupSuiteName)
+    )
+    private var showEnglishCourseName: Bool?
     private var courseNameFontSize: CGFloat {
-        course.isShowingEnglishName(showEnglish: showEnglishCourseName) ? 13 : 15
+        course.isShowingEnglishName(
+            showEnglish: showEnglishCourseName ?? Course.defaultShowEnglishCourseName()
+        ) ? 13 : 15
     }
 
     var body: some View {
@@ -17,7 +21,12 @@ struct CourseView: View {
         ).frame(height: height).overlay(
             VStack(alignment: .leading, spacing: 3) {
                 HStack(alignment: .top, spacing: 0) {
-                    Text(course.displayName(showEnglish: showEnglishCourseName)).font(
+                    Text(
+                        course.displayName(
+                            showEnglish:
+                                showEnglishCourseName ?? Course.defaultShowEnglishCourseName()
+                        )
+                    ).font(
                         .system(size: courseNameFontSize, weight: .semibold)
                     ).foregroundColor(Color(UIColor.label)).lineLimit(2)
                 }

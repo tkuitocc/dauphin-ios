@@ -7,12 +7,15 @@ struct DayScheduleView: View {
     @State private var showBarcode = false
     @State private var selectedCourse: Course? = nil
     @AppStorage(
-        Constants.showEnglishCourseName, store: UserDefaults(suiteName: Constants.appGroupSuiteName)
-    ) private var showEnglishCourseName = Course.defaultShowEnglishCourseName()
+        Constants.showEnglishCourseName,
+        store: UserDefaults(suiteName: Constants.appGroupSuiteName)
+    )
+    private var showEnglishCourseName: Bool?
     @AppStorage(
         Constants.showEnglishTeacherName,
-        store: UserDefaults(suiteName: Constants.appGroupSuiteName)) private
-        var showEnglishTeacherName = Course.defaultShowEnglishTeacherName()
+        store: UserDefaults(suiteName: Constants.appGroupSuiteName)
+    )
+    private var showEnglishTeacherName: Bool?
 
     private func getFormattedDate() -> String { Date.now.formatted(Self.monthYearStyle) }
 
@@ -66,11 +69,16 @@ struct DayScheduleView: View {
                     LazyVStack(spacing: 12) {
                         ForEach(todaysCourses) { course in
                             CourseCardView(
-                                courseName: course.displayName(showEnglish: showEnglishCourseName),
+                                courseName: course.displayName(
+                                    showEnglish: showEnglishCourseName ?? Course.defaultShowEnglishCourseName()
+                                ),
                                 useCompactCourseNameFont: course.isShowingEnglishName(
-                                    showEnglish: showEnglishCourseName), roomNumber: course.room,
+                                    showEnglish: showEnglishCourseName ?? Course.defaultShowEnglishCourseName()
+                                ),
+                                roomNumber: course.room,
                                 teacherName: course.displayTeacher(
-                                    showEnglish: showEnglishTeacherName),
+                                    showEnglish: showEnglishTeacherName ?? Course.defaultShowEnglishTeacherName()
+                                ),
                                 startTime: course.startTime, endTime: course.endTime,
                                 stdNo: course.stdNo, weekday: course.weekday
                             ).shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)

@@ -25,12 +25,12 @@ struct SettingView: View {
         Constants.showEnglishCourseName,
         store: UserDefaults(suiteName: Constants.appGroupSuiteName)
     )
-    private var showEnglishCourseName = Course.defaultShowEnglishCourseName()
+    private var showEnglishCourseName: Bool?
     @AppStorage(
         Constants.showEnglishTeacherName,
         store: UserDefaults(suiteName: Constants.appGroupSuiteName)
     )
-    private var showEnglishTeacherName = Course.defaultShowEnglishTeacherName()
+    private var showEnglishTeacherName: Bool?
 
     var body: some View {
         if horizontalSizeClass == .regular {
@@ -60,10 +60,14 @@ struct SettingView: View {
                     }
 
                     Section("Course") {
-                        Toggle(isOn: $showEnglishCourseName) {
+                        NavigationLink(
+                            destination: ShowEnglishNameView(selection: $showEnglishCourseName)
+                        ) {
                             Label("Show English Course Name", systemImage: "character.book.closed")
                         }
-                        Toggle(isOn: $showEnglishTeacherName) {
+                        NavigationLink(
+                            destination: ShowEnglishNameView(selection: $showEnglishTeacherName)
+                        ) {
                             Label("Show English Teacher Name", systemImage: "person.text.rectangle")
                         }
                     }
@@ -116,10 +120,14 @@ struct SettingView: View {
                     }
 
                     Section("Course") {
-                        Toggle(isOn: $showEnglishCourseName) {
+                        NavigationLink(
+                            destination: ShowEnglishNameView(selection: $showEnglishCourseName)
+                        ) {
                             Label("Show English Course Name", systemImage: "character.book.closed")
                         }
-                        Toggle(isOn: $showEnglishTeacherName) {
+                        NavigationLink(
+                            destination: ShowEnglishNameView(selection: $showEnglishTeacherName)
+                        ) {
                             Label("Show English Teacher Name", systemImage: "person.text.rectangle")
                         }
                     }
@@ -129,4 +137,6 @@ struct SettingView: View {
     }
 }
 
-#Preview { SettingView(viewModel: AuthViewModel()) }
+#Preview {
+    SettingView(viewModel: AuthViewModel())
+}

@@ -11,21 +11,30 @@ struct CourseDetailView: View {
     let course: Course
     @Environment(\.dismiss) var dismiss
     @AppStorage(
-        Constants.showEnglishCourseName, store: UserDefaults(suiteName: Constants.appGroupSuiteName)
-    ) private var showEnglishCourseName = Course.defaultShowEnglishCourseName()
+        Constants.showEnglishCourseName,
+        store: UserDefaults(suiteName: Constants.appGroupSuiteName)
+    )
+    private var showEnglishCourseName: Bool?
     @AppStorage(
         Constants.showEnglishTeacherName,
-        store: UserDefaults(suiteName: Constants.appGroupSuiteName)) private
-        var showEnglishTeacherName = Course.defaultShowEnglishTeacherName()
+        store: UserDefaults(suiteName: Constants.appGroupSuiteName)
+    )
+    private var showEnglishTeacherName: Bool?
 
     // Cache expensive computations
     private let dayOfWeek: String
     private let timeRange: String
     private let hasNote: Bool
 
-    private var displayName: String { course.displayName(showEnglish: showEnglishCourseName) }
+    private var displayName: String {
+        course.displayName(
+            showEnglish: showEnglishCourseName ?? Course.defaultShowEnglishCourseName()
+        )
+    }
     private var useCompactTitle: Bool {
-        course.isShowingEnglishName(showEnglish: showEnglishCourseName)
+        course.isShowingEnglishName(
+            showEnglish: showEnglishCourseName ?? Course.defaultShowEnglishCourseName()
+        )
     }
 
     init(course: Course) {
@@ -94,7 +103,11 @@ struct CourseDetailView: View {
                             localized: "course.detail.instructor",
                             defaultValue: "Instructor"
                         ),
-                        content: course.displayTeacher(showEnglish: showEnglishTeacherName))
+                        content: course.displayTeacher(
+                            showEnglish:
+                                showEnglishTeacherName ?? Course.defaultShowEnglishTeacherName()
+                        )
+                    )
 
                     if hasNote {
                         Divider()

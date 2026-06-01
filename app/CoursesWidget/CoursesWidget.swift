@@ -141,20 +141,40 @@ struct Provider: TimelineProvider {
         guard let defaults = UserDefaults(suiteName: Constants.appGroupSuiteName) else {
             return Course.defaultShowEnglishCourseName()
         }
-        guard defaults.object(forKey: Constants.showEnglishCourseName) != nil else {
-            return Course.defaultShowEnglishCourseName()
+        if let rawString = defaults.object(forKey: Constants.showEnglishCourseName) as? String {
+            if let actualBool = Bool(rawString) {
+                return actualBool
+            }
         }
-        return defaults.bool(forKey: Constants.showEnglishCourseName)
+        if let rawBool = defaults.object(forKey: Constants.showEnglishCourseName) as? Bool {
+            defaults.set(rawBool ? "true" : "false", forKey: Constants.showEnglishCourseName)
+            Provider.logger.info(
+                "CourseWidget successfully migrated Bool to Bool? for showEnglishCourseName."
+            )
+
+            return rawBool
+        }
+        return Course.defaultShowEnglishCourseName()
     }
 
     private func loadShowEnglishTeacherNamePreference() -> Bool {
         guard let defaults = UserDefaults(suiteName: Constants.appGroupSuiteName) else {
             return Course.defaultShowEnglishTeacherName()
         }
-        guard defaults.object(forKey: Constants.showEnglishTeacherName) != nil else {
-            return Course.defaultShowEnglishTeacherName()
+        if let rawString = defaults.object(forKey: Constants.showEnglishTeacherName) as? String {
+            if let actualBool = Bool(rawString) {
+                return actualBool
+            }
         }
-        return defaults.bool(forKey: Constants.showEnglishTeacherName)
+        if let rawBool = defaults.object(forKey: Constants.showEnglishTeacherName) as? Bool {
+            defaults.set(rawBool ? "true" : "false", forKey: Constants.showEnglishTeacherName)
+            Provider.logger.info(
+                "CourseWidget successfully migrated Bool to Bool? for showEnglishTeacherName."
+            )
+
+            return rawBool
+        }
+        return Course.defaultShowEnglishTeacherName()
     }
 }
 struct CoursesNextUpWidgetEntryView: View {
