@@ -76,8 +76,8 @@ jobs:
         run: |
           set -eu
 
-          : "${AES256KEY:?Set AES256KEY in the Xcode Cloud workflow environment}"
-          : "${AES256IV:?Set AES256IV in the Xcode Cloud workflow environment}"
+          : "${AES256KEY:?Set AES256KEY in the GitHub Actions workflow environment}"
+          : "${AES256IV:?Set AES256IV in the GitHub Actions workflow environment}"
 
           script_directory="$GITHUB_WORKSPACE"
           template_path="${script_directory}/app/dauphin/api.example.plist"
