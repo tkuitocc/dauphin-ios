@@ -231,6 +231,20 @@
 			);
 			target = 18E8F2122DB5CC3E00B2FB57 /* StdIDExtension */;
 		};
+		8BEF77F9308BB89A0007749A /* Exceptions for "Tests" folder in "ModelsTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				FeaturesTests,
+			);
+			target = 188CEB672E8367DE00CDD450 /* ModelsTests */;
+		};
+		8BEF77FB308BB8A50007749A /* Exceptions for "Tests" folder in "FeaturesTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ModelsTests,
+			);
+			target = 188CEB902E838D7000CDD450 /* FeaturesTests */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -245,6 +259,10 @@
 		};
 		188CEB692E8367DE00CDD450 /* Tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				8BEF77F9308BB89A0007749A /* Exceptions for "Tests" folder in "ModelsTests" target */,
+				8BEF77FB308BB8A50007749A /* Exceptions for "Tests" folder in "FeaturesTests" target */,
+			);
 			path = Tests;
 			sourceTree = "<group>";
 		};
@@ -501,9 +519,6 @@
 			dependencies = (
 				188CEB6D2E8367DE00CDD450 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				188CEB692E8367DE00CDD450 /* Tests */,
-			);
 			name = ModelsTests;
 			packageProductDependencies = (
 			);
@@ -523,9 +538,6 @@
 			);
 			dependencies = (
 				188CEB982E838D7000CDD450 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				188CEB692E8367DE00CDD450 /* Tests */,
 			);
 			name = FeaturesTests;
 			packageProductDependencies = (
